@@ -80,7 +80,7 @@ class Profile extends Component {
     if (profile.profile_image) {
       profileStyle['backgroundImage'] = `url(${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${account.name}?s=280)`;
     }
-
+    
     return (
       <div className="profile diagonal-split-view">
         <Helmet>
@@ -119,7 +119,7 @@ class Profile extends Component {
             { profile.website &&
               <p><a href={profile.website} target="_blank"><Icon type="link" /> {profile.website.replace(/^https?:\/\//, '')}</a></p>
             }
-            <p><Icon type="calendar" /> Joined {shortFormat(account.created_at || 0)}</p>
+            <p><Icon type="calendar" /> Joined {shortFormat(account.created || 0)}</p>
             <p><Icon type="book" /> <a href={`https://steemit.com/@${account.name}`} target="_blank" rel="noopener noreferrer">View Steemit blog</a></p>
           </div>
         </div>

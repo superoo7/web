@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Icon, Progress } from 'antd';
+import { Icon } from 'antd';
 import steemDapps from 'assets/images/img-steem-apps@3x.png';
 import signUpLeft from 'assets/images/img-stc-1@3x.png';
 import signUpRight from 'assets/images/img-stc-2@3x.png';
 import steemWallet from 'assets/images/img-st-wallet@3x.png';
-import { formatNumber, formatFloat } from "utils/helpers/steemitHelpers";
-import api from 'utils/api';
 
 export default class SignUpGuide extends Component {
   constructor(props) {
@@ -34,11 +32,11 @@ export default class SignUpGuide extends Component {
             Whenever you login Steem apps including Steemhunt, they will ask you to login via Steemconnect, a secure way to login without giving up your private keys.
           </div>
           <div className="sign-up-samples">
-            <div class="sign-up-samples-left">
+            <div className="sign-up-samples-left">
               <span className="primary-round">You will sign-in<br/>with your Steem<br/>account when the<br/>first-time login.</span>
               <img src={signUpLeft} alt="SignUp Mobile"/>
             </div>
-            <div class="sign-up-samples-right">
+            <div className="sign-up-samples-right">
               <img src={signUpRight} alt="SignUp Mobile" />
               <span className="primary-round">You can just click<br/>your account<br/>whenever you<br/>login next time. </span>
             </div>

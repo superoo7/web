@@ -30,6 +30,7 @@ const Search = asyncComponent(() => import('pages/Search'));
 const Airdrop = asyncComponent(() => import('pages/Airdrop'));
 const Wallet = asyncComponent(() => import('pages/Wallet'));
 const SignUpGuide = asyncComponent(() => import('pages/SignUpGuide'));
+const SignUp = asyncComponent(() => import('pages/SignUp'));
 
 
 const BackButton = withRouter(({ history }) => (
@@ -143,7 +144,7 @@ class Right extends Component {
           <Route path="/tag/:tag" component={TagRight} />
           <Route path="/wallet" exact component={Wallet} />
           <Route path="/airdrop" exact component={me || isLoading ? Wallet : List} />
-          <Route path="/sign_up" exact component={List} />
+          <Route path="/sign_up" exact component={SignUp} />
           <Route path='*' component={List} />
         </Switch>
       </div>

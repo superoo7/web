@@ -29,6 +29,7 @@ const HallOfFame = asyncComponent(() => import('pages/HallOfFame'));
 const Search = asyncComponent(() => import('pages/Search'));
 const Airdrop = asyncComponent(() => import('pages/Airdrop'));
 const Wallet = asyncComponent(() => import('pages/Wallet'));
+const SignUpGuide = asyncComponent(() => import('pages/SignUpGuide'));
 
 
 const BackButton = withRouter(({ history }) => (
@@ -81,6 +82,7 @@ export class RoutesLeft extends Component {
           <Route path="/@:author" exact render={(p) => (<Redirect to={`/author/@${p.match.params.author}`} />)} />
           <Route path="/tag/:tag" exact component={RelatedTag} />
           <Route path="/tag/:tag/@:author/:permlink" exact component={Post} />
+          <Route path="/sign_up" exact component={SignUpGuide} />
           <Route path='*' component={NotFound} />
         </Switch>
       </div>
@@ -141,9 +143,9 @@ class Right extends Component {
           <Route path="/tag/:tag" component={TagRight} />
           <Route path="/wallet" exact component={Wallet} />
           <Route path="/airdrop" exact component={me || isLoading ? Wallet : List} />
+          <Route path="/sign_up" exact component={List} />
           <Route path='*' component={List} />
         </Switch>
-
       </div>
     );
   }

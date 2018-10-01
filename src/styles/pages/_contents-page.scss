@@ -1,4 +1,4 @@
-.airdrops {
+.contents-page {
   padding: 140px 160px 50px 160px;
   color: #fff;
   text-align: left;
@@ -140,6 +140,50 @@
             color: #fff;
           }
         }
+      }
+    }
+
+    .sign-up-samples {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      position: relative;
+      .sign-up-samples-left {
+        width: 50%;
+        text-align: right;
+        padding-right: 5px;
+        img {
+          width: 50%;
+        }
+        span {
+          left: 0;
+        }
+      }
+
+      .sign-up-samples-right {
+        width: 50%;
+        padding-left: 5px;
+        img {
+          width: 50%;
+        }
+        span {
+          right: 0;
+        }
+      }
+
+      span.primary-round {
+        background-color: rgba(252, 111, 111, 0.7);
+        width: 150px;
+        height: 150px;
+        border-radius: 100%;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 14px;
       }
     }
   }

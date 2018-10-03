@@ -4,13 +4,16 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import isEmpty from 'lodash/isEmpty';
-import { Form, Input, Icon, Button, Select } from 'antd';
+import { Form, Input, Icon, Button, Select, notification } from 'antd';
 import api from 'utils/api';
 import { getLoginURL } from 'utils/token';
 import userImage from 'assets/images/icon-create-account@3x.png';
 import smsImage from 'assets/images/img-phone@3x.png';
+import pinImage from 'assets/images/img-phone-confirmation@3x.png';
+import verifiedImage from 'assets/images/icon-thumb@3x.png';
+import keyImage from 'assets/images/icon-key@3x.png';
 import ReactPhoneInput from 'react-phone-input-2';
-import { isValidNumber } from 'libphonenumber-js'
+import { isValidNumber, parseNumber, formatNumber } from 'libphonenumber-js';
 import steem from 'steem';
 
 const FormItem = Form.Item;
@@ -22,12 +25,15 @@ class SignUp extends Component {
 
   state = {
     pageTitle: 'Create Account',
-    stage: 1,
+    stage: 0,
     accountCheck: null,
     accountCheckMsg: 'Please input your username',
     accountName: null,
     phoneCheck: false,
     phoneNumber: '',
+    pinSent: false,
+    pinNumber: '',
+    pinCheck: false,
   };
 
   componentDidMount() {
@@ -74,17 +80,47 @@ class SignUp extends Component {
     this.setState({ phoneNumber: number, phoneCheck: isValidNumber(number) })
   }
 
-  sendMessage = (e) => {
-    e.preventDefault();
-    const res = api.post('/phone_number/send_sms.json', {phone_number: this.state.phoneNumber});
-    console.log(res);
+  setPinNumber = (e) => {
+    this.setState({ pinNumber: e.target.value, pinCheck: /^\d{4}$/.test(e.target.value) })
   }
 
   submitAccount = (e) => {
     e.preventDefault();
     if (this.state.accountCheck && this.state.accountName !== null) {
-      this.nextStage();
+      this.moveStage(1);
     }
+  }
+
+  sendSms = (e, resend = false) => {
+    e.preventDefault();
+    api.post('/phone_number/send_sms.json', {phone_number: formatNumber(this.state.phoneNumber, 'International')})
+    .then((res) => {
+      if (res.pin) {
+        notification['success']({ message: 'Pin number has been successfully sent to :' + this.state.phoneNumber });
+        if (!resend) {
+          this.moveStage(1);
+        }
+      } else {
+        if (res.notification) {
+          notification['error']({ message: res.notification })
+        }
+      }
+    })
+  }
+
+  verifyPin = (e) => {
+    e.preventDefault();
+    api.post('/phone_number/verify_pin.json', {user_pin: this.state.pinNumber, phone_number: formatNumber(this.state.phoneNumber, 'International')})
+    .then((res) => {
+      if (res.verified) {
+        notification['success']({ message: 'Pin number has been successfully verified' });
+        this.moveStage(1);
+      } else {
+        if (res.notification) {
+          notification['error']({ message: res.notification })
+        }
+      }
+    })
   }
 
   validateStatus = (status) => {
@@ -97,9 +133,9 @@ class SignUp extends Component {
     return status === 'validated' ? "success" : "error"
   }
 
-  nextStage = () => {
+  moveStage = (to) => {
     this.setState({
-      stage: this.state.stage += 1,
+      stage: this.state.stage + to,
     })
   }
 
@@ -151,28 +187,82 @@ class SignUp extends Component {
               Enter your phone number.
               We will send you a text message with a verification code that you’ll need to enter on the next creen.
             </p>
-            <Form onSubmit={this.sendMessage}>
+            <Form onSubmit={this.sendSms}>
               <FormItem
                 style={{ marginBottom: 20 }}
               >
                 <ReactPhoneInput inputStyle={{height: 40, width: '100%'}} defaultCountry={'us'} value={this.state.phoneNumber} onChange={this.setPhoneNumber}/>
-                {this.state.phoneNumber}
               </FormItem>
               <FormItem>
                 <Button type="primary" htmlType="submit" disabled={!this.state.phoneCheck} block>Send SMS</Button>
               </FormItem>
             </Form>
             <p className="form-tail">
-              Do you already have an account?<br />
-              <a href={getLoginURL()} className="action less-margin">
-                Sign In
-              </a>
+              <a type="ghost" onClick={() => this.moveStage(-1)} block><Icon type="left" /> Back</a>
             </p>
           </div>
         )
         break;
+        case 2:
+          form = (
+            <div key={2} className="form-container">
+              <img src={pinImage} alt="Pin Send" />
+              <p>
+              Enter the confirmation code.
+              We sent the code to you by SMS to {this.state.phoneNumber}
+              </p>
+              <Form onSubmit={this.verifyPin}>
+                <FormItem
+                  style={{ marginBottom: 20 }}
+                >
+                  <Input
+                    placeholder="Confirmation code (4 digits)"
+                    prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    suffix={<a onClick={(e) => this.sendSms(e, true)}>Resend</a>}
+                    value={this.state.pinNumber}
+                    onChange={this.setPinNumber}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Send SMS</Button>
+                </FormItem>
+              </Form>
+              <p className="form-tail">
+                <a type="ghost" onClick={() => this.moveStage(-1)} block><Icon type="left" /> Back</a>
+              </p>
+            </div>
+          )
+        break;
+      case 3:
+        form = (
+          <div key={3} className="form-container">
+            <img src={verifiedImage} alt="Pin Verified" />
+            <p>
+              Thank you @{this.state.accountName}!
+              Your phone number has been verified.
+            </p>
+            <Form onSubmit={() => this.nextStage(1)}>
+              <FormItem>
+                <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Continue</Button>
+              </FormItem>
+            </Form>
+          </div>
+        )
+        break;
+      case 4:
+       form = (
+        <div key={3} className="form-container">
+          <img src={keyImage} alt="Pin Verified" />
+          <p>
+            This is the private key (passwords) of your Steem account.
+            Please keep it secured.
+          </p>
+          <Button type="primary" block>Copy the key</Button>
+          <Button type="primary" block>Continue</Button>
+        </div>
+       )
+       break;
       default:
-
     }
     return form;
   }

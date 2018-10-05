@@ -6,9 +6,6 @@ import signUpRight from 'assets/images/img-stc-2@3x.png';
 import steemWallet from 'assets/images/img-st-wallet@3x.png';
 
 export default class SignUpGuide extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (

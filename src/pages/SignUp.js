@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import isEmpty from 'lodash/isEmpty';
-import { Form, Input, Icon, Button, Select, notification, Modal } from 'antd';
+import { Form, Input, Icon, Button, notification, Modal } from 'antd';
 import { withRouter } from 'react-router-dom';
 import api from 'utils/api';
 import { getLoginURL } from 'utils/token';
@@ -12,8 +11,9 @@ import verifiedImage from 'assets/images/icon-thumb@3x.png';
 import keyImage from 'assets/images/icon-key@3x.png';
 import steemImage from 'assets/images/img-allset-stc@3x.png';
 import ReactPhoneInput from 'react-phone-input-2';
-import { isValidNumber, parseNumber, formatNumber } from 'libphonenumber-js';
+import { isValidNumber, formatNumber } from 'libphonenumber-js';
 import steem from 'steem';
+import crypto from '@steemit/libcrypto';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const FormItem = Form.Item;
@@ -31,6 +31,7 @@ class SignUp extends Component {
     pinNumber: '',
     pinCheck: false,
     modalVisible: false,
+    privateKey: ''
   };
 
   checkAccount = (_, value, callback) => {
@@ -100,7 +101,7 @@ class SignUp extends Component {
     e.preventDefault();
     api.post('/phone_number/verify_pin.json', {user_pin: this.state.pinNumber, phone_number: formatNumber(this.state.phoneNumber, 'International')})
     .then((res) => {
-      if (res.verified) {
+      if (res.is_verified) {
         notification['success']({ message: 'Pin number has been successfully verified' });
         this.moveStage(1);
       } else {
@@ -108,6 +109,17 @@ class SignUp extends Component {
           notification['error']({ message: res.notification })
         }
       }
+    })
+  }
+
+  createSteemAccount(e, username) {
+    e.preventDefault();
+    const randomKey = crypto.generateKeys();
+    const privateKey = 'P' + randomKey.private;
+    const keys = steem.auth.generateKeys(username, privateKey, ['posting', 'active', 'owner', 'memo']);
+    api.post('/users/sign_up', { keys: keys, username: username })
+    .then((res) => {
+      this.setState({ privateKey }, () => this.moveStage(1))
     })
   }
 
@@ -195,7 +207,7 @@ class SignUp extends Component {
               </div>
             </Form>
             <p className="form-tail">
-              <a type="ghost" onClick={() => this.moveStage(-1)} block><Icon type="left" /> Back</a>
+              <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
             </p>
           </div>
         )
@@ -223,7 +235,7 @@ class SignUp extends Component {
                 </div>
               </Form>
               <p className="form-tail">
-                <a type="ghost" onClick={() => this.moveStage(-1)} block><Icon type="left" /> Back</a>
+                <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
               </p>
             </div>
           )
@@ -237,7 +249,7 @@ class SignUp extends Component {
               Your phone number has been verified.
             </p>
             <div className="actions-container">
-              <Form onSubmit={() => this.moveStage(1)}>
+              <Form onSubmit={(e) => this.createSteemAccount(e, this.state.accountName)}>
                 <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Continue</Button>
               </Form>
             </div>
@@ -253,10 +265,10 @@ class SignUp extends Component {
               Please keep it secured.
             </p>
             <div className="private-key-container">
-              SMTIZ8DAwAi3NSzeJFXaokJuBtvT4m2W1SbVh
+              {this.state.privateKey}
             </div>
             <div className="actions-container">
-              <CopyToClipboard text={'SMTIZ8DAwAi3NSzeJFXaokJuBtvT4m2W1SbVh'} onCopy={() => notification['success']({ message: 'Your private key has been copied to your clipboard.' })}>
+              <CopyToClipboard text={this.state.privateKey} onCopy={() => notification['success']({ message: 'Your private key has been copied to your clipboard.' })}>
                 <Button type="primary" ghost block>Copy the key</Button>
               </CopyToClipboard>
               <Button type="primary" block onClick={() => this.setModalVisible(true)}>Continue</Button>

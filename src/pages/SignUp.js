@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import isEmpty from 'lodash/isEmpty';
-import { Form, Input, Icon, Button, Select, notification } from 'antd';
+import { Form, Input, Icon, Button, Select, notification, Modal } from 'antd';
+import { withRouter } from 'react-router-dom';
 import api from 'utils/api';
 import { getLoginURL } from 'utils/token';
 import userImage from 'assets/images/icon-create-account@3x.png';
@@ -12,17 +10,15 @@ import smsImage from 'assets/images/img-phone@3x.png';
 import pinImage from 'assets/images/img-phone-confirmation@3x.png';
 import verifiedImage from 'assets/images/icon-thumb@3x.png';
 import keyImage from 'assets/images/icon-key@3x.png';
+import steemImage from 'assets/images/img-allset-stc@3x.png';
 import ReactPhoneInput from 'react-phone-input-2';
 import { isValidNumber, parseNumber, formatNumber } from 'libphonenumber-js';
 import steem from 'steem';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const FormItem = Form.Item;
 
 class SignUp extends Component {
-  static propTypes = {
-
-  };
-
   state = {
     pageTitle: 'Create Account',
     stage: 0,
@@ -34,16 +30,8 @@ class SignUp extends Component {
     pinSent: false,
     pinNumber: '',
     pinCheck: false,
+    modalVisible: false,
   };
-
-  componentDidMount() {
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.ethAddress !== null) {
-      this.setState({ ethModalVisible: false });
-    }
-  }
 
   checkAccount = (_, value, callback) => {
     if (!value || value.length === 0) {
@@ -139,6 +127,18 @@ class SignUp extends Component {
     })
   }
 
+  setModalVisible(modalVisible) {
+    this.setState({ modalVisible });
+  }
+
+  confirmPrivateKey() {
+    this.setState({
+      modalVisible: false,
+      stage: this.state.stage + 1,
+      pageTitle: "You're all set!"
+    })
+  }
+
   renderForm(stage) {
     const { getFieldDecorator } = this.props.form;
 
@@ -158,17 +158,16 @@ class SignUp extends Component {
                 validateStatus={this.validateStatus(this.state.accountCheck)}
                 help={this.state.accountCheckMsg}
                 hasFeedback
-                style={{ marginBottom: 20 }}
               >
                 {getFieldDecorator('userName', {
                   rules: [{ required: true, message: 'Please input your username!', validator: this.checkAccount }],
                 })(
-                  <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="account name" />
+                  <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
                 )}
               </FormItem>
-              <FormItem>
+              <div className="actions-container">
                 <Button type="primary" htmlType="submit" disabled={this.state.accountCheck !== 'validated'} block>Continue</Button>
-              </FormItem>
+              </div>
             </Form>
             <p className="form-tail">
               Do you already have an account?<br />
@@ -188,14 +187,12 @@ class SignUp extends Component {
               We will send you a text message with a verification code that you’ll need to enter on the next creen.
             </p>
             <Form onSubmit={this.sendSms}>
-              <FormItem
-                style={{ marginBottom: 20 }}
-              >
+              <FormItem>
                 <ReactPhoneInput inputStyle={{height: 40, width: '100%'}} defaultCountry={'us'} value={this.state.phoneNumber} onChange={this.setPhoneNumber}/>
               </FormItem>
-              <FormItem>
+              <div className="actions-container">
                 <Button type="primary" htmlType="submit" disabled={!this.state.phoneCheck} block>Send SMS</Button>
-              </FormItem>
+              </div>
             </Form>
             <p className="form-tail">
               <a type="ghost" onClick={() => this.moveStage(-1)} block><Icon type="left" /> Back</a>
@@ -212,9 +209,7 @@ class SignUp extends Component {
               We sent the code to you by SMS to {this.state.phoneNumber}
               </p>
               <Form onSubmit={this.verifyPin}>
-                <FormItem
-                  style={{ marginBottom: 20 }}
-                >
+                <FormItem>
                   <Input
                     placeholder="Confirmation code (4 digits)"
                     prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -223,9 +218,9 @@ class SignUp extends Component {
                     onChange={this.setPinNumber}
                   />
                 </FormItem>
-                <FormItem>
-                  <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Send SMS</Button>
-                </FormItem>
+                <div className="actions-container">
+                  <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Verify PIN</Button>
+                </div>
               </Form>
               <p className="form-tail">
                 <a type="ghost" onClick={() => this.moveStage(-1)} block><Icon type="left" /> Back</a>
@@ -241,27 +236,53 @@ class SignUp extends Component {
               Thank you @{this.state.accountName}!
               Your phone number has been verified.
             </p>
-            <Form onSubmit={() => this.nextStage(1)}>
-              <FormItem>
+            <div className="actions-container">
+              <Form onSubmit={() => this.moveStage(1)}>
                 <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Continue</Button>
-              </FormItem>
-            </Form>
+              </Form>
+            </div>
           </div>
         )
         break;
       case 4:
-       form = (
-        <div key={3} className="form-container">
-          <img src={keyImage} alt="Pin Verified" />
-          <p>
-            This is the private key (passwords) of your Steem account.
-            Please keep it secured.
-          </p>
-          <Button type="primary" block>Copy the key</Button>
-          <Button type="primary" block>Continue</Button>
-        </div>
-       )
-       break;
+        form = (
+          <div key={4} className="form-container">
+            <img src={keyImage} alt="Pin Verified" />
+            <p>
+              This is the private key (passwords) of your Steem account.
+              Please keep it secured.
+            </p>
+            <div className="private-key-container">
+              SMTIZ8DAwAi3NSzeJFXaokJuBtvT4m2W1SbVh
+            </div>
+            <div className="actions-container">
+              <CopyToClipboard text={'SMTIZ8DAwAi3NSzeJFXaokJuBtvT4m2W1SbVh'} onCopy={() => notification['success']({ message: 'Your private key has been copied to your clipboard.' })}>
+                <Button type="primary" ghost block>Copy the key</Button>
+              </CopyToClipboard>
+              <Button type="primary" block onClick={() => this.setModalVisible(true)}>Continue</Button>
+            </div>
+          </div>
+        )
+        break;
+      case 5:
+        form = (
+          <div key={5} className="form-container">
+            <p>
+              Now you can use Steemhunt and other Steem apps via SteemConnect, a secure way to login without giving up your private keys (passwords).
+            </p>
+            <img className="full-width" src={steemImage} alt="All Done" />
+
+            <div className="actions-container">
+              <Button type="primary" block onClick={() => window.location = getLoginURL()}>Login Now</Button>
+            </div>
+            <p className="form-tail">
+              <a href={'/'} className="action less-margin">
+                Go to main page
+              </a>
+            </p>
+          </div>
+        )
+        break;
       default:
     }
     return form;
@@ -275,17 +296,25 @@ class SignUp extends Component {
         </Helmet>
         <h1>{this.state.pageTitle}</h1>
         {this.renderForm(this.state.stage)}
+        <Modal
+          wrapClassName="private-key-modal"
+          visible={this.state.modalVisible}
+          onCancel={() => this.setModalVisible(false)}
+          footer={[
+            <Button key="back" type="primary" ghost block onClick={() => this.setModalVisible(false)}>No, I didn't save it yet.</Button>,
+            <Button key="submit" type="primary" block onClick={() => this.confirmPrivateKey()}>Yes, I saved my key securely!</Button>,
+          ]}
+        >
+          <h1>Have you securly stored your private key (passwords)?</h1>
+          <p>
+            Your private key is used to generate a signature for actions in Steem blockchain such as singing-in and creating transactions.
+            <span style={{ fontWeight: 'bold' }}>We cannot recover your key if you lose it.</span>
+            So please securly store the key in which no one can’t access other than you.
+          </p>
+        </Modal>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state, props) => createStructuredSelector({
-
-});
-
-const mapDispatchToProps = (dispatch, props) => ({
-
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(SignUp));
+export default withRouter(Form.create()(SignUp));

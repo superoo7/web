@@ -23,7 +23,7 @@ class SignUp extends Component {
     pageTitle: 'Create Account',
     stage: 0,
     accountCheck: null,
-    accountCheckMsg: 'Please input your username',
+    accountCheckMsg: null,
     accountName: null,
     phoneCheck: false,
     phoneNumber: '',
@@ -38,7 +38,7 @@ class SignUp extends Component {
 
   checkAccount = (_, value, callback) => {
     if (!value || value.length === 0) {
-      this.setState({ accountCheck: null, accountCheckMsg: 'Please input your username' });
+      this.setState({ accountCheck: null, accountCheckMsg: null });
       return callback();
     }
 
@@ -96,7 +96,7 @@ class SignUp extends Component {
           notification['error']({ message: res.notification })
         }
       }
-    })
+    }).catch((e) => notification['error']({ message: e.message }))
   }
 
   verifyPin = (e) => {
@@ -111,7 +111,7 @@ class SignUp extends Component {
           notification['error']({ message: res.notification })
         }
       }
-    })
+    }).catch((e) => notification['error']({ message: e.message }))
   }
 
   validateStatus = (status) => {
@@ -143,7 +143,6 @@ class SignUp extends Component {
   }
 
   confirmPrivateKey() {
-    console.log(this.state)
     this.setState({
       loading: true
      }, () => {
@@ -156,6 +155,10 @@ class SignUp extends Component {
           stage: this.state.stage + 1,
           pageTitle: "You're all set!",
         }, () => this.moveStage(1))
+      }).catch((e) => {
+        this.setState({
+          loading: false
+        }, () => notification['error']({ message: e.message }))
       })
     })
   }
@@ -181,7 +184,7 @@ class SignUp extends Component {
                 hasFeedback
               >
                 {getFieldDecorator('userName', {
-                  rules: [{ required: true, message: 'Please input your username!', validator: this.checkAccount }],
+                  rules: [{ required: true, message: null, validator: this.checkAccount }],
                 })(
                   <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" autoFocus />
                 )}
@@ -213,11 +216,11 @@ class SignUp extends Component {
               </FormItem>
               <div className="actions-container">
                 <Button type="primary" htmlType="submit" disabled={!this.state.phoneCheck} block>Send SMS</Button>
+                <p className="form-tail">
+                  <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
+                </p>
               </div>
             </Form>
-            <p className="form-tail">
-              <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
-            </p>
           </div>
         )
         break;
@@ -242,11 +245,11 @@ class SignUp extends Component {
                 </FormItem>
                 <div className="actions-container">
                   <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Verify PIN</Button>
+                  <p className="form-tail">
+                    <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
+                  </p>
                 </div>
               </Form>
-              <p className="form-tail">
-                <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
-              </p>
             </div>
           )
         break;
@@ -255,7 +258,7 @@ class SignUp extends Component {
           <div key={3} className="form-container">
             <img src={verifiedImage} alt="Pin Verified" />
             <p>
-              Thank you @{this.state.accountName}!
+              Thank you @{this.state.accountName}! <br/>
               Your phone number has been verified.
             </p>
             <div className="actions-container">
@@ -322,15 +325,16 @@ class SignUp extends Component {
           wrapClassName="private-key-modal"
           visible={this.state.modalVisible}
           onCancel={() => this.setModalVisible(false)}
+          centered
           footer={[
-            <Button key="back" type="primary" ghost block onClick={() => this.setModalVisible(false)}>No, I didn't save it yet.</Button>,
-            <Button key="submit" type="primary" block onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I saved my key securely!</Button>,
+            <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)}>No, I didn't save it yet.</Button>,
+            <Button key="submit" type="primary" onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I saved my key securely!</Button>,
           ]}
         >
           <h1>Have you securly stored your private key (passwords)?</h1>
           <p>
             Your private key is used to generate a signature for actions in Steem blockchain such as singing-in and creating transactions.
-            <span style={{ fontWeight: 'bold' }}>We cannot recover your key if you lose it.</span>
+            <span style={{ fontWeight: 'bold' }}> We cannot recover your key if you lose it.</span>
             So please securly store the key in which no one can’t access other than you.
           </p>
         </Modal>

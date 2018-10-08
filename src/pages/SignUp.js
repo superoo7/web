@@ -31,7 +31,9 @@ class SignUp extends Component {
     pinNumber: '',
     pinCheck: false,
     modalVisible: false,
-    privateKey: ''
+    privateKey: '',
+    keys: null,
+    loading: false,
   };
 
   checkAccount = (_, value, callback) => {
@@ -112,17 +114,6 @@ class SignUp extends Component {
     })
   }
 
-  createSteemAccount(e, username) {
-    e.preventDefault();
-    const randomKey = crypto.generateKeys();
-    const privateKey = 'P' + randomKey.private;
-    const keys = steem.auth.generateKeys(username, privateKey, ['posting', 'active', 'owner', 'memo']);
-    api.post('/users/sign_up', { keys: keys, username: username })
-    .then((res) => {
-      this.setState({ privateKey }, () => this.moveStage(1))
-    })
-  }
-
   validateStatus = (status) => {
     if (status === null) {
       return '';
@@ -143,11 +134,29 @@ class SignUp extends Component {
     this.setState({ modalVisible });
   }
 
+  createPrivateKeys(e) {
+    e.preventDefault();
+    const randomKey = crypto.generateKeys();
+    const privateKey = 'P' + randomKey.private;
+    const keys = steem.auth.generateKeys(this.state.username, privateKey, ['posting', 'active', 'owner', 'memo']);
+    this.setState({ keys, privateKey }, () => this.moveStage(1))
+  }
+
   confirmPrivateKey() {
+    console.log(this.state)
     this.setState({
-      modalVisible: false,
-      stage: this.state.stage + 1,
-      pageTitle: "You're all set!"
+      loading: true
+     }, () => {
+      api.post('/users/sign_up', { sign_up: { keys: this.state.keys, username: this.state.accountName, phone_number: formatNumber(this.state.phoneNumber, 'International') } })
+      .then((res) => {
+        this.setState({
+          privateKey: this.state.privateKey,
+          loading: false,
+          modalVisible: false,
+          stage: this.state.stage + 1,
+          pageTitle: "You're all set!",
+        }, () => this.moveStage(1))
+      })
     })
   }
 
@@ -174,7 +183,7 @@ class SignUp extends Component {
                 {getFieldDecorator('userName', {
                   rules: [{ required: true, message: 'Please input your username!', validator: this.checkAccount }],
                 })(
-                  <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                  <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" autoFocus />
                 )}
               </FormItem>
               <div className="actions-container">
@@ -200,7 +209,7 @@ class SignUp extends Component {
             </p>
             <Form onSubmit={this.sendSms}>
               <FormItem>
-                <ReactPhoneInput inputStyle={{height: 40, width: '100%'}} defaultCountry={'us'} value={this.state.phoneNumber} onChange={this.setPhoneNumber}/>
+                <ReactPhoneInput inputStyle={{height: 40, width: '100%'}} defaultCountry={'us'} value={this.state.phoneNumber} onChange={this.setPhoneNumber} inputExtraProps={{ autoFocus: true }} />
               </FormItem>
               <div className="actions-container">
                 <Button type="primary" htmlType="submit" disabled={!this.state.phoneCheck} block>Send SMS</Button>
@@ -228,6 +237,7 @@ class SignUp extends Component {
                     suffix={<a onClick={(e) => this.sendSms(e, true)}>Resend</a>}
                     value={this.state.pinNumber}
                     onChange={this.setPinNumber}
+                    autoFocus
                   />
                 </FormItem>
                 <div className="actions-container">
@@ -249,8 +259,8 @@ class SignUp extends Component {
               Your phone number has been verified.
             </p>
             <div className="actions-container">
-              <Form onSubmit={(e) => this.createSteemAccount(e, this.state.accountName)}>
-                <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Continue</Button>
+              <Form onSubmit={(e) => this.createPrivateKeys(e)}>
+                <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block >Continue</Button>
               </Form>
             </div>
           </div>
@@ -314,7 +324,7 @@ class SignUp extends Component {
           onCancel={() => this.setModalVisible(false)}
           footer={[
             <Button key="back" type="primary" ghost block onClick={() => this.setModalVisible(false)}>No, I didn't save it yet.</Button>,
-            <Button key="submit" type="primary" block onClick={() => this.confirmPrivateKey()}>Yes, I saved my key securely!</Button>,
+            <Button key="submit" type="primary" block onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I saved my key securely!</Button>,
           ]}
         >
           <h1>Have you securly stored your private key (passwords)?</h1>

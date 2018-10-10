@@ -34,6 +34,7 @@ class SignUp extends Component {
     privateKey: '',
     keys: null,
     loading: false,
+    pinTimer: 0
   };
 
   checkAccount = (_, value, callback) => {
@@ -84,10 +85,11 @@ class SignUp extends Component {
 
   sendSms = (e, resend = false) => {
     e.preventDefault();
-    api.post('/phone_number/send_sms.json', {phone_number: formatNumber(this.state.phoneNumber, 'International')})
+    api.post('/phone_numbers/send_sms.json', {phone_number: formatNumber(this.state.phoneNumber, 'International')})
     .then((res) => {
       if (res.pin) {
         notification['success']({ message: 'Pin number has been successfully sent to :' + this.state.phoneNumber });
+        this.startTimer(60);
         if (!resend) {
           this.moveStage(1);
         }
@@ -101,7 +103,7 @@ class SignUp extends Component {
 
   verifyPin = (e) => {
     e.preventDefault();
-    api.post('/phone_number/verify_pin.json', {user_pin: this.state.pinNumber, phone_number: formatNumber(this.state.phoneNumber, 'International')})
+    api.post('/phone_numbers/verify_pin.json', {user_pin: this.state.pinNumber, phone_number: formatNumber(this.state.phoneNumber, 'International')})
     .then((res) => {
       if (res.is_verified) {
         notification['success']({ message: 'Pin number has been successfully verified' });
@@ -132,6 +134,25 @@ class SignUp extends Component {
 
   setModalVisible(modalVisible) {
     this.setState({ modalVisible });
+  }
+
+  startTimer(setTimerTo = null) {
+    if (setTimerTo) {
+      this.setState({
+        pinTimer: setTimerTo
+      })
+    }
+    if ( this.state.pinTimer > 0 ) {
+      setTimeout(() => {
+        this.setState({ pinTimer: this.state.pinTimer - 1}, () => {
+          this.startTimer()
+        })
+      }, 1000)
+    } else {
+      this.setState({
+        pinTimer: null
+      })
+    }
   }
 
   createPrivateKeys(e) {
@@ -237,7 +258,7 @@ class SignUp extends Component {
                   <Input
                     placeholder="Confirmation code (4 digits)"
                     prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    suffix={<a onClick={(e) => this.sendSms(e, true)}>Resend</a>}
+                    suffix={<a onClick={(e) => this.sendSms(e, true)} disabled={this.state.pinTimer !== null}>{this.state.pinTimer ? `Resend in ${this.state.pinTimer}` : 'Resend'}</a>}
                     value={this.state.pinNumber}
                     onChange={this.setPinNumber}
                     autoFocus

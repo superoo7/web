@@ -44,12 +44,12 @@ class SignUp extends Component {
     }
 
     if (!/^[a-zA-Z0-9\.\-]+$/.test(value)) {
-      this.setState({ accountCheck: false, accountCheckMsg: 'Account name should contain only letters, digits, periods, and dashes' });
+      this.setState({ accountCheck: false, accountCheckMsg: 'Account name should only contain letters, digits, periods, and dashes.' });
       return callback();
     }
 
     if (value.length < 4) {
-      this.setState({ accountCheck: false, accountCheckMsg: 'Account name should be longer' });
+      this.setState({ accountCheck: false, accountCheckMsg: 'Account name should be longer.' });
       return callback();
     }
 
@@ -57,9 +57,9 @@ class SignUp extends Component {
       try {
         steem.api.lookupAccountNames([value], (err, result) => {
           if (result[0] !== null) {
-            this.setState({ accountCheck: false, accountCheckMsg: 'This username is already in use' }, () => { return callback(); });
+            this.setState({ accountCheck: false, accountCheckMsg: 'This username is already in use.' }, () => { return callback(); });
           } else {
-            this.setState({ accountName: value, accountCheck: 'validated', accountCheckMsg: <div>The username <span style={{ fontWeight: 'bold' }}>{value}</span> is available</div> }, () => { return callback(); });
+            this.setState({ accountName: value, accountCheck: 'validated', accountCheckMsg: <div>The username <span style={{ fontWeight: 'bold' }}>{value}</span> is available.</div> }, () => { return callback(); });
           }
         });
       } catch (error) {
@@ -196,7 +196,7 @@ class SignUp extends Component {
             <img src={userImage} alt="Steem User" />
             <p>
               Choose your username.
-              This will be your name that are called in Steemhunt and other Steem-based  apps.
+              This will be the name that you are called in Steemhunt and other Steem-based apps.
             </p>
             <Form onSubmit={this.submitAccount}>
               <FormItem
@@ -229,7 +229,7 @@ class SignUp extends Component {
             <img src={smsImage} alt="SMS Send" />
             <p>
               Enter your phone number.
-              We will send you a text message with a verification code that you’ll need to enter on the next creen.
+              We will send you a text message with a verification code that you’ll need to enter on the next screen.
             </p>
             <Form onSubmit={this.sendSms}>
               <FormItem>
@@ -251,7 +251,7 @@ class SignUp extends Component {
               <img src={pinImage} alt="Pin Send" />
               <p>
               Enter the confirmation code.
-              We sent the code to you by SMS to {this.state.phoneNumber}
+              We sent the code to {this.state.phoneNumber} vis SMS.
               </p>
               <Form onSubmit={this.verifyPin}>
                 <FormItem>
@@ -279,7 +279,7 @@ class SignUp extends Component {
           <div key={3} className="form-container">
             <img src={verifiedImage} alt="Pin Verified" />
             <p>
-              Thank you @{this.state.accountName}! <br/>
+              Thank you @{this.state.accountName} <br/>
               Your phone number has been verified.
             </p>
             <div className="actions-container">
@@ -314,7 +314,7 @@ class SignUp extends Component {
         form = (
           <div key={5} className="form-container">
             <p>
-              Now you can use Steemhunt and other Steem apps via SteemConnect, a secure way to login without giving up your private keys (passwords).
+              Now you can use Steemhunt and other Steem apps via SteemConnect, a secure way to login without giving up your private keys (password).
             </p>
             <img className="full-width" src={steemImage} alt="All Done" />
 
@@ -349,14 +349,14 @@ class SignUp extends Component {
           centered
           footer={[
             <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)}>No, I didn't save it yet.</Button>,
-            <Button key="submit" type="primary" onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I saved my key securely!</Button>,
+            <Button key="submit" type="primary" onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I have saved my key securely.</Button>,
           ]}
         >
           <h1>Have you securly stored your private key (passwords)?</h1>
           <p>
-            Your private key is used to generate a signature for actions in Steem blockchain such as singing-in and creating transactions.
+            Your private key is used to generate a signature for actions, such as signing-in and creating transactions in the Steem blockchain.
             <span style={{ fontWeight: 'bold' }}> We cannot recover your key if you lose it.</span>
-            So please securly store the key in which no one can’t access other than you.
+            Please securely store the key in a way that only you can access it.
           </p>
         </Modal>
       </div>

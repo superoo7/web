@@ -119,11 +119,21 @@ class PostView extends Component {
     const { me, post } = this.props;
 
     const images = post.images.map((image, index) => {
-      return (
-        <div key={index} className="slide-container">
-          <img alt={image.name} src={getCachedImage(image.link)} onClick={this.showModal} />
-        </div>
-      );
+      if (/\.mp4$/.test(image.name)) {
+        return (
+          <div key={index} className="slide-container">
+            <video alt={image.name} playsInline autoPlay="autoplay" muted loop>
+              <source src={getCachedImage(image.link)} />
+            </video>
+          </div>
+        );
+      } else {
+        return (
+          <div key={index} className="slide-container">
+            <img alt={image.name} src={getCachedImage(image.link)} onClick={this.showModal} />
+          </div>
+        );
+      }
     });
     const tags = post.tags.map((tag, index) => {
       // TODO: To steemhunt tags

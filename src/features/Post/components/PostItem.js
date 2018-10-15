@@ -22,7 +22,17 @@ class PostItem extends Component {
   render() {
     const { me, rank, post, pathPrefix, lazyLoad } = this.props;
     // const activeVotes = post.active_votes.filter(v => v.percent !== 0).length;
-    const image = <img src={post.images && getCachedImage(post.images[0].link, 240, 240)} alt={post.title} className="thumbnail"/>
+    let image;
+
+    if (/\.mp4$/.test(post.images[0].link)) {
+      image = (
+        <video alt={post.title} playsInline autoPlay="autoplay" muted loop className="thumbnail">
+          <source src={getCachedImage(post.images[0].link)} />
+        </video>
+      )
+    } else {
+      image = <img src={post.images && getCachedImage(post.images[0].link, 240, 240)} alt={post.title} className="thumbnail"/>
+    }
 
     return (
       <div className={`post${rank === 1 ? ' top-border' : ''}${post.is_active ? '' : ' faded'}`}>

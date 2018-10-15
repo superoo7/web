@@ -326,10 +326,11 @@ class PostForm extends Component {
   handleTaglineChange = (e) => this.saveAndUpdateDraft('tagline', sanitizeText(e.target.value, true) || initialState.draft.tagline);
   handleDescriptionChange = (e) => this.saveAndUpdateDraft('description', sanitizeText(e.target.value) || initialState.draft.description);
   handleImageChange = ({ fileList }) => {
+    console.log(fileList)
     const images = fileList.map(function(f) {
       if (f.response && f.response.link) {
         return {
-          name: f.name,
+          name: f.response.name,
           link: f.response.link
         }
       } else if (f.name && f.link) { // Handle Edit
@@ -349,15 +350,19 @@ class PostForm extends Component {
 
   xhrUploadS3 = async ({ file, onProgress, onSuccess, onError }) => {
     try {
-      const res = await api.post('/posts/signed_url', {filename: file.name});
-
-      axios.put(res.signed_url, file, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
+      //const res = await api.post('/posts/signed_url', {filename: file.name});
+      const sinatra_server = 'http://localhost:4567/upload'
+      var formData = new FormData();
+      formData.append("image", file);
+      axios.post(sinatra_server, formData, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
         onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
       },})
-      .then(() => {
+      .then((res) => {
+        console.log(res)
+        const { response, success, status } = res.data;
         const result = {
-          uid: res.uid, url: getCachedImage(res.image_url),
-          name: file.name, link: res.image_url,
+          uid: response.uid, url: getCachedImage(response.link),
+          name: response.name, link: response.link,
           status: 'done'
         }
         onSuccess(result, file);

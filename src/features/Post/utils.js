@@ -74,6 +74,10 @@ export const getCachedImage = function(url, width = 0, height = 0) {
     return `https://steemitimages.com/0x0/${url}`;
   }
 
+  if (/\.mp4$/.test(url)) {
+    return url;
+  }
+
   return `https://steemitimages.com/${width}x${height}/${url}`;
 }
 

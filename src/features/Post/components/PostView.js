@@ -77,9 +77,9 @@ class PostView extends Component {
   // MARK: - Handle modals
 
   hideModal = () => this.setState({ previewVisible: false });
-  showModal = (e) => {
+  showModal = (e, src = null) => {
     this.setState({
-      previewImage: e.target.src,
+      previewImage: src || e.target.src,
       previewVisible: true,
     });
   };
@@ -122,7 +122,7 @@ class PostView extends Component {
       if (/\.mp4$/.test(image.name)) {
         return (
           <div key={index} className="slide-container">
-            <video alt={image.name} playsInline autoPlay="autoplay" muted loop>
+            <video alt={image.name} playsInline autoPlay="autoplay" muted loop onClick={(e) => this.showModal(e, getCachedImage(image.link))} >
               <source src={getCachedImage(image.link)} />
             </video>
           </div>
@@ -312,7 +312,13 @@ class PostView extends Component {
           </div>
         </div>
         <Modal visible={this.state.previewVisible} footer={null} onCancel={this.hideModal} width="50%" className="preview-modal">
-          <img alt="Preview" src={this.state.previewImage} />
+          {
+            /\.mp4$/.test(this.state.previewImage) ?
+            <video alt="Preview" playsInline autoPlay="autoplay" muted loop>
+              <source src={this.state.previewImage} />
+            </video> :
+            <img alt="Preview" src={this.state.previewImage} />
+          }
           <div className="prev" onClick={() => this.changePreview(-1)}>
             <Icon type="left" />
           </div>

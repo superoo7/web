@@ -55,7 +55,7 @@ class CommentItem extends PureComponent {
     }
 
     // Hide moderators' comments to normal users
-    if (isModerator(comment.author) && !isModerator(me)) {
+    if (isModerator(comment.author) && !isModerator(me) && comment.author !== me) {
       return null;
     }
 

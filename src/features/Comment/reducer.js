@@ -9,8 +9,8 @@ export default function commentsReducer(state, action) {
   switch (action.type) {
     case GET_COMMENTS_FROM_POST_SUCCESS: {
       return update(state, {
-        commentsChild: { $merge: getCommentsChildrenLists(action.data) },
-        commentsData: { $merge: mapCommentsBasedOnId(action.data.content) },
+        commentsChild: { $merge: getCommentsChildrenLists(action.state) },
+        commentsData: { $merge: mapCommentsBasedOnId(action.state.content) },
       });
     }
     case VOTE_OPTIMISTIC: {

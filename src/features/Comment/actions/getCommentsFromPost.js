@@ -8,7 +8,6 @@ import { selectPosts } from 'features/Post/selectors';
 import { hasUpdated } from 'features/Post/utils';
 import { postRefreshBegin, postRefreshSuccess } from 'features/Post/actions/refreshPost';
 import { calculateContentPayout } from 'utils/helpers/steemitHelpers';
-import { selectMe } from 'features/User/selectors';
 
 /*--------- CONSTANTS ---------*/
 const GET_COMMENTS_FROM_POST_BEGIN = 'GET_COMMENTS_FROM_POST_BEGIN';
@@ -20,8 +19,8 @@ export function getCommentsFromPostBegin(category, author, permlink) {
   return { type: GET_COMMENTS_FROM_POST_BEGIN, category, author, permlink };
 }
 
-export function getCommentsFromPostSuccess(postKey, data, me) {
-  return { type: GET_COMMENTS_FROM_POST_SUCCESS, postKey, data, me };
+export function getCommentsFromPostSuccess(postKey, state) {
+  return { type: GET_COMMENTS_FROM_POST_SUCCESS, postKey, state };
 }
 
 export function getCommentsFromPostFailure(message) {
@@ -37,14 +36,12 @@ export function getCommentsFromPostReducer(state, action) {
       });
     }
     case GET_COMMENTS_FROM_POST_SUCCESS: {
-      const { postKey, data, me } = action;
-
       return update(state, {
         isLoading: { $set: false },
         commentsFromPost: {
-          [postKey]: {$auto: {
+          [action.postKey]: {$auto: {
             // SORTS COMMENTS HERE TO AVOID JUMPS WHEN VOTING
-            list: { $set: sortCommentsFromSteem(getRootCommentsList(data, me), mapCommentsBasedOnId(data.content), 'trending') },
+            list: { $set: sortCommentsFromSteem(getRootCommentsList(action.state), mapCommentsBasedOnId(action.state.content), 'trending') },
           }},
         }
       });
@@ -62,11 +59,11 @@ export function getCommentsFromPostReducer(state, action) {
 /*--------- SAGAS ---------*/
 function* getCommentsFromPost({ category, author, permlink }) {
   try {
-    const data = yield steem.api.getStateAsync(`/${category}/@${author}/${permlink}`);
+    const state = yield steem.api.getStateAsync(`/${category}/@${author}/${permlink}`);
     const posts = yield select(selectPosts());
 
     // Update payout_value
-    const commentsData = mapCommentsBasedOnId(data.content);
+    const commentsData = mapCommentsBasedOnId(state.content);
     for (const content of Object.values(commentsData)) {
       if (content) {
         content.payout_value = calculateContentPayout(content); // Sync with local format
@@ -75,7 +72,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
 
     // Refresh post if necessary
     const postKey = `${author}/${permlink}`;
-    const post = data.content[postKey];
+    const post = state.content[postKey];
 
     if (!post || post.id === 0) {
       const msg = 'No content found on Steem Blockchain';
@@ -91,8 +88,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
       yield put(postRefreshSuccess(post));
     }
 
-    const me = yield select(selectMe());
-    yield put(getCommentsFromPostSuccess(`${author}/${permlink}`, data, me));
+    yield put(getCommentsFromPostSuccess(`${author}/${permlink}`, state));
   } catch(e) {
     yield put(getCommentsFromPostFailure(e.message));
   }

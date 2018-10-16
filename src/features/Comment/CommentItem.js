@@ -20,10 +20,10 @@ class CommentItem extends PureComponent {
   static propTypes = {
     me: PropTypes.string.isRequired,
     post: PropTypes.object.isRequired,
-    comment: PropTypes.object.isRequired,
     commentsData: PropTypes.object.isRequired,
     commentsChild: PropTypes.object.isRequired,
     decreaseCommentcount: PropTypes.func.isRequired,
+    comment: PropTypes.object,
   };
 
   constructor() {
@@ -40,7 +40,7 @@ class CommentItem extends PureComponent {
     // NOTE:
     // This will show an incorrect count when the user is the owner or a moderator
     // Hard to fix because getMe() and getCommentsFromPost() - are running asynchronously
-    if (isModerator(comment.author) && !post.commentCountAdjusted) {
+    if (comment && isModerator(comment.author) && !post.commentCountAdjusted) {
       this.props.decreaseCommentcount();
     }
   }
@@ -65,12 +65,8 @@ class CommentItem extends PureComponent {
     const { comment, commentsChild, commentsData, me } = this.props;
     const { showReplyForm, showEditForm } = this.state;
 
-    if (!comment) {
-      return null;
-    }
-
     // Hide moderators' comments to normal users
-    if (!shouldCommentVisible(comment.author, me)) {
+    if (!comment || !shouldCommentVisible(comment.author, me)) {
       return null;
     }
 

@@ -35,7 +35,7 @@ class Post extends Component {
     post: PropTypes.object,
     commentsData: PropTypes.object.isRequired,
     commentsChild: PropTypes.object.isRequired,
-    currentComments: PropTypes.object,
+    currentComments: PropTypes.array.isRequired,
     commentsIsLoading: PropTypes.bool.isRequired,
     isPostLoading: PropTypes.bool.isRequired,
   };
@@ -78,6 +78,8 @@ class Post extends Component {
       return <NotFound/>;
     }
 
+
+
     return (
       <div className="post-container" id="post-container">
         <Helmet>
@@ -112,7 +114,7 @@ class Post extends Component {
             {commentsIsLoading ?
               <span><Icon type="loading" /> comments</span>
             :
-              <span>{post.children} comments</span>
+              <span>{currentComments.length > 0 ? currentComments.length : post.children} comments</span>
             }
             { me && me !== post.author && !this.props.draft &&
               <ResteemButton post={post} me={me} />
@@ -147,7 +149,7 @@ class Post extends Component {
             <List
               loading={commentsIsLoading}
               itemLayout="horizontal"
-              dataSource={currentComments  && currentComments.list}
+              dataSource={currentComments}
               renderItem={commentId => (
                 <CommentItem
                   key={commentId}

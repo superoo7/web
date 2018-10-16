@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import LazyLoad from 'react-lazyload';
 import { selectMe } from 'features/User/selectors';
-import { getPostPath, getCachedImage } from '../utils';
+import { selectCommentCount } from 'features/Post/selectors';
+import { getPostKey, getPostPath, getCachedImage } from '../utils';
 import { isModerator } from 'features/User/utils';
 import VoteButton from 'features/Vote/VoteButton';
 import { formatAmount } from 'utils/helpers/steemitHelpers';
@@ -17,10 +18,11 @@ class PostItem extends Component {
     rank: PropTypes.number.isRequired,
     post: PropTypes.object.isRequired,
     lazyLoad: PropTypes.bool.isRequired,
+    commentCount: PropTypes.number.isRequired,
   };
 
   render() {
-    const { me, rank, post, pathPrefix, lazyLoad } = this.props;
+    const { me, rank, post, pathPrefix, lazyLoad, commentCount } = this.props;
     // const activeVotes = post.active_votes.filter(v => v.percent !== 0).length;
     const image = <img src={post.images && getCachedImage(post.images[0].link, 240, 240)} alt={post.title} className="thumbnail"/>
 
@@ -55,7 +57,7 @@ class PostItem extends Component {
             <span alt="Valid voting count">{post.valid_votes ? post.valid_votes.length : 0}</span>
             <span className="spacer">&middot;</span>
             <Icon type="message" />&nbsp;
-            {post.children}
+            {commentCount}
           </div>
         </div>
         <div className="vote-section">
@@ -67,8 +69,9 @@ class PostItem extends Component {
 }
 
 
-const mapStateToProps = () => createStructuredSelector({
+const mapStateToProps = (state, props) => createStructuredSelector({
   me: selectMe(),
+  commentCount: selectCommentCount(getPostKey(props.post)),
 });
 
 export default connect(mapStateToProps)(PostItem);

@@ -54,11 +54,6 @@ class CommentItem extends PureComponent {
       return null;
     }
 
-    // Hide moderators' comments to normal users
-    if (isModerator(comment.author) && !isModerator(me)) {
-      return null;
-    }
-
     return (
       <List.Item className={`comment${(!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) ? ' flagged' : ''}`}>
         <List.Item.Meta

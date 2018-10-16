@@ -1,3 +1,5 @@
+import { isModerator } from 'features/User/utils';
+
 export const mapCommentsBasedOnId = (data) => {
   const commentsList = {};
   Object.keys(data).forEach((key) => {
@@ -17,8 +19,16 @@ export const getCommentsChildrenLists = (apiRes) => {
   return listsById;
 };
 
-export const getRootCommentsList = (apiRes) => {
+export const shouldCommentVisible = function(author, me) {
+  if (isModerator(author) && !isModerator(me) && author !== me) {
+    return false;
+  }
+
+  return true;
+};
+
+export const getRootCommentsList = (apiRes, me) => {
   return Object.keys(apiRes.content).filter((commentKey) => {
-    return apiRes.content[commentKey].depth === 1;
+    return shouldCommentVisible(apiRes.content[commentKey].author, me) && apiRes.content[commentKey].depth === 1;
   }).map(commentKey => apiRes.content[commentKey].id);
 };

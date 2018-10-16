@@ -67,6 +67,7 @@ function* postRefresh({ post }) {
     const res = yield api.refreshPost(post);
     yield put(postRefreshSuccess(post, res['hunt_score'], res['valid_votes']));
   } catch (e) {
+    console.log(e);
     yield put(postRefreshFailure(e.message));
   }
 }

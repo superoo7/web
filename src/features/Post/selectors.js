@@ -87,8 +87,27 @@ export const selectIsSearching = () => createSelector(
 
 export const selectCurrentComments = () => createSelector(
   [selectCurrentPost(), selectCommentsDomain()],
-  (currentPost, commentsDomain) => {
-    return currentPost ? commentsDomain.commentsFromPost[generatePostKey(currentPost.author, currentPost.permlink)] : {};
+  (currentPost, comments) => {
+    if (!currentPost) {
+      return [];
+    }
+
+    const current = comments.commentsFromPost[generatePostKey(currentPost.author, currentPost.permlink)];
+
+    return current ?  current.list : [];
+  }
+);
+
+export const selectCommentCount = (key) => createSelector(
+  [selectPostByKey(key), selectCommentsDomain()],
+  (post, commentsDomain) => {
+    if (!post) {
+      return 0;
+    }
+
+    const comments = commentsDomain.commentsFromPost[key];
+
+    return comments && comments.list ? comments.list.length : post.children;
   }
 );
 

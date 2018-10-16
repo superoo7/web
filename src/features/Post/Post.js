@@ -151,6 +151,7 @@ class Post extends Component {
               renderItem={commentId => (
                 <CommentItem
                   key={commentId}
+                  post={post}
                   comment={commentsData[commentId]}
                   commentsData={commentsData}
                   commentsChild={commentsChild}

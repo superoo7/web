@@ -3,6 +3,12 @@ import { VOTE_FAILURE, VOTE_OPTIMISTIC } from 'features/Vote/actions/vote';
 import { manageContentVote } from 'features/Vote/utils';
 import { getPostKey } from './utils';
 
+const DECREASE_COMMENTS_COUNT = 'DECREASE_COMMENTS_COUNT';
+
+export function decreaseCommentcount(post) {
+  return { type: DECREASE_COMMENTS_COUNT, post };
+}
+
 /*--------- REDUCER ---------*/
 export default function postsReducer(state, action) {
   switch (action.type) {
@@ -41,6 +47,16 @@ export default function postsReducer(state, action) {
       } else {
         return state;
       }
+    }
+    case DECREASE_COMMENTS_COUNT: {
+      const { post } = action;
+
+      return update(state, {
+        posts: { [getPostKey(post)]: {
+          children: { $set: post.children - 1 },
+          commentCountAdjusted: { $set: true },
+        }},
+      });
     }
     default:
       return state;

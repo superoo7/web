@@ -13,13 +13,17 @@ import { toTimeAgo } from 'utils/date';
 import { selectMe } from 'features/User/selectors';
 import { isEditable } from 'features/Post/utils';
 import { isAdmin, isModerator, isInfluencer } from 'features/User/utils';
+import { decreaseCommentcount } from 'features/Post/reducer';
+import { shouldCommentVisible } from 'features/Comment/utils/comments';
 
 class CommentItem extends PureComponent {
   static propTypes = {
     me: PropTypes.string.isRequired,
-    comment: PropTypes.object,
-    commentsData: PropTypes.object,
-    commentsChild: PropTypes.object,
+    post: PropTypes.object.isRequired,
+    comment: PropTypes.object.isRequired,
+    commentsData: PropTypes.object.isRequired,
+    commentsChild: PropTypes.object.isRequired,
+    decreaseCommentcount: PropTypes.func.isRequired,
   };
 
   constructor() {
@@ -28,6 +32,17 @@ class CommentItem extends PureComponent {
       showReplyForm: false,
       showEditForm: false,
     };
+  }
+
+  componentDidMount() {
+    const { post, comment } = this.props;
+
+    // NOTE:
+    // This will show an incorrect count when the user is the owner or a moderator
+    // Hard to fix because getMe() and getCommentsFromPost() - are running asynchronously
+    if (isModerator(comment.author) && !post.commentCountAdjusted) {
+      this.props.decreaseCommentcount();
+    }
   }
 
   closeReplyForm = () => {
@@ -55,7 +70,7 @@ class CommentItem extends PureComponent {
     }
 
     // Hide moderators' comments to normal users
-    if (isModerator(comment.author) && !isModerator(me) && comment.author !== me) {
+    if (!shouldCommentVisible(comment.author, me)) {
       return null;
     }
 
@@ -126,4 +141,8 @@ const mapStateToProps = () => createStructuredSelector({
   me: selectMe(),
 });
 
-export default connect(mapStateToProps, null)(CommentItem);
+const mapDispatchToProps = (dispatch, props) => ({
+  decreaseCommentcount: () => dispatch(decreaseCommentcount(props.post)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentItem);

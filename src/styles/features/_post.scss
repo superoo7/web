@@ -223,8 +223,17 @@
       top: 10px;
       left: 80px;
       width: 80px;
+      max-width: 80px;
       height: 80px;
+      max-height: 80px;
       object-fit: cover;
+      overflow: hidden;
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
       @include responsive(ipadpro) {
         left: 40px;

@@ -26,9 +26,11 @@ class PostItem extends Component {
 
     if (/\.mp4$/.test(post.images[0].link)) {
       image = (
-        <video alt={post.title} playsInline autoPlay="autoplay" muted loop className="thumbnail">
-          <source src={getCachedImage(post.images[0].link)} />
-        </video>
+        <div className="thumbnail">
+          <video alt={post.title} playsInline autoPlay="autoplay" muted loop>
+            <source src={getCachedImage(post.images[0].link, 240, 240)} />
+          </video>
+        </div>
       )
     } else {
       image = <img src={post.images && getCachedImage(post.images[0].link, 240, 240)} alt={post.title} className="thumbnail"/>

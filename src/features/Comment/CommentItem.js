@@ -62,11 +62,11 @@ class CommentItem extends PureComponent {
   };
 
   render() {
-    const { comment, commentsChild, commentsData, me } = this.props;
+    const { post, comment, commentsChild, commentsData, me } = this.props;
     const { showReplyForm, showEditForm } = this.state;
 
     // Hide moderators' comments to normal users
-    if (!comment || !shouldCommentVisible(comment.author, me)) {
+    if (!comment || !shouldCommentVisible(comment, post.author, me)) {
       return null;
     }
 

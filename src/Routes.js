@@ -129,6 +129,10 @@ class Right extends Component {
 
     const { me, isLoading } = this.props;
 
+    if (this.props.location.pathname === '/sign-up' && me) {
+      redirectPath = '/';
+    }
+
     return (
       <div className="panel-right" id="panel-right">
         {redirectPath && <Redirect to={redirectPath} /> /* Authentication redirection */ }

@@ -177,4 +177,4 @@ export function calculateVotingValue(voteWeight, myAccount, appProps, rewardFund
     const result = r * p * 100 * (rewardBalance / recentClaims * parseFloat(rate));
 
     return result;
-  };
+}

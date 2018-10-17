@@ -341,7 +341,7 @@ class SignUp extends Component {
           onCancel={() => this.setModalVisible(false)}
           centered
           footer={[
-            <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)}>No, I didn't save it yet.</Button>,
+            <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)}>No, I didn&apos;t save it yet.</Button>,
             <Button key="submit" type="primary" onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I have saved my key securely.</Button>,
           ]}
         >

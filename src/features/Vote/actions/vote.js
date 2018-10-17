@@ -42,6 +42,11 @@ function* vote({ content, weight, contentType }) {
     const { author, permlink } = content;
     const updatedContent = yield steem.api.getContentAsync(author, permlink);
 
+    if (!updatedContent) {
+      console.error('Invalid getContent returned from Steem API', updatedContent, weight, contentType);
+      return;
+    }
+
     if (contentType === 'post') {
       yield put(postRefreshBegin(updatedContent));
     } else {

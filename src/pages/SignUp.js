@@ -251,7 +251,7 @@ class SignUp extends Component {
                   <Input
                     placeholder="Confirmation code (4 digits)"
                     prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    suffix={<a onClick={(e) => this.sendSms(e, true)} disabled={this.state.pinTimer !== null}>{this.state.pinTimer ? `Resend in ${this.state.pinTimer}` : 'Resend'}</a>}
+                    suffix={<a onClick={(e) => this.sendSms(e, true)} disabled={this.state.pinTimer !== null}>{this.state.pinTimer ? `Resend in ${this.state.pinTimer}s` : 'Resend'}</a>}
                     value={this.state.pinNumber}
                     onChange={this.setPinNumber}
                     autoFocus
@@ -331,7 +331,7 @@ class SignUp extends Component {
     return (
       <div className="sign-up-form">
         <Helmet>
-          <title>Wallet - Steemhunt</title>
+          <title>Sign up - Steemhunt</title>
         </Helmet>
         <h1>{this.state.pageTitle}</h1>
         {this.renderForm(this.state.stage)}

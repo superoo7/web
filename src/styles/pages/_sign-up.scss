@@ -1,6 +1,10 @@
 .sign-up-form {
   margin-top: 60px;
 
+  @include responsive(mobile) {
+    margin-top: 40px;
+  }
+
   h1 {
     margin-left: auto;
     margin-right: auto;
@@ -52,6 +56,12 @@
       .ant-row {
         margin-bottom: 10px;
       }
+
+      .ant-input-suffix {
+        @include responsive(mobile) {
+          display: none;
+        }
+      }
     }
 
     .actions-container {
@@ -67,7 +77,6 @@
       border: solid 1px #d9d9d9;
       border-style: dashed;
       border-radius: 4px;
-      height: 68px;
       padding: 10px 40px;
       display: flex;
       justify-content: center;
@@ -92,8 +101,13 @@
 
 .private-key-modal {
   .ant-modal-body {
-    padding: 30px 60px 0px 60px;
+    padding: 60px 60px 0 60px;
     text-align: center;
+
+    @include responsive(mobile) {
+      padding: 40px 24px 0 24px;
+    }
+
     h1 {
       color: $primary;
       margin-bottom: 41px;
@@ -107,16 +121,23 @@
   }
   .ant-modal-footer {
     border: none;
-    padding: 0px 60px 30px 60px;
+    padding: 0 60px 40px 60px;
     display: flex;
     justify-content: center;
+
     @include responsive(mobile) {
+      padding: 0 24px 24px 24px;
       display: block;
     }
     button {
       @include responsive(mobile) {
         width: 100%;
-        margin: 0px 0px 8px 0px;
+        margin: 0 0 10px 0;
+        height: 40px;
+      }
+
+      @include responsive(tiny) {
+        font-size: 0.8rem;
       }
     }
   }

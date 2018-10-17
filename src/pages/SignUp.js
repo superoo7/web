@@ -338,10 +338,9 @@ class SignUp extends Component {
         <Modal
           wrapClassName="private-key-modal"
           visible={this.state.modalVisible}
-          onCancel={() => this.setModalVisible(false)}
-          centered
+          onCancel={() => !this.state.loading && this.setModalVisible(false)}
           footer={[
-            <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)}>No, I didn&apos;t save it yet.</Button>,
+            <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)} disabled={this.state.loading}>No, I didn&apos;t save it yet.</Button>,
             <Button key="submit" type="primary" onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I have saved my key securely.</Button>,
           ]}
         >

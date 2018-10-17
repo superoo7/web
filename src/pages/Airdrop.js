@@ -54,7 +54,7 @@ export default class Airdrop extends Component {
 
   render() {
     return (
-      <div className="airdrops">
+      <div className="contents-page">
         <div className="page-block">
           <h1>50% Airdrop to<br/>Focus on Product/<br/>Community Building</h1>
           <div className="thin">

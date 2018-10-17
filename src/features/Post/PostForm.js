@@ -551,10 +551,10 @@ class PostForm extends Component {
           <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} width="50%" className="preview-modal">
             {
               /\.mp4$/.test(this.state.previewImage) ?
-              <video alt="Preview" playsInline autoPlay="autoplay" muted loop>
+              <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
                 <source src={this.state.previewImage} />
               </video> :
-              <img alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+              <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
             }
           </Modal>
         </FormItem>

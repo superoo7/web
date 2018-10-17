@@ -5,7 +5,7 @@ import { Upload } from 'antd';
 
 const VideoTag = ({ href }) => {
   return (
-    <video key={href} alt="Preview" playsInline autoPlay="autoplay" muted loop>
+    <video key={`video-${href}`} alt="Preview" playsInline autoPlay="autoplay" muted loop>
       <source src={href} />
     </video>
   )

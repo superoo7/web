@@ -33,11 +33,13 @@
   }
 
   // override to gravity zoom, center crop
-  .ant-upload-list-item-info > span {
+  .ant-upload-list-item-info > span, .thumbnail-video-container {
     width: 100%;
     height: 100%;
   }
-  .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+  .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img, .thumbnail-video-container video {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
   }
 
@@ -816,45 +818,64 @@
 }
 
 .preview-modal {
-  img, video {
-    display: block;
-    max-width: 100%;
-    max-height: 72vh;
-    width: auto;
-    height: auto;
-    margin: 0 auto;
-  }
+  .ant-modal-content {
+    background-color: transparent;
+    box-shadow: none;
+    img, video {
+      display: block;
+      max-width: 100%;
+      height: 50vh;
+      width: auto;
+      margin: 0 auto;
+      object-fit: contain;
+    }
 
-  .prev, .next {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    line-height: 100%;
-
-    i {
+    .prev, .next {
       position: absolute;
-      top: 50%;
-      margin-top: -16px;
-      font-size: 20px;
+      width: 50%;
+      height: 100%;
+      line-height: 100%;
+
+      i {
+        position: absolute;
+        top: 50%;
+        margin-top: -16px;
+        font-size: 30px;
+        color: #ddd;
+        @include responsive(mobile) {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .prev {
+      top: 0;
+      left: 0;
+      i {
+        left: -15px;
+        @include responsive(mobile) {
+          left: 5px;
+        }
+      }
+    }
+
+    .next {
+      top: 0;
+      right: 0;
+      i {
+        right: -15px;
+        @include responsive(mobile) {
+          right: 5px;
+        }
+      }
+    }
+
+    .ant-modal-close-x {
       color: #ddd;
-    }
-  }
-
-  .prev {
-    top: 0;
-    left: 0;
-
-    i {
-      left: 2px;
-    }
-  }
-
-  .next {
-    top: 0;
-    right: 0;
-
-    i {
-      right: 2px;
+      font-size: 30px;
+      @include responsive(mobile) {
+        font-size: 20px;
+      }
     }
   }
 }

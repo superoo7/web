@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Upload, Modal, Spin, notification } from 'antd';
+import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification } from 'antd';
 import { selectDraft, selectIsPublishing } from './selectors';
 import { selectMe } from 'features/User/selectors';
 import { publishContentBegin } from './actions/publishContent';
@@ -14,6 +14,7 @@ import { selectCurrentPost } from './selectors';
 import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
+import CustomUploadDragger from 'components/CustomUploadDragger';
 import axios from 'axios';
 
 const FormItem = Form.Item;
@@ -326,7 +327,6 @@ class PostForm extends Component {
   handleTaglineChange = (e) => this.saveAndUpdateDraft('tagline', sanitizeText(e.target.value, true) || initialState.draft.tagline);
   handleDescriptionChange = (e) => this.saveAndUpdateDraft('description', sanitizeText(e.target.value) || initialState.draft.description);
   handleImageChange = ({ fileList }) => {
-    console.log(fileList)
     const images = fileList.map(function(f) {
       if (f.response && f.response.link) {
         return {
@@ -528,7 +528,7 @@ class PostForm extends Component {
             {getFieldDecorator('images', {
               rules: [{ validator: this.checkImages }],
             })(
-              <Upload.Dragger name="image"
+              <CustomUploadDragger name="image"
                 customRequest={this.xhrUploadS3}
                 listType="picture-card"
                 fileList={this.state.fileList}
@@ -542,14 +542,20 @@ class PostForm extends Component {
                   <Icon type="inbox" />
                 </p>
                 <p className="ant-upload-hint">Click or drag image(s) to this area to upload (5MB Max)</p>
-              </Upload.Dragger>
+              </CustomUploadDragger>
             )}
             {this.state.uploadError &&
               <div className="error">{this.state.uploadError}</div>
             }
           </div>
-          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel}>
-            <img alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} width="50%" className="preview-modal">
+            {
+              /\.mp4$/.test(this.state.previewImage) ?
+              <video alt="Preview" playsInline autoPlay="autoplay" muted loop>
+                <source src={this.state.previewImage} />
+              </video> :
+              <img alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+            }
           </Modal>
         </FormItem>
 

@@ -141,9 +141,7 @@ class Header extends Component {
             <Button type="primary" href={getLoginURL()} ghost className="right-margin header-button smaller">Login</Button>
             <Button
               type="primary"
-              href="https://signup.steemit.com/?ref=steemhunt"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/sign-up"
               onClick={() => window.gtag('event', 'signup_clicked', { 'event_category' : 'signup', 'event_label' : 'Header Button' })}
               className="header-button smaller"
             >

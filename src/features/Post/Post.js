@@ -124,9 +124,7 @@ class Post extends Component {
               <p>You need a Steem account to join the discussion</p>
               <Button
                 type="primary"
-                href="https://signup.steemit.com/?ref=steemhunt"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/sign-up"
                 onClick={() => window.gtag('event', 'signup_clicked', { 'event_category' : 'signup', 'event_label' : 'Post Footer' })}
               >
                 Sign up now

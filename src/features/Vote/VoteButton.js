@@ -49,9 +49,7 @@ class VoteButton extends PureComponent {
           Please <a href={getLoginURL()}>Login</a>
           &nbsp;or&nbsp;
           <a
-            href="https://signup.steemit.com/?ref=steemhunt"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/sign-up"
             onClick={() => window.gtag('event', 'signup_clicked', { 'event_category' : 'signup', 'event_label' : 'Voting Notification' })}
           >
             Sign Up

@@ -7,6 +7,7 @@ import getAccounts, { getAccountsReducer } from './actions/getAccounts';
 import getFollowerCount, { getFollowerCountReducer } from './actions/getFollowerCount';
 import getFollowings, { getFollowingsReducer } from './actions/getFollowings';
 import setCurrentUser, { setCurrentUserReducer } from './actions/setCurrentUser';
+import { updateProfileDraftReducer } from './actions/updateProfileDraft';
 import logout, { logoutReducer } from './actions/logout';
 import follow, { followReducer } from './actions/follow';
 import unfollow, { unfollowReducer } from './actions/unfollow';
@@ -18,6 +19,10 @@ export const initialState = {
   followers: {},
   followings: {},
   isLoading: false,
+  profileDraft: {
+    about: '',
+    website: ''
+  }
 };
 
 export const reducer = (state = initialState, action) => combine(
@@ -31,6 +36,7 @@ export const reducer = (state = initialState, action) => combine(
     followReducer,
     unfollowReducer,
     usersReducer,
+    updateProfileDraftReducer,
   ],
   state,
   action,

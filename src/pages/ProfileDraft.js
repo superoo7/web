@@ -4,48 +4,26 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import { Helmet } from 'react-helmet';
-import { Icon, Timeline, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { Icon, Timeline } from 'antd';
 import { setCurrentUserBegin } from 'features/User/actions/setCurrentUser';
-import { selectCurrentUser, selectCurrentAccount, selectMyFollowingsList, selectMe } from 'features/User/selectors';
+import { selectCurrentUser, selectCurrentAccount, selectMe, selectProfileDraft } from 'features/User/selectors';
 import { COLOR_PRIMARY, COLOR_LIGHT_GREY } from 'styles/constants';
 import UserSteemPower from 'features/User/components/UserSteemPower';
 import UserEstimatedValue from 'features/User/components/UserEstimatedValue';
 import FollowerCount from 'features/User/components/FollowerCount';
-import FollowButton from 'features/User/components/FollowButton';
 import LevelBar from 'features/User/components/LevelBar';
 import CircularProgress from 'components/CircularProgress';
 import { scrollTop } from 'utils/scroller';
 import { formatNumber } from 'utils/helpers/steemitHelpers';
 import { getCachedImage } from 'features/Post/utils';
 
-class Profile extends Component {
+class ProfileDraft extends Component {
   static propTypes = {
-    me: PropTypes.string,
+    me: PropTypes.string.isRequired,
+    account: PropTypes.object.isRequired,
     currentUser: PropTypes.string,
-    account: PropTypes.shape({
-      name: PropTypes.string,
-      reputation: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
-      post_count: PropTypes.number,
-      follower_count: PropTypes.number,
-      following_count: PropTypes.number,
-    }).isRequired,
-    myFollowings: PropTypes.array,
-    setCurrentUser: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    account: {
-      name: undefined,
-      reputation: 0,
-      post_count: 0,
-      follower_count: 0,
-      following_count: 0,
-    },
-  };
+    profileDraft: PropTypes.object.isRequired
+  }
 
   componentDidMount() {
     const { match } = this.props;
@@ -63,8 +41,12 @@ class Profile extends Component {
   }
 
   render() {
-    const { account, me } = this.props;
+    const { account, me, profileDraft } = this.props;
     if (isEmpty(account)) {
+      return <CircularProgress />;
+    }
+
+    if (!this.props.me || account.name !== this.props.me) {
       return <CircularProgress />;
     }
 
@@ -87,40 +69,17 @@ class Profile extends Component {
       profileStyle['backgroundImage'] = `url(${profileImage}?s=280)`;
     }
 
+    const draftAbout = profileDraft.about || profile.about;
+    const draftWebsite = profileDraft.website || profile.website;
+
     return (
       <div className="profile diagonal-split-view">
         <Helmet>
-          <title>@{account.name} - Steemhunt</title>
-
-          { /* Search Engine */ }
-          <meta name="description" content={profile.about} />
-          <meta name="image" content={`${profileImage}?s=1200`} />
-          { /* Schema.org for Google */ }
-          <meta itemprop="name" content={`@${account.name} - Steemhunt`} />
-          <meta itemprop="description" content={profile.about} />
-          <meta itemprop="image" content={`${profileImage}?s=1200`} />
-          { /* Twitter */ }
-          <meta name="twitter:title" content={`@${account.name} - Steemhunt`} />
-          <meta name="twitter:description" content={profile.about} />
-          <meta name="twitter:image:src" content={`${profileImage}?s=1200`} />
-          { /* Open Graph general (Facebook, Pinterest & Google+) */ }
-          <meta property="og:title" content={`@${account.name} - Steemhunt`} />
-          <meta property="og:description" content={profile.about} />
-          <meta property="og:image" content={`${profileImage}?s=1200`} />
+          <title>@{account.name} - Editing</title>
         </Helmet>
         <div className="top-container primary-gradient" style={coverStyle}>
-          <div className="edit-buttons">
-            {me === account.name &&
-              <Link to={`/author/@${me}/edit`}>
-                <Button icon="edit" size="small" ghost>Edit</Button>
-              </Link>
-            }
-          </div>
           <h1>{profile.name || account.name}</h1>
-          <h2>{profile.about}</h2>
-          {me !== account.name &&
-            <FollowButton accountName={account.name} />
-          }
+          <h2>{draftAbout}</h2>
         </div>
         <div className="diagonal-line"></div>
         <div className="bottom-container">
@@ -140,7 +99,6 @@ class Profile extends Component {
               <li>Steem Power</li>
               <li>Estimated Value</li>
             </ul>
-
             <Timeline>
               {account.user_score != null &&
                 <Timeline.Item className="pink">
@@ -160,8 +118,8 @@ class Profile extends Component {
           </div>
 
           <div className="other-info">
-            {profile.website &&
-              <p><a href={profile.website} target="_blank"><Icon type="link" /> {profile.website.replace(/^https?:\/\//, '')}</a></p>
+            {draftWebsite &&
+              <p><a href={draftWebsite} target="_blank"><Icon type="link" /> {draftWebsite.replace(/^https?:\/\//, '')}</a></p>
             }
             <p><Icon type="book" /> <a href={`https://steemit.com/@${account.name}`} target="_blank" rel="noopener noreferrer">View Steemit blog</a></p>
           </div>
@@ -175,11 +133,11 @@ const mapStateToProps = (state, props) => createStructuredSelector({
   me: selectMe(),
   account: selectCurrentAccount(),
   currentUser: selectCurrentUser(),
-  myFollowings: selectMyFollowingsList(),
+  profileDraft: selectProfileDraft()
 });
 
 const mapDispatchToProps = (dispatch, props) => ({
   setCurrentUser: user => dispatch(setCurrentUserBegin(user)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileDraft);

@@ -359,7 +359,7 @@ class PostForm extends Component {
       },})
       .then((res) => {
         console.log(res)
-        const { response, success, status } = res.data;
+        const { response } = res.data;
         const result = {
           uid: response.uid, url: getCachedImage(response.link),
           name: response.name, link: response.link,

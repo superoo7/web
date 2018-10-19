@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import { Upload } from 'antd';
 
 const VideoTag = ({ href }) => {
@@ -12,10 +11,6 @@ const VideoTag = ({ href }) => {
 }
 
 export default class CustomUploadDragger extends Upload.Dragger {
-
-  constructor(props) {
-    super(props);
-  }
 
   componentDidUpdate() {
     const nodes = document.getElementsByClassName('ant-upload-list-item-thumbnail');

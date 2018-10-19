@@ -12,6 +12,11 @@ export const selectMe = () => createSelector(
   state => state.me,
 );
 
+export const selectProfileDraft = () => createSelector(
+  selectUserDomain(),
+  state => state.profileDraft,
+);
+
 // ACCOUNTS
 export const selectAccounts = () => createSelector(
   selectUserDomain(),

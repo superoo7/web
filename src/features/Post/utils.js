@@ -74,6 +74,14 @@ export const getCachedImage = function(url, width = 0, height = 0) {
     return `https://steemitimages.com/0x0/${url}`;
   }
 
+  if (/\.mp4$/.test(url)) {
+    if (width === 240 && height === 240) {
+      return url.replace('.mp4', '-240x240.mp4');
+    } else {
+      return url;
+    }
+  }
+
   return `https://steemitimages.com/${width}x${height}/${url}`;
 }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Upload, Modal, Spin, notification } from 'antd';
+import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification } from 'antd';
 import { selectDraft, selectIsPublishing } from './selectors';
 import { selectMe } from 'features/User/selectors';
 import { publishContentBegin } from './actions/publishContent';
@@ -14,6 +14,7 @@ import { selectCurrentPost } from './selectors';
 import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
+import CustomUploadDragger from 'components/CustomUploadDragger';
 import axios from 'axios';
 
 const FormItem = Form.Item;
@@ -329,7 +330,7 @@ class PostForm extends Component {
     const images = fileList.map(function(f) {
       if (f.response && f.response.link) {
         return {
-          name: f.name,
+          name: f.response.name,
           link: f.response.link
         }
       } else if (f.name && f.link) { // Handle Edit
@@ -349,20 +350,24 @@ class PostForm extends Component {
 
   xhrUploadS3 = async ({ file, onProgress, onSuccess, onError }) => {
     try {
-      const res = await api.post('/posts/signed_url', {filename: file.name});
-
-      axios.put(res.signed_url, file, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
+      //const res = await api.post('/posts/signed_url', {filename: file.name});
+      const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
+      var formData = new FormData();
+      formData.append("image", file);
+      axios.post(uploadUrl, formData, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
         onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
       },})
-      .then(() => {
+      .then((res) => {
+        console.log(res)
+        const { response } = res.data;
         const result = {
-          uid: res.uid, url: getCachedImage(res.image_url),
-          name: file.name, link: res.image_url,
+          uid: response.uid, url: getCachedImage(response.link),
+          name: response.name, link: response.link,
           status: 'done'
         }
         onSuccess(result, file);
       }).catch((e) => {
-        throw new Error(e)
+        console.error(e);
       });
     } catch(e) {
       this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image
@@ -523,7 +528,7 @@ class PostForm extends Component {
             {getFieldDecorator('images', {
               rules: [{ validator: this.checkImages }],
             })(
-              <Upload.Dragger name="image"
+              <CustomUploadDragger name="image"
                 customRequest={this.xhrUploadS3}
                 listType="picture-card"
                 fileList={this.state.fileList}
@@ -537,14 +542,20 @@ class PostForm extends Component {
                   <Icon type="inbox" />
                 </p>
                 <p className="ant-upload-hint">Click or drag image(s) to this area to upload (5MB Max)</p>
-              </Upload.Dragger>
+              </CustomUploadDragger>
             )}
             {this.state.uploadError &&
               <div className="error">{this.state.uploadError}</div>
             }
           </div>
-          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel}>
-            <img alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} width="50%" className="preview-modal">
+            {
+              /\.mp4$/.test(this.state.previewImage) ?
+              <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
+                <source src={this.state.previewImage} />
+              </video> :
+              <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+            }
           </Modal>
         </FormItem>
 

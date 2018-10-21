@@ -77,9 +77,9 @@ class PostView extends Component {
   // MARK: - Handle modals
 
   hideModal = () => this.setState({ previewVisible: false });
-  showModal = (e) => {
+  showModal = (e, src = null) => {
     this.setState({
-      previewImage: e.target.src,
+      previewImage: src || e.target.src,
       previewVisible: true,
     });
   };
@@ -119,11 +119,21 @@ class PostView extends Component {
     const { me, post } = this.props;
 
     const images = post.images.map((image, index) => {
-      return (
-        <div key={index} className="slide-container">
-          <img alt={image.name} src={getCachedImage(image.link)} onClick={this.showModal} />
-        </div>
-      );
+      if (/\.mp4$/.test(image.name)) {
+        return (
+          <div key={index} className="slide-container">
+            <video alt={image.name} playsInline autoPlay="autoplay" muted loop onClick={(e) => this.showModal(e, getCachedImage(image.link))} >
+              <source src={getCachedImage(image.link)} />
+            </video>
+          </div>
+        );
+      } else {
+        return (
+          <div key={index} className="slide-container">
+            <img alt={image.name} src={getCachedImage(image.link)} onClick={this.showModal} />
+          </div>
+        );
+      }
     });
     const tags = post.tags.map((tag, index) => {
       // TODO: To steemhunt tags
@@ -301,8 +311,14 @@ class PostView extends Component {
             {tags}
           </div>
         </div>
-        <Modal visible={this.state.previewVisible} footer={null} onCancel={this.hideModal} width="50%" className="preview-modal">
-          <img alt="Preview" src={this.state.previewImage} />
+        <Modal visible={this.state.previewVisible} footer={null} onCancel={this.hideModal} width="60%" className="preview-modal">
+          {
+            /\.mp4$/.test(this.state.previewImage) ?
+            <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
+              <source src={this.state.previewImage} />
+            </video> :
+            <img key={this.state.previewImage} alt="Preview" src={this.state.previewImage} />
+          }
           <div className="prev" onClick={() => this.changePreview(-1)}>
             <Icon type="left" />
           </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Button, Carousel, Icon, Timeline, Tag, Modal, Input, Row, Col } from 'antd';
+import { Button, Carousel, Icon, Timeline, Tag, Modal, Input, Row, Col, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
 import { getPostPath, getTagPath, isEditable, addReferral } from '../utils';
@@ -213,7 +213,9 @@ class PostView extends Component {
     return (
       <div className="post-view diagonal-split-view">
         <div className="top-container primary-gradient">
-          <span className="featured-date round-border" data-id={post.id}>Featured on {shortFormat(post.listed_at)}</span>
+          <Tooltip title={`Posted on ${shortFormat(post.listed_at)}`}>
+            <span className="featured-date round-border" data-id={post.id}>Featured on {shortFormat(post.listed_at)}</span>
+          </Tooltip>
 
           <div className="edit-buttons">
             {shouldShowEdit &&

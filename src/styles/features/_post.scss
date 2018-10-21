@@ -821,6 +821,12 @@
   .ant-modal-content {
     background-color: transparent;
     box-shadow: none;
+
+    .ant-modal-body {
+      padding-top: 60px;
+      padding-bottom: 60px;
+    }
+
     img, video {
       display: block;
       max-width: 100%;
@@ -840,10 +846,10 @@
         position: absolute;
         top: 50%;
         margin-top: -16px;
-        font-size: 30px;
+        font-size: 1.5rem;
         color: #ddd;
         @include responsive(mobile) {
-          font-size: 20px;
+          font-size: 1.2rem;
         }
       }
     }
@@ -852,9 +858,9 @@
       top: 0;
       left: 0;
       i {
-        left: -15px;
+        left: 16px;
         @include responsive(mobile) {
-          left: 5px;
+          left: 0;
         }
       }
     }
@@ -863,18 +869,19 @@
       top: 0;
       right: 0;
       i {
-        right: -15px;
+        right: 16px;
         @include responsive(mobile) {
-          right: 5px;
+          right: 0;
         }
       }
     }
 
     .ant-modal-close-x {
       color: #ddd;
-      font-size: 30px;
+      font-size: 1.5rem;
       @include responsive(mobile) {
-        font-size: 20px;
+        font-size: 1.2rem;
+        margin-right: -18px;
       }
     }
   }

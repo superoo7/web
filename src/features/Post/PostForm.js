@@ -351,10 +351,10 @@ class PostForm extends Component {
   xhrUploadS3 = async ({ file, onProgress, onSuccess, onError }) => {
     try {
       //const res = await api.post('/posts/signed_url', {filename: file.name});
-      const sinatra_server = 'http://localhost:4567/upload'
+      const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
       var formData = new FormData();
       formData.append("image", file);
-      axios.post(sinatra_server, formData, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
+      axios.post(uploadUrl, formData, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
         onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
       },})
       .then((res) => {
@@ -367,7 +367,7 @@ class PostForm extends Component {
         }
         onSuccess(result, file);
       }).catch((e) => {
-        throw new Error(e)
+        console.error(e);
       });
     } catch(e) {
       this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image

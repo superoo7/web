@@ -358,7 +358,7 @@ class PostForm extends Component {
         onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
       },})
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         const { response } = res.data;
         const result = {
           uid: response.uid, url: getCachedImage(response.link),

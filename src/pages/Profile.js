@@ -4,8 +4,7 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import { Helmet } from 'react-helmet';
-import { Icon, Timeline, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { Icon, Timeline } from 'antd';
 import { setCurrentUserBegin } from 'features/User/actions/setCurrentUser';
 import { selectCurrentUser, selectCurrentAccount, selectMyFollowingsList, selectMe } from 'features/User/selectors';
 import { COLOR_PRIMARY, COLOR_LIGHT_GREY } from 'styles/constants';
@@ -109,13 +108,6 @@ class Profile extends Component {
           <meta property="og:image" content={`${profileImage}?s=1200`} />
         </Helmet>
         <div className="top-container primary-gradient" style={coverStyle}>
-          <div className="edit-buttons">
-            {me === account.name &&
-              <Link to={`/author/@${me}/edit`}>
-                <Button icon="edit" size="small" ghost>Edit</Button>
-              </Link>
-            }
-          </div>
           <h1>{profile.name || account.name}</h1>
           <h2>{profile.about}</h2>
           {me !== account.name &&

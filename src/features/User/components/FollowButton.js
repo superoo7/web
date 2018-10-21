@@ -44,7 +44,7 @@ class FollowButton extends PureComponent {
     return me ? (
       <Button
         type="primary"
-        className="round-border inversed-color padded-button checkitout-button follow-button"
+        className="round-border inversed-color padded-button checkitout-button"
         onClick={isFollowing ? unfollow : follow}
         disabled={accountName === me || isLoading}
         loading={isLoading}
@@ -55,7 +55,7 @@ class FollowButton extends PureComponent {
       <Button
         onClick={this.openSignin}
         type="primary"
-        className="round-border inversed-color padded-button checkitout-button follow-button"
+        className="round-border inversed-color padded-button checkitout-button"
         loading={isLoading}
       >
         {isLoading ? 'LOADING..' : 'FOLLOW'}

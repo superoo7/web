@@ -2,18 +2,8 @@
   .top-container {
     text-shadow: 1px 1px 1px #999;
 
-    .edit-buttons {
-      position: absolute;
-      top: 30px;
-      right: 30px;
-
-      button {
-        margin-left: 5px;
-      }
-    }
-
-    .follow-button {
-      background-color: rgba(255, 255, 255, 0.9) !important;
+    .ant-btn {
+      background-color: rgba(255, 255, 255, 0.9) !important;;
       color: #000 !important;
       box-shadow: 0px 0px 4px #ccc;
 

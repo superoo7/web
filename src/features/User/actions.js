@@ -20,6 +20,7 @@ export const initialState = {
   followings: {},
   isLoading: false,
   profileDraft: {
+    name: '',
     about: '',
     website: ''
   }

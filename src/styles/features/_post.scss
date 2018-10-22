@@ -824,19 +824,19 @@
 
     .ant-modal-body {
       padding-top: 60px;
-      padding-bottom: 60px;
     }
 
     img, video {
       display: block;
       max-width: 90%;
-      height: 50vh;
+      height: 60vh;
       width: auto;
       margin: 0 auto;
       object-fit: contain;
 
       @include responsive(mobile) {
         max-width: 100%;
+        height: 50vh;
       }
     }
 

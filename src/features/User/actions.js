@@ -22,7 +22,9 @@ export const initialState = {
   profileDraft: {
     name: '',
     about: '',
-    website: ''
+    website: '',
+    profile_image: '',
+    cover_image: ''
   }
 };
 

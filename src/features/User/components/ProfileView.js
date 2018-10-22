@@ -23,26 +23,28 @@ export default class ProfileView extends Component {
 
     let profile = account.json_metadata.profile || {};
     let coverStyle;
-    if (profile.cover_image) {
-      coverStyle = {
-        backgroundColor: COLOR_PRIMARY,
-        backgroundImage: `url(${getCachedImage(profile.cover_image, 1600, 800)})`,
-        backgroundSize: 'cover',
-      };
-    }
     const profileStyle = {
       backgroundColor: COLOR_LIGHT_GREY,
       backgroundImage: `url(https://i.imgur.com/OUdHb2P.png)`,
     };
 
-    const profileImage = `${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${account.name}`;
-    if (profile.profile_image) {
-      profileStyle['backgroundImage'] = `url(${profileImage}?s=280)`;
-    }
-
     const profileName = onEditing ? (profileDraft.name || profile.name) : (profile.name || account.name);
     const profileAbout = onEditing ? (profileDraft.about || profile.about) : profile.about ;
     const profileWebsite = onEditing ? (profileDraft.website || profile.website) : profile.website ;
+    const profileImage = onEditing ? (profileDraft.profile_image || profile.profile_image) : profile.profile_image;
+    const coverImage = onEditing ? (profileDraft.cover_image || profile.cover_image) : profile.cover_image;
+
+    if (profileImage) {
+      profileStyle['backgroundImage'] = `url(${profileImage}?s=280)`;
+    }
+
+    if (coverImage) {
+      coverStyle = {
+        backgroundColor: COLOR_PRIMARY,
+        backgroundImage: `url(${getCachedImage(coverImage, 1600, 800)})`,
+        backgroundSize: 'cover',
+      };
+    }
 
     return (
       <div className="profile diagonal-split-view">

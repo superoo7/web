@@ -61,7 +61,7 @@ export function publishContentReducer(state, action) {
 }
 
 function getBody(post) {
-  let screenshots = `<center>![${post.images[0].name}](${post.images[0].link})</center>\n\n`;
+  let screenshots = `<center><img alt="${post.images[0].name}" srce="${post.images[0].link}"/></center>\n\n`;
   let screenshots2 = '';
   let table = '';
   if (post.images.length > 1) {
@@ -71,7 +71,16 @@ function getBody(post) {
     screenshots2 += '|';
 
     for (let i in otherImages) {
-      const column = ` <center>![${otherImages[i].name}](${otherImages[i].link})<br>[View Image](${otherImages[i].link})</center> |`;
+      if (!otherImages[i].link) {
+        continue;
+      }
+
+      let column;
+      if (otherImages[i].link.match(/\.mp4$/)) {
+        column = ` <center><img alt="${otherImages[i].name}" src="${otherImages[i].link.replace(/\.mp4$/, '-thumb.jpg')}"/><br>[View Video](${otherImages[i].link})</center> |`;
+      } else {
+        column = ` <center><img alt="${otherImages[i].name}" src="${otherImages[i].link}"/><br>[View Image](${otherImages[i].link})</center> |`;
+      }
 
       if (i < 5) {
         screenshots += column;

@@ -829,11 +829,15 @@
 
     img, video {
       display: block;
-      max-width: 100%;
+      max-width: 90%;
       height: 50vh;
       width: auto;
       margin: 0 auto;
       object-fit: contain;
+
+      @include responsive(mobile) {
+        max-width: 100%;
+      }
     }
 
     .prev, .next {

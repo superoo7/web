@@ -121,7 +121,7 @@ class PostView extends Component {
     const images = post.images.map((image, index) => {
       if (/\.mp4$/.test(image.name)) {
         return (
-          <div key={index} className="slide-container">
+          <div key={`${post.id}-${index}`} className="slide-container">
             <video alt={image.name} playsInline autoPlay="autoplay" muted loop onClick={(e) => this.showModal(e, getCachedImage(image.link))} >
               <source src={getCachedImage(image.link)} />
             </video>
@@ -129,7 +129,7 @@ class PostView extends Component {
         );
       } else {
         return (
-          <div key={index} className="slide-container">
+          <div key={`${post.id}-${index}`} className="slide-container">
             <img alt={image.name} src={getCachedImage(image.link)} onClick={this.showModal} />
           </div>
         );
@@ -277,11 +277,11 @@ class PostView extends Component {
         <div className="diagonal-line"></div>
         <div className="bottom-container">
           {post.images.length === 0 ?
-            <Carousel className="carousel" effect="fade">
+            <Carousel key={`carousel-${post.id}`} className="carousel" effect="fade">
               <div><Icon type="camera-o" /></div>
             </Carousel>
           :
-            <Carousel className="carousel" autoplay={true} effect="scrollx">
+            <Carousel key={`carousel-${post.id}`} className="carousel" autoplay={true} effect="scrollx">
               {images}
             </Carousel>
           }

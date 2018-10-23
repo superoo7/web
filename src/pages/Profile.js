@@ -74,6 +74,7 @@ class Profile extends Component {
         backgroundColor: COLOR_PRIMARY,
         backgroundImage: `url(${getCachedImage(profile.cover_image, 1600, 800)})`,
         backgroundSize: 'cover',
+        backgroundPosition: 'center',
       };
     }
     const profileStyle = {

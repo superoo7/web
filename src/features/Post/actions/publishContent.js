@@ -61,7 +61,12 @@ export function publishContentReducer(state, action) {
 }
 
 function getBody(post) {
-  let screenshots = `<center><img alt="${post.images[0].name}" srce="${post.images[0].link}"/></center>\n\n`;
+  let screenshots;
+  if (post.images[0] && post.images[0].link.match(/\.mp4$/)) {
+    screenshots = `<center><img alt="${post.images[0].name}" src="${post.images[0].link.replace(/\.mp4$/, '-thumb.jpg')}"/></center>\n\n`;
+  } else {
+    screenshots = `<center><img alt="${post.images[0].name}" src="${post.images[0].link}"/></center>\n\n`;
+  }
   let screenshots2 = '';
   let table = '';
   if (post.images.length > 1) {

@@ -348,7 +348,13 @@ class PostForm extends Component {
 
   initialValue = (field, defaultValue = null) => initialState.draft[field] === this.props.draft[field] ? defaultValue : this.props.draft[field];
 
-  xhrUploadS3 = async ({ file, onProgress, onSuccess, onError }) => {
+  xhrUploadS3 = async ({ file, onProgress, onSuccess, _ }) => {
+    const onError = (e) => {
+      console.error(e);
+      this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image
+      notification['error']({ message: e.message });
+    };
+
     try {
       //const res = await api.post('/posts/signed_url', {filename: file.name});
       const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
@@ -358,21 +364,21 @@ class PostForm extends Component {
         onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
       },})
       .then((res) => {
-        // console.log(res)
+        if (res.data.error) {
+          throw Error(res.data.error);
+        }
+
         const { response } = res.data;
         const result = {
-          uid: response.uid, url: getCachedImage(response.link),
-          name: response.name, link: response.link,
+          uid: response.uid,
+          url: getCachedImage(response.link),
+          name: response.name,
+          link: response.link,
           status: 'done'
-        }
+        };
         onSuccess(result, file);
-      }).catch((e) => {
-        console.error(e);
-      });
+      }).catch((e) => onError(e));
     } catch(e) {
-      this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image
-      notification['error']({ message: 'Image upload failed. Please check your Internet connection.' });
-
       onError(e);
     }
   }

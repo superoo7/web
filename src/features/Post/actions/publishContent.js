@@ -82,9 +82,9 @@ function getBody(post) {
 
       let column;
       if (otherImages[i].link.match(/\.mp4$/)) {
-        column = ` <center><img alt="${otherImages[i].name}" src="${otherImages[i].link.replace(/\.mp4$/, '-thumb.jpg')}"/><br>[View Video](${otherImages[i].link})</center> |`;
+        column = ` <center><img alt="${otherImages[i].name}" src="${otherImages[i].link.replace(/\.mp4$/, '-thumb.jpg')}"/><br><a href="${otherImages[i].link}">View Video</a></center> |`;
       } else {
-        column = ` <center><img alt="${otherImages[i].name}" src="${otherImages[i].link}"/><br>[View Image](${otherImages[i].link})</center> |`;
+        column = ` <center><img alt="${otherImages[i].name}" src="${otherImages[i].link}"/><br><a href="${otherImages[i].link}">View Image</a></center> |`;
       }
 
       if (i < 5) {

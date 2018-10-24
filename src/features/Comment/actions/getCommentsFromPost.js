@@ -75,10 +75,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
     const post = state.content[postKey];
 
     if (!post || post.id === 0) {
-      const msg = 'No content found on Steem Blockchain';
-      yield notification['error']({ message: msg });
-      yield put(getCommentsFromPostFailure(msg));
-      return;
+      throw new Error('No content found on Steem Blockchain');
     }
 
     if (posts && posts[postKey] && hasUpdated(posts[postKey], post) && !posts[postKey].isUpdating) {
@@ -90,6 +87,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
 
     yield put(getCommentsFromPostSuccess(`${author}/${permlink}`, state));
   } catch(e) {
+    yield notification['error']({ message: msg });
     yield put(getCommentsFromPostFailure(e.message));
   }
 }

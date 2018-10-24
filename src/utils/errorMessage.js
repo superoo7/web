@@ -1,13 +1,10 @@
 export const extractErrorMessage = function(e) {
-  if (e.error_description) {
-    const match = e.error_description.match(/.+[A-Z_]+:(.+)/);
-    if (match && match.length > 1) {
-      return match[1];
-    } else {
-      return e.error_description;
-    }
-  } else {
-    return e.message;
+  const message = e.error_description || e.message || '';
+  const match = message.match(/.+[A-Z_]+:(.+)/);
+  if (match && match.length > 1) {
+    return match[1];
   }
+
+  return message;
 }
 

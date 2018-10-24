@@ -474,6 +474,27 @@
         }
       }
 
+      .inline-upload-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 5px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        a {
+          text-align: left;
+          font-size: 13px;
+        }
+        .anticon-loading {
+          margin-left: 10px;
+          color: $primary;
+        }
+        input {
+          display: none;
+        }
+      }
+
       .actions {
         margin-top: -2.3125rem;
         margin-bottom: 1.5rem;

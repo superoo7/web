@@ -11,7 +11,6 @@ import {
   selectIsLoading,
   selectMyFollowingsLoadStatus,
   selectMyFollowingsList,
-  selectMyFollowingsListLoaded
 } from 'features/User/selectors';
 import { selectSearchTerm } from 'features/Post/selectors';
 import { getFollowingsBegin } from 'features/User/actions/getFollowings';
@@ -28,7 +27,6 @@ class Header extends Component {
     myAccount: PropTypes.object.isRequired,
     myFollowingsLoadStatus: PropTypes.object.isRequired,
     myFollowingsList: PropTypes.array.isRequired,
-    myFollowingsListLoaded: PropTypes.bool.isRequired,
     follow: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired,
     getFollowings: PropTypes.func.isRequired,
@@ -72,7 +70,7 @@ class Header extends Component {
   render() {
     const { me, myAccount, myFollowingsList, myFollowingsLoadStatus, isLoading, follow, searchTerm } = this.props;
     let isFollowing = true;
-    if (myFollowingsList) {
+    if (myFollowingsList && myFollowingsList.length > 0) {
       isFollowing = myFollowingsList.find(following => following && following.following === 'steemhunt');
     }
     const searchBarHidden = (this.props.path === '/wallet' || this.props.path === '/post');
@@ -190,7 +188,6 @@ const mapStateToProps = createStructuredSelector({
   myAccount: selectMyAccount(),
   myFollowingsLoadStatus: selectMyFollowingsLoadStatus(),
   myFollowingsList: selectMyFollowingsList(),
-  myFollowingsListLoaded: selectMyFollowingsListLoaded(),
   searchTerm: selectSearchTerm(),
 });
 

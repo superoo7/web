@@ -80,6 +80,7 @@ class Header extends Component {
         isFollowing={isFollowing}
         isFollowLoading={isLoading || myFollowingsLoadStatus['steemhunt']}
         myAccount={myAccount}
+        changeVisibility={this.changeVisibility}
         logout={this.props.logout}
       />
     );

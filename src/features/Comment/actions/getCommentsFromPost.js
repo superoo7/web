@@ -87,7 +87,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
 
     yield put(getCommentsFromPostSuccess(`${author}/${permlink}`, state));
   } catch(e) {
-    yield notification['error']({ message: msg });
+    yield notification['error']({ message: e.message });
     yield put(getCommentsFromPostFailure(e.message));
   }
 }

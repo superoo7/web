@@ -50,7 +50,7 @@ class Header extends Component {
 
   setSearchVisible = (bool) => {
     this.setState({ searchVisible: bool }, () => {
-      if (bool) {
+      if (bool && this.searchInput) {
         this.searchInput.focus();
       }
     });

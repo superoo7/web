@@ -219,6 +219,8 @@ function* publishContent({ props, editMode }) {
       }
     } catch (e) {
       // Delete post on Steemhunt as transaction failed
+      yield notification['error']({ message: "There was an error while submitting your content to the Steem blockchain. Please contact Steemhunt team via Discord." });
+
       if (!editMode) {
         yield api.delete(`/posts${getPostPath(newPost)}.json`, null, true);
       }

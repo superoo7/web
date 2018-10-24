@@ -34,7 +34,7 @@ class ShuffleButton extends PureComponent {
   }
 
   shuffle = (el) => {
-    this.interval = setInterval(this.tick, 100);
+    this.tickInterval = setInterval(this.tick, 100);
 
     const $button = document.getElementById('shuffle-button');
     $button.style.top = '-8px';
@@ -54,10 +54,10 @@ class ShuffleButton extends PureComponent {
     const $coinContainer = document.getElementById('coin-container');
     $coinContainer.classList.add('play');
 
-    setTimeout(() => {
+    this.shuffleTimeout = setTimeout(() => {
       try {
         api.post('/hunt_transactions/daily_shuffle.json', null, true, (res) => {
-          clearInterval(this.interval);
+          clearInterval(this.tickInterval);
           this.setState({ amount: res.amount, claimed: true });
           $coin.classList.remove('play');
 
@@ -66,18 +66,18 @@ class ShuffleButton extends PureComponent {
             document.getElementById("jackpot-sound").play();
 
             this.setState({ fireworks: true });
-            setTimeout(() => {
+            this.shuffleTimeout2 = setTimeout(() => {
               this.setState({ fireworks: false });
               $coinContainer.classList.remove('play');
             }, 5000);
           } else {
-            setTimeout(function() {
+            this.shuffleTimeout2 = setTimeout(function() {
               $coinContainer.classList.remove('play');
             }, 3000);
           }
         });
       } catch(e) {
-        clearInterval(this.interval);
+        clearInterval(this.tickInterval);
         $coin.classList.remove('play');
         notification['error']({ message: e.message });
       }
@@ -85,6 +85,14 @@ class ShuffleButton extends PureComponent {
       this.props.handleSortOption('random');
     }, 3000);
   };
+
+  componentWillUnmount() {
+    clearInterval(this.tickInterval);
+    clearTimeout(this.shuffleTimeout);
+    clearTimeout(this.shuffleTimeout2);
+    document.getElementById("coin-sound").pause();
+    document.getElementById("jackpot-sound").pause();
+  }
 
   render() {
     const { amount, fireworks } = this.state;

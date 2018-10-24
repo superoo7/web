@@ -71,7 +71,10 @@ class Header extends Component {
 
   render() {
     const { me, myAccount, myFollowingsList, myFollowingsLoadStatus, isLoading, follow, searchTerm } = this.props;
-    const isFollowing = myFollowingsList.find(following => following.following === 'steemhunt');
+    let isFollowing = true;
+    if (myFollowingsList) {
+      isFollowing = myFollowingsList.find(following => following.following === 'steemhunt');
+    }
     const searchBarHidden = (this.props.path === '/wallet' || this.props.path === '/post');
     const menu = (
       <MenuContent

@@ -204,7 +204,15 @@ class SignUp extends Component {
                 )}
               </FormItem>
               <div className="actions-container">
-                <Button type="primary" htmlType="submit" disabled={this.state.accountCheck !== 'validated'} block>Continue</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  disabled={this.state.accountCheck !== 'validated'}
+                  onClick={() => window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'ID Verified' })}
+                  block
+                >
+                  Continue
+                </Button>
               </div>
             </Form>
             <p className="form-tail">
@@ -229,7 +237,15 @@ class SignUp extends Component {
                 <ReactPhoneInput inputStyle={{height: 40, width: '100%'}} defaultCountry={'us'} value={this.state.phoneNumber} onChange={this.setPhoneNumber} inputExtraProps={{ autoFocus: true }} />
               </FormItem>
               <div className="actions-container">
-                <Button type="primary" htmlType="submit" disabled={!this.state.phoneCheck} block>Send SMS</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  disabled={!this.state.phoneCheck}
+                  onClick={() => window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'Send SMS' })}
+                  block
+                >
+                  Send SMS
+                </Button>
                 <p className="form-tail">
                   <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
                 </p>
@@ -258,7 +274,15 @@ class SignUp extends Component {
                   />
                 </FormItem>
                 <div className="actions-container">
-                  <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block>Verify PIN</Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!this.state.pinCheck}
+                    onClick={() => window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'Verify PIN' })}
+                    block
+                  >
+                    Verify PIN
+                  </Button>
                   <p className="form-tail">
                     <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
                   </p>
@@ -277,7 +301,15 @@ class SignUp extends Component {
             </p>
             <div className="actions-container">
               <Form onSubmit={(e) => this.createPrivateKeys(e)}>
-                <Button type="primary" htmlType="submit" disabled={!this.state.pinCheck} block >Continue</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  disabled={!this.state.pinCheck}
+                  onClick={() => window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'Phone Verified' })}
+                  block
+                >
+                  Continue
+                </Button>
               </Form>
             </div>
           </div>
@@ -298,7 +330,16 @@ class SignUp extends Component {
               <CopyToClipboard text={this.state.privateKey} onCopy={() => notification['success']({ message: 'Your private key has been copied to your clipboard.' })}>
                 <Button type="primary" ghost block>Copy the key</Button>
               </CopyToClipboard>
-              <Button type="primary" block onClick={() => this.setModalVisible(true)}>Continue</Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  this.setModalVisible(true);
+                  window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'Last confirmation' });
+                }}
+                block
+              >
+                Continue
+              </Button>
             </div>
           </div>
         )
@@ -340,8 +381,29 @@ class SignUp extends Component {
           visible={this.state.modalVisible}
           onCancel={() => !this.state.loading && this.setModalVisible(false)}
           footer={[
-            <Button key="back" type="primary" ghost onClick={() => this.setModalVisible(false)} disabled={this.state.loading}>No, I didn&apos;t save it yet.</Button>,
-            <Button key="submit" type="primary" onClick={() => this.confirmPrivateKey()} loading={this.state.loading}>Yes, I have saved my key securely.</Button>,
+            <Button
+              key="back"
+              type="primary"
+              disabled={this.state.loading}
+              onClick={() => {
+                this.setModalVisible(false);
+                window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'Last confirm - No' });
+              }}
+              ghost
+            >
+              No, I didn&apos;t save it yet.
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={this.state.loading}
+              onClick={() => {
+                this.confirmPrivateKey();
+                window.gtag('event', 'signup_process', { 'event_category' : 'signup', 'event_label' : 'Last confirm - Yes' });
+              }}
+            >
+              Yes, I have saved my key securely.
+            </Button>,
           ]}
         >
           <h1>Have you securly stored your private key (passwords)?</h1>

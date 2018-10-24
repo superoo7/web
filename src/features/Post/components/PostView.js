@@ -11,6 +11,7 @@ import Author from 'components/Author';
 import { selectMe } from 'features/User/selectors';
 import { getHtml } from 'components/Body';
 import { shortFormat } from 'utils/date';
+import moment from 'moment';
 import { isModerator, isAdmin, isGuardian } from 'features/User/utils';
 import { setModeratorBegin, moderatePostBegin } from 'features/Post/actions/moderatePost';
 import { replyBegin } from 'features/Comment/actions/reply';
@@ -121,7 +122,7 @@ class PostView extends Component {
     const images = post.images.map((image, index) => {
       if (/\.mp4$/.test(image.name)) {
         return (
-          <div key={index} className="slide-container">
+          <div key={`${post.id}-${index}`} className="slide-container">
             <video alt={image.name} playsInline autoPlay="autoplay" muted loop onClick={(e) => this.showModal(e, getCachedImage(image.link))} >
               <source src={getCachedImage(image.link)} />
             </video>
@@ -129,7 +130,7 @@ class PostView extends Component {
         );
       } else {
         return (
-          <div key={index} className="slide-container">
+          <div key={`${post.id}-${index}`} className="slide-container">
             <img alt={image.name} src={getCachedImage(image.link)} onClick={this.showModal} />
           </div>
         );
@@ -223,7 +224,7 @@ class PostView extends Component {
     return (
       <div className="post-view diagonal-split-view">
         <div className="top-container primary-gradient">
-          <Tooltip title={`Posted on ${shortFormat(post.listed_at)}`}>
+          <Tooltip title={`Posted on ${moment(post.listed_at).format('YYYY-MM-DD HH:mmZ')}`}>
             <span className="featured-date round-border" data-id={post.id}>Featured on {shortFormat(post.listed_at)}</span>
           </Tooltip>
 
@@ -277,11 +278,11 @@ class PostView extends Component {
         <div className="diagonal-line"></div>
         <div className="bottom-container">
           {post.images.length === 0 ?
-            <Carousel className="carousel" effect="fade">
+            <Carousel key={`carousel-${post.id}`} className="carousel" effect="fade">
               <div><Icon type="camera-o" /></div>
             </Carousel>
           :
-            <Carousel className="carousel" autoplay={true} effect="scrollx">
+            <Carousel key={`carousel-${post.id}`} className="carousel" autoplay={true} effect="scrollx">
               {images}
             </Carousel>
           }

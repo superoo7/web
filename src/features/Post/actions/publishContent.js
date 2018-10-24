@@ -170,7 +170,13 @@ function* publishContent({ props, editMode }) {
     // Prepare data
     const metadata = {
       tags: tags,
-      image: newPost.images.map(i => i.link),
+      image: newPost.images.map((i) => {
+        if (i.link.match(/\.mp4$/)) {
+          return i.link.replace(/\.mp4$/, '-thumb.jpg');
+        } else {
+          return i.link;
+        }
+      }),
       links: [ newPost.url ],
       community: 'steemhunt',
       app: 'steemhunt/1.0.0',

@@ -114,6 +114,7 @@ class ProfileForm extends Component {
         if (win.closed) {
           clearInterval(timer);
           refreshMe();
+          history.push(`/`);
           history.push(`/author/@${me}`);
         }
       }, 500, me, history, refreshMe);
@@ -175,31 +176,9 @@ class ProfileForm extends Component {
 
     return (
       <Form onSubmit={this.handleSubmit} className="post-form">
-        <div className="guideline"><a href="https://steemit.com/@astrocket/settings" target="_blank" rel="noopener noreferrer">Edit on Steemit.com</a></div>
         <FormItem
           {...formItemLayout}
-          label="profile_image"
-        >
-          {getFieldDecorator('profile_image', {
-            validateTrigger: ['onBlur'],
-            initialValue: profileImage
-          })(
-            <Upload
-              name="profile_image"
-              listType="picture-card"
-              className="singular-uploader small"
-              showUploadList={false}
-              customRequest={this.xhrUploadS3}
-              onChange={(props) => this.handleUploadChange(props, 'profile_image')}
-              beforeUpload={this.beforeUpload}
-            >
-              {this.renderImageOrButton(profileImage, this.state.profile_image_loading)}
-            </Upload>
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="name"
+          label="Name"
         >
           {getFieldDecorator('name', {
             validateTrigger: ['onBlur'],
@@ -212,7 +191,7 @@ class ProfileForm extends Component {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          label="about"
+          label="About"
         >
           {getFieldDecorator('about', {
             validateTrigger: ['onBlur'],
@@ -227,7 +206,7 @@ class ProfileForm extends Component {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          label="website"
+          label="Website"
         >
           {getFieldDecorator('website', {
             validateTrigger: ['onBlur'],
@@ -240,7 +219,7 @@ class ProfileForm extends Component {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          label="cover_image"
+          label="Cover Photo"
         >
           {getFieldDecorator('cover_image', {
             validateTrigger: ['onBlur'],
@@ -256,6 +235,27 @@ class ProfileForm extends Component {
               beforeUpload={this.beforeUpload}
             >
               {this.renderImageOrButton(coverImage, this.state.cover_image_loading)}
+            </Upload>
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="Profile Picture"
+        >
+          {getFieldDecorator('profile_image', {
+            validateTrigger: ['onBlur'],
+            initialValue: profileImage
+          })(
+            <Upload
+              name="profile_image"
+              listType="picture-card"
+              className="singular-uploader small"
+              showUploadList={false}
+              customRequest={this.xhrUploadS3}
+              onChange={(props) => this.handleUploadChange(props, 'profile_image')}
+              beforeUpload={this.beforeUpload}
+            >
+              {this.renderImageOrButton(profileImage, this.state.profile_image_loading)}
             </Upload>
           )}
         </FormItem>

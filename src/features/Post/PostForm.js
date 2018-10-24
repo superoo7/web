@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification } from 'antd';
+import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification, Badge } from 'antd';
 import { selectDraft, selectIsPublishing } from './selectors';
 import { selectMe } from 'features/User/selectors';
 import { publishContentBegin } from './actions/publishContent';
@@ -43,28 +43,33 @@ class PostForm extends Component {
       beneficiariesValid: true,
       shouldRecalculateBeneficiary: false,
       duplicatedUrl: null,
+      description: '',
+      inlineUploading: false
     };
     this.beneficiaryInput = {};
   }
 
   componentDidMount() {
-    const { match: { params : { author, permlink }}, getPost, updateDraft } = this.props;
+    const { match: { params: { author, permlink } }, getPost, updateDraft } = this.props;
     const draftString = localStorage.getItem('draft');
 
     // Edit mode
     if (author && permlink) {
-      if(!!draftString) {
+      if (!!draftString) {
         let draft = JSON.parse(draftString);
-        if(author === draft.author && permlink === draft.permlink) {
+        if (author === draft.author && permlink === draft.permlink) {
           // if there is saved localStorage
           updateDraft('url', draft.url);
           updateDraft('title', draft.title);
           updateDraft('tagline', draft.tagline);
           updateDraft('description', draft.description);
+          this.setState({
+            description: draft.description || ''
+          })
           updateDraft('tags', draft.tags);
-          if(draft.images !== []) {
+          if (draft.images !== []) {
             updateDraft('images', draft.image);
-            this.handleImageChange({fileList: draft.images});
+            this.handleImageChange({ fileList: draft.images });
             this.prepareForEdit(draft);
           }
         } else {
@@ -75,23 +80,26 @@ class PostForm extends Component {
       }
       this.setState({ editMode: true, resetted: false });
 
-    // Fresh new post
+      // Fresh new post
     } else if (!draftString) {
       // if localStorage does not exist
       this.checkAndResetDraft();
 
-    // New post with draft
+      // New post with draft
     } else {
       // if there is saved localStorage
       let draft = JSON.parse(draftString);
       updateDraft('url', draft.url || '#');
       updateDraft('title', draft.title || 'Title');
       updateDraft('tagline', draft.tagline || 'Short Description');
-      updateDraft('description', draft.description || '');
       updateDraft('tags', draft.tags || []);
-      if(draft.images !== []) {
+      updateDraft('description', draft.description || '');
+      this.setState({
+        description: draft.description || ''
+      })
+      if (draft.images !== []) {
         updateDraft('images', draft.image);
-        this.handleImageChange({fileList: draft.images});
+        this.handleImageChange({ fileList: draft.images });
         this.prepareForEdit(draft);
       }
       // TODO: Should show add the inputs properly
@@ -102,7 +110,7 @@ class PostForm extends Component {
       this.saveAndUpdateDraft('author', this.props.me);
     }
 
-    window.onbeforeunload = function() {
+    window.onbeforeunload = function () {
       return "Leave site? Changes you made may not be saved.";
     }
   }
@@ -114,7 +122,7 @@ class PostForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match: { params : { author, permlink }} } = this.props;
+    const { match: { params: { author, permlink } } } = this.props;
     const nextAuthor = nextProps.match.params.author;
     const nextPermlink = nextProps.match.params.permlink;
 
@@ -127,7 +135,7 @@ class PostForm extends Component {
       if (this.props.draft.permlink !== nextProps.draft.permlink) {
         this.prepareForEdit(nextProps.draft);
       }
-    } else if(!localStorage.getItem('draft')) {
+    } else if (!localStorage.getItem('draft')) {
       // if localStorage does not exist
       this.setState({ editMode: false });
       this.checkAndResetDraft();
@@ -185,7 +193,7 @@ class PostForm extends Component {
         {
           uid: i,
           name: f.name,
-          url:  getCachedImage(f.link),
+          url: getCachedImage(f.link),
           status: 'done',
           link: f.link,
         }
@@ -325,9 +333,13 @@ class PostForm extends Component {
 
   handleTitleChange = (e) => this.saveAndUpdateDraft('title', sanitizeText(e.target.value, true) || initialState.draft.title);
   handleTaglineChange = (e) => this.saveAndUpdateDraft('tagline', sanitizeText(e.target.value, true) || initialState.draft.tagline);
-  handleDescriptionChange = (e) => this.saveAndUpdateDraft('description', sanitizeText(e.target.value) || initialState.draft.description);
+  handleDescriptionChange = (e, text = null) => {
+    this.setState({
+      description: text || e.target.value
+    }, () => this.saveAndUpdateDraft('description', sanitizeText(this.state.description) || initialState.draft.description))
+  };
   handleImageChange = ({ fileList }) => {
-    const images = fileList.map(function(f) {
+    const images = fileList.map(function (f) {
       if (f.response && f.response.link) {
         return {
           name: f.response.name,
@@ -360,27 +372,48 @@ class PostForm extends Component {
       const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
       var formData = new FormData();
       formData.append("image", file);
-      axios.post(uploadUrl, formData, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
-        onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
-      },})
-      .then((res) => {
-        if (res.data.error) {
-          throw Error(res.data.error);
-        }
+      axios.post(uploadUrl, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
+          onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
+        },
+      })
+        .then((res) => {
+          if (res.data.error) {
+            throw Error(res.data.error);
+          }
 
-        const { response } = res.data;
-        const result = {
-          uid: response.uid,
-          url: getCachedImage(response.link),
-          name: response.name,
-          link: response.link,
-          status: 'done'
-        };
-        onSuccess(result, file);
-      }).catch((e) => onError(e));
-    } catch(e) {
+          const { response } = res.data;
+          const result = {
+            uid: response.uid,
+            url: getCachedImage(response.link),
+            name: response.name,
+            link: response.link,
+            status: 'done'
+          };
+          onSuccess(result, file);
+        }).catch((e) => onError(e));
+    } catch (e) {
       onError(e);
     }
+  }
+
+  inputUploadS3 = (e) => {
+    const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
+    var formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    this.setState({ inlineUploading: true }, () => {
+      axios.post(uploadUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' }})
+      .then((res) => {
+        const { response } = res.data;
+        const { selectionStart, innerHTML } = this.descriptionRef.textAreaRef;
+        const text = innerHTML.slice(0, selectionStart)
+          + `![${response.name}](${getCachedImage(response.link)})`
+          + innerHTML.slice(selectionStart + 1);
+        this.setState({
+          inlineUploading: false
+        }, () => this.handleDescriptionChange(null, text));
+      })
+    })
   }
 
   render() {
@@ -516,7 +549,7 @@ class PostForm extends Component {
         >
           {getFieldDecorator('tagline', {
             initialValue: this.initialValue('tagline'),
-            rules: [ { required: true, message: 'Short description cannot be empty', whitespace: true } ],
+            rules: [{ required: true, message: 'Short description cannot be empty', whitespace: true }],
           })(
             <Input
               placeholder="A social media where everyone gets paid for participation"
@@ -557,10 +590,10 @@ class PostForm extends Component {
           <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} width="50%" className="preview-modal">
             {
               /\.mp4$/.test(this.state.previewImage) ?
-              <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
-                <source src={this.state.previewImage} />
-              </video> :
-              <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+                <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
+                  <source src={this.state.previewImage} />
+                </video> :
+                <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
             }
           </Modal>
         </FormItem>
@@ -571,17 +604,19 @@ class PostForm extends Component {
           extra={`${this.props.draft.description.length} / 1000`}
           className="description"
         >
-          {getFieldDecorator('description', {
-            initialValue: this.initialValue('description'),
-          })(
-            <Input.TextArea
-              placeholder="Comment on this product..."
-              rows={4}
-              onChange={this.handleDescriptionChange}
-              maxLength={1000} />
-          )}
+          <Input.TextArea
+            ref={(ref) => { this.descriptionRef = ref }}
+            placeholder="Comment on this product..."
+            rows={4}
+            value={this.state.description}
+            onChange={this.handleDescriptionChange}
+            maxLength={1000} />
+          <div className="inline-upload-container">
+            <a onClick={() => this.inlineFileField.click()}>Upload Image</a>
+            {this.state.inlineUploading && <Icon type="loading" spin="true"/>}
+            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUploadS3} />
+          </div>
         </FormItem>
-
         <FormItem
           {...formItemLayout}
           label="Tags"
@@ -602,10 +637,10 @@ class PostForm extends Component {
         {!this.state.editMode &&
           <FormItem {...formItemLayoutWithOutLabel}>
             {!this.state.beneficiariesValid && (
-                <div className="ant-form-item-control has-error">
-                  <p className="ant-form-explain">Sum of reward values must be less than or equal to 85%</p>
-                </div>
-              )
+              <div className="ant-form-item-control has-error">
+                <p className="ant-form-explain">Sum of reward values must be less than or equal to 85%</p>
+              </div>
+            )
             }
             {beneficiaryIds.length < 5 &&
               <Button type="dashed" onClick={this.addBeneficiary}>
@@ -617,7 +652,7 @@ class PostForm extends Component {
               <a href="https://steemit.com/steemhunt/@steemhunt/introducing-incentives-for-steemhunt-sponsors" target="_blank" rel="noopener noreferrer">
                 delegated Steem Power to @steemhunt.
               </a>
-              <br/>
+              <br />
               {timeUntilMidnightSeoul()}
             </p>
           </FormItem>

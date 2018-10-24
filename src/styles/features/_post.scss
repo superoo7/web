@@ -51,6 +51,25 @@
     border:0;
   }
 
+  .inline-upload-container {
+    position: absolute;
+    width: 300px;
+    height: 25px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    a {
+      text-align: left;
+    }
+    .anticon-loading {
+      margin-left: 10px;
+      color: $primary;
+    }
+    input {
+      display: none;
+    }
+  }
+
   .singular-uploader {
     &.small {
       img, .uploader-placeholder {

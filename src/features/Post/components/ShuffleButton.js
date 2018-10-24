@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import { Icon, notification } from 'antd';
 import api from 'utils/api';
 import coinSound from 'assets/sounds/coin.mp3';
 import jackpotSound from 'assets/sounds/jackpot.mp3';
@@ -55,26 +55,32 @@ class ShuffleButton extends PureComponent {
     $coinContainer.classList.add('play');
 
     setTimeout(() => {
-      api.post('/hunt_transactions/daily_shuffle.json', null, true, (res) => {
+      try {
+        api.post('/hunt_transactions/daily_shuffle.json', null, true, (res) => {
+          clearInterval(this.interval);
+          this.setState({ amount: res.amount, claimed: true });
+          $coin.classList.remove('play');
+
+          // Jackpot fireworks
+          if (res.amount === 1000) {
+            document.getElementById("jackpot-sound").play();
+
+            this.setState({ fireworks: true });
+            setTimeout(() => {
+              this.setState({ fireworks: false });
+              $coinContainer.classList.remove('play');
+            }, 5000);
+          } else {
+            setTimeout(function() {
+              $coinContainer.classList.remove('play');
+            }, 3000);
+          }
+        });
+      } catch(e) {
         clearInterval(this.interval);
-        this.setState({ amount: res.amount, claimed: true });
         $coin.classList.remove('play');
-
-        // Jackpot fireworks
-        if (res.amount === 1000) {
-          document.getElementById("jackpot-sound").play();
-
-          this.setState({ fireworks: true });
-          setTimeout(() => {
-            this.setState({ fireworks: false });
-            $coinContainer.classList.remove('play');
-          }, 5000);
-        } else {
-          setTimeout(function() {
-            $coinContainer.classList.remove('play');
-          }, 3000);
-        }
-      });
+        notification['error']({ message: e.message });
+      }
 
       this.props.handleSortOption('random');
     }, 3000);

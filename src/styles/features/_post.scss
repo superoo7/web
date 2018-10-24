@@ -50,6 +50,40 @@
   .submit-button {
     border:0;
   }
+
+  .singular-uploader {
+    &.small {
+      img, .uploader-placeholder {
+        width: 128px;
+        height: 128px;
+        @include responsive(mobile) {
+          width: 100px;
+          height: 100px;
+        }
+      }
+    }
+
+    &.large {
+      .ant-upload {
+        width: 100%;
+        img, .uploader-placeholder{
+          width: 100%;
+          height: 250px;
+          object-fit: cover;
+          @include responsive(mobile) {
+            height: 25vh;
+          }
+        }
+      }
+    }
+
+    .uploader-placeholder {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+  }
 } // .post-form
 
 .post-list {

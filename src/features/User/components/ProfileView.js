@@ -1,0 +1,136 @@
+import React, { Component } from 'react';
+import UserSteemPower from 'features/User/components/UserSteemPower';
+import UserEstimatedValue from 'features/User/components/UserEstimatedValue';
+import FollowerCount from 'features/User/components/FollowerCount';
+import FollowButton from 'features/User/components/FollowButton';
+import LevelBar from 'features/User/components/LevelBar';
+import CircularProgress from 'components/CircularProgress';
+import { COLOR_PRIMARY, COLOR_LIGHT_GREY } from 'styles/constants';
+import isEmpty from 'lodash/isEmpty';
+import { Helmet } from 'react-helmet';
+import { Icon, Timeline, Button } from 'antd';
+import { Link } from 'react-router-dom';
+import { formatNumber } from 'utils/helpers/steemitHelpers';
+import { getCachedImage } from 'features/Post/utils';
+
+export default class ProfileView extends Component {
+  render() {
+    const { me, account, onEditing, profileDraft } = this.props;
+
+    if (isEmpty(account) || !this.props.me || (onEditing &&(account.name !== this.props.me))) {
+      return <CircularProgress />;
+    }
+
+    let profile = account.json_metadata.profile || {};
+    let coverStyle;
+    const profileStyle = {
+      backgroundColor: COLOR_LIGHT_GREY,
+      backgroundImage: `url(https://i.imgur.com/OUdHb2P.png)`,
+    };
+
+    const profileName = onEditing ? (profileDraft.name || profile.name) : (profile.name || account.name);
+    const profileAbout = onEditing ? (profileDraft.about || profile.about) : profile.about ;
+    const profileWebsite = onEditing ? (profileDraft.website || profile.website) : profile.website ;
+    const profileImage = onEditing ? (profileDraft.profile_image || profile.profile_image) : profile.profile_image;
+    const coverImage = onEditing ? (profileDraft.cover_image || profile.cover_image) : profile.cover_image;
+
+    if (profileImage) {
+      profileStyle['backgroundImage'] = `url(${profileImage}?s=280)`;
+    }
+
+    if (coverImage) {
+      coverStyle = {
+        backgroundColor: COLOR_PRIMARY,
+        backgroundImage: `url(${getCachedImage(coverImage, 1600, 800)})`,
+        backgroundSize: 'cover',
+      };
+    }
+
+    return (
+      <div className="profile diagonal-split-view">
+        {onEditing ?
+          <Helmet>
+            <title>@{account.name} - Editing</title>
+          </Helmet> :
+          <Helmet>
+            <title>@{account.name} - Steemhunt</title>
+
+            { /* Search Engine */}
+            <meta name="description" content={profileAbout} />
+            <meta name="image" content={`${profileImage}?s=1200`} />
+            { /* Schema.org for Google */}
+            <meta itemprop="name" content={`@${account.name} - Steemhunt`} />
+            <meta itemprop="description" content={profileAbout} />
+            <meta itemprop="image" content={`${profileImage}?s=1200`} />
+            { /* Twitter */}
+            <meta name="twitter:title" content={`@${account.name} - Steemhunt`} />
+            <meta name="twitter:description" content={profileAbout} />
+            <meta name="twitter:image:src" content={`${profileImage}?s=1200`} />
+            { /* Open Graph general (Facebook, Pinterest & Google+) */}
+            <meta property="og:title" content={`@${account.name} - Steemhunt`} />
+            <meta property="og:description" content={profileAbout} />
+            <meta property="og:image" content={`${profileImage}?s=1200`} />
+          </Helmet>
+        }
+        <div className="top-container primary-gradient" style={coverStyle}>
+          {(me === account.name && !onEditing) &&
+            <div className="edit-buttons">
+              <Link to={`/author/@${me}/edit`}>
+                <Button icon="edit" size="small" ghost>Edit</Button>
+              </Link>
+            </div>
+          }
+          <h1>{profileName}</h1>
+          <h2>{profileAbout}</h2>
+          {(me !== account.name && !onEditing) &&
+            <FollowButton accountName={account.name} />
+          }
+        </div>
+        <div className="diagonal-line"></div>
+        <div className="bottom-container">
+          <div className="profile-picture" style={profileStyle}></div>
+          <div className="profile-level">
+            {account.user_score != null &&
+              <LevelBar account={account} />
+            }
+          </div>
+          <div className="timeline-container">
+            <ul className="left">
+              {account.user_score != null &&
+                <li className="pink">User Score</li>
+              }
+              <li>Reputation</li>
+              <li>Followers</li>
+              <li>Steem Power</li>
+              <li>Estimated Value</li>
+            </ul>
+
+            <Timeline>
+              {account.user_score != null &&
+                <Timeline.Item className="pink">
+                  {formatNumber(account.user_score)}
+                  {account.boost_score && account.boost_score > 1 &&
+                    <span> (x{account.boost_score})</span>
+                  }
+                </Timeline.Item>
+              }
+              <Timeline.Item>
+                {account.reputation}
+              </Timeline.Item>
+              <Timeline.Item><FollowerCount author={account.name} unit="followers" /></Timeline.Item>
+              <Timeline.Item><UserSteemPower account={account} /></Timeline.Item>
+              <Timeline.Item><UserEstimatedValue account={account} /></Timeline.Item>
+            </Timeline>
+          </div>
+
+          <div className="other-info">
+            {profileWebsite &&
+              <p><a href={profileWebsite} target="_blank"><Icon type="link" /> {profileWebsite.replace(/^https?:\/\//, '')}</a></p>
+            }
+            <p><Icon type="book" /> <a href={`https://steemit.com/@${account.name}`} target="_blank" rel="noopener noreferrer">View Steemit blog</a></p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}

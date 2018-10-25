@@ -8,7 +8,8 @@ import steem from 'steem';
 import './utils/helpers/immutabilityHelpers';
 import store from './store';
 import App from './features/App/App';
-import createPlugin from 'bugsnag-react'
+import createPlugin from 'bugsnag-react';
+require('./utils/polyfill');
 
 const bugsnagClient = bugsnag(process.env.REACT_APP_BUGSNAG_KEY);
 const ErrorBoundary = bugsnagClient.use(createPlugin(React));

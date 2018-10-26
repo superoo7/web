@@ -24,17 +24,17 @@ class VoteButton extends PureComponent {
   constructor() {
     super();
     this.state = {
-      voteWeight: 100, // TODO: Remember the last one
+      voteWeight: 100,
       sliderOpened: false,
     }
   }
 
   componentDidMount() {
-    this.updateVote();
+    this.loadVoteWeight();
   }
 
-  updateVote = () => {
-    const voteString = localStorage.getItem(this.props.type);
+  loadVoteWeight = () => {
+    const voteString = localStorage.getItem(`vote-weight-${this.props.type}`);
     const voteWeight = parseInt(voteString, 10)
     if(voteString && !!voteWeight) {
       this.setState({voteWeight: voteWeight});
@@ -58,10 +58,7 @@ class VoteButton extends PureComponent {
     });
   };
 
-  onChangeVotingWeight = value => {
-    this.setState({ voteWeight: value });
-    localStorage.setItem(this.props.type, value);
-  };
+  onChangeVotingWeight = value => this.setState({ voteWeight: value });
 
   doVote = weight => {
     const { isConnected, post, vote, type } = this.props;
@@ -80,7 +77,7 @@ class VoteButton extends PureComponent {
         return this.openSignin();
       }
     }
-    this.updateVote();
+    localStorage.setItem(`vote-weight-${this.props.type}`, this.state.voteWeight);
     this.setState({ sliderOpened: visible });
   };
 

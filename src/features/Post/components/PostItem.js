@@ -78,7 +78,6 @@ class PostItem extends Component {
   }
 }
 
-
 const mapStateToProps = () => createStructuredSelector({
   me: selectMe(),
 });

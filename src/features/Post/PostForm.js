@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification, Badge } from 'antd';
+import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification } from 'antd';
 import { selectDraft, selectIsPublishing } from './selectors';
 import { selectMe } from 'features/User/selectors';
 import { publishContentBegin } from './actions/publishContent';
@@ -15,7 +15,7 @@ import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
 import CustomUploadDragger from 'components/CustomUploadDragger';
-import axios from 'axios';
+import { uploadImage } from 'utils/helpers/uploadHelpers'
 
 const FormItem = Form.Item;
 let currentBeneficiaryId = 0;
@@ -150,21 +150,6 @@ class PostForm extends Component {
     if (this.state.shouldRecalculateBeneficiary) {
       this.onBeneficiariesChanged();
     }
-  }
-
-  beforeUpload = (file) => {
-    if (!file.type.match(/png|jpg|jpeg|gif/)) { // because `accept` doesn't work on some browsers
-      this.setState({ uploadError: 'You can only upload standard image files (png, gif, jpg).' });
-      return false;
-    }
-
-    if (file.size / 1024 / 1024 >= 5) {
-      this.setState({ uploadError: 'Image file size must be smaller than 5MB.' });
-      return false;
-    }
-
-    this.setState({ uploadError: null });
-    return true;
   }
 
   saveAndUpdateDraft = (field, value) => {
@@ -338,7 +323,7 @@ class PostForm extends Component {
       description: text || e.target.value
     }, () => this.saveAndUpdateDraft('description', sanitizeText(this.state.description) || initialState.draft.description))
   };
-  handleImageChange = ({ fileList }) => {
+  handleImageChange = ({ file, fileList }) => {
     const images = fileList.map(function (f) {
       if (f.response && f.response.link) {
         return {
@@ -353,67 +338,62 @@ class PostForm extends Component {
       }
       return null;
     });
-    this.setState({ fileList });
+
+
+    this.setState({ fileList: fileList.filter(f => f.status === "done" || "uploading") });
     this.saveAndUpdateDraft('images', images.filter(x => !!x));
   };
   handleTagsChange = (tags) => this.saveAndUpdateDraft('tags', tags);
 
   initialValue = (field, defaultValue = null) => initialState.draft[field] === this.props.draft[field] ? defaultValue : this.props.draft[field];
 
-  xhrUploadS3 = async ({ file, onProgress, onSuccess, _ }) => {
-    const onError = (e) => {
-      console.error(e);
-      this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image
-      notification['error']({ message: e.message });
-    };
-
-    try {
-      //const res = await api.post('/posts/signed_url', {filename: file.name});
-      const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
-      var formData = new FormData();
-      formData.append("image", file);
-      axios.post(uploadUrl, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
-          onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
-        },
-      })
-        .then((res) => {
-          if (res.data.error) {
-            throw Error(res.data.error);
-          }
-
-          const { response } = res.data;
-          const result = {
-            uid: response.uid,
-            url: getCachedImage(response.link),
-            name: response.name,
-            link: response.link,
-            status: 'done'
-          };
-          onSuccess(result, file);
-        }).catch((e) => onError(e));
-    } catch (e) {
-      onError(e);
+  onXhrUploadSuccess = (res, onSuccess, file) => {
+    if (res.data.error) {
+      notification['error']({ message: res.data.error });
     }
+    const { response } = res.data;
+    const result = {
+      uid: response.uid,
+      url: getCachedImage(response.link),
+      name: response.name,
+      link: response.link,
+      status: 'done'
+    };
+    onSuccess(result, file);
   }
 
-  inputUploadS3 = (e) => {
-    const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
-    var formData = new FormData();
-    formData.append("image", e.target.files[0]);
+  onXhrUploadProgress = (onProgress, total, loaded, file) => {
+    onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
+  }
+
+  xhrUpload = ({ file, onProgress, onSuccess}) => {
+    uploadImage(
+      file,
+      (res) => this.onXhrUploadSuccess(res, onSuccess, file),
+      this.onInlineUploadFail,
+      ({total, loaded}) => this.onXhrUploadProgress(onProgress, total, loaded, file)
+    )
+  }
+
+  onInlineUploadSuccess = (res) => {
+    const { response } = res.data;
+    const { selectionStart, innerHTML } = this.descriptionRef.textAreaRef;
+    const text = innerHTML.slice(0, selectionStart)
+      + `![${response.name}](${getCachedImage(response.link)})`
+      + innerHTML.slice(selectionStart + 1);
+    this.handleDescriptionChange(null, text)
+  }
+
+  onInlineUploadFail = (e) => {
+    notification['error']({ message: e.response });
+  }
+
+  inputUpload = (e) => {
+    const file = e.target.files[0];
     this.setState({ inlineUploading: true }, () => {
-      axios.post(uploadUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' }})
-      .then((res) => {
-        const { response } = res.data;
-        const { selectionStart, innerHTML } = this.descriptionRef.textAreaRef;
-        const text = innerHTML.slice(0, selectionStart)
-          + `![${response.name}](${getCachedImage(response.link)})`
-          + innerHTML.slice(selectionStart + 1);
-        this.setState({
-          inlineUploading: false
-        }, () => this.handleDescriptionChange(null, text));
-      })
-    })
+      uploadImage(file, this.onInlineUploadSuccess, this.onInlineUploadFail)
+      .then(() => this.setState({ inlineUploading: false }));
+    });
   }
 
   render() {
@@ -568,7 +548,7 @@ class PostForm extends Component {
               rules: [{ validator: this.checkImages }],
             })(
               <CustomUploadDragger name="image"
-                customRequest={this.xhrUploadS3}
+                customRequest={this.xhrUpload}
                 listType="picture-card"
                 fileList={this.state.fileList}
                 onPreview={this.handleImagePreview}
@@ -613,8 +593,8 @@ class PostForm extends Component {
             maxLength={1000} />
           <div className="inline-upload-container">
             <a onClick={() => this.inlineFileField.click()}>Upload Image</a>
-            {this.state.inlineUploading && <Icon type="loading" spin="true"/>}
-            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUploadS3} />
+            {this.state.inlineUploading && <Icon type="loading" spin="true" />}
+            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUpload} />
           </div>
         </FormItem>
         <FormItem

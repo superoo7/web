@@ -8,7 +8,7 @@ import { updateProfileDraft, resetProfileDraft } from 'features/User/actions/upd
 import { Form, Input, Button, Spin, Icon, Upload, notification } from 'antd';
 import { getCachedImage } from 'features/Post/utils';
 import SteemConnect from 'utils/steemConnectAPI';
-import axios from 'axios';
+import { uploadImage } from 'utils/helpers/uploadHelpers'
 
 const FormItem = Form.Item;
 
@@ -42,40 +42,29 @@ class ProfileForm extends Component {
     this.props.updateProfileDraft(key, e.target.value)
   }
 
-  beforeUpload = (file) => {
-    if (!file.type.match(/png|jpg|jpeg/)) { // because `accept` doesn't work on some browsers
-      notification['error']({ message: 'You can only upload standard image files (png, jpg, jpeg).' });
-      return false;
+  onXhrUploadSuccess(res, onSuccess, file) {
+    if (res.data.error) {
+      notification['error']({ message: res.data.error });
     }
-
-    if (file.size / 1024 / 1024 >= 5) {
-      notification['error']({ message: 'Image file size must be smaller than 5MB.' });
-      return false;
+    const { response } = res.data;
+    const result = {
+      uid: response.uid, url: getCachedImage(response.link),
+      name: response.name, link: response.link,
+      status: 'done'
     }
-
-    return true;
+    onSuccess(result, file);
   }
 
-  xhrUploadS3 = async ({ file, onProgress, onSuccess, onError }) => {
-    try {
-      const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
-      var formData = new FormData();
-      formData.append("image", file);
-      axios.post(uploadUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-        .then((res) => {
-          const { response } = res.data;
-          const result = {
-            uid: response.uid, url: getCachedImage(response.link),
-            name: response.name, link: response.link,
-            status: 'done'
-          }
-          onSuccess(result, file);
-        }).catch((e) => {
-          console.error(e);
-        });
-    } catch (e) {
-      onError(e);
-    }
+  onXhrUploadFail(e) {
+    notification['error']({ message: e.response });
+  }
+
+  xhrUpload = ({ file, onSuccess }) => {
+    uploadImage(
+      file,
+      (res) => this.onXhrUploadSuccess(res, onSuccess, file),
+      this.onXhrUploadFail,
+    )
   }
 
   handleUploadChange(props, key) {
@@ -230,7 +219,7 @@ class ProfileForm extends Component {
               listType="picture-card"
               className="singular-uploader large"
               showUploadList={false}
-              customRequest={this.xhrUploadS3}
+              customRequest={this.xhrUpload}
               onChange={(props) => this.handleUploadChange(props, 'cover_image')}
               beforeUpload={this.beforeUpload}
             >
@@ -251,7 +240,7 @@ class ProfileForm extends Component {
               listType="picture-card"
               className="singular-uploader small"
               showUploadList={false}
-              customRequest={this.xhrUploadS3}
+              customRequest={this.xhrUpload}
               onChange={(props) => this.handleUploadChange(props, 'profile_image')}
               beforeUpload={this.beforeUpload}
             >

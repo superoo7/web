@@ -348,7 +348,7 @@ class PostForm extends Component {
 
   initialValue = (field, defaultValue = null) => initialState.draft[field] === this.props.draft[field] ? defaultValue : this.props.draft[field];
 
-  xhrUploadS3 = async ({ file, onProgress, onSuccess, _ }) => {
+  xhrUploadS3 = ({ file, onProgress, onSuccess, _ }) => {
     const onError = (e) => {
       console.error(e);
       this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image

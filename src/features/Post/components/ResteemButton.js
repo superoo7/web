@@ -18,20 +18,21 @@ class ResteemButton extends PureComponent {
     }
   }
 
-  componentDidMount() {
+  async getRebloogers() {
+    const { author, permlink } = this.props.post;
     try {
-      this.getRebloogers().then((reblogged) => {
-        this.setState({ alreadyResteemed: reblogged });
-      });
+      const rebloggers = await steem.api.getRebloggedByAsync(author, permlink);
+      return rebloggers.includes(this.props.me);
     } catch (e) {
-      console.error('getRebloggedByAsync failed', e.message);
+      console.error('getRebloggedByAsync failed.', e.message);
+      return false;
     }
   }
 
-  async getRebloogers() {
-    const { author, permlink } = this.props.post;
-    const rebloggers = await steem.api.getRebloggedByAsync(author, permlink);
-    return rebloggers.includes(this.props.me)
+  componentDidMount() {
+    this.getRebloogers().then((reblogged) => {
+      this.setState({ alreadyResteemed: reblogged });
+    });
   }
 
   clickResteem = async (post) => {

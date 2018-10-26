@@ -24,18 +24,22 @@ class Referral extends Component {
 
   scrollDetector(e) {
     if (e.srcElement && (e.srcElement.scrollTop > 100) && !this.state.reported) {
-      this.postReferral()
+      this.postReferral();
     }
   }
 
   postReferral() {
     this.setState({ reported: true }, () => {
-      api.post('/referrals.json', {
-        ref: this.props.params.get('ref'),
-        path: this.props.pathname,
-        referrer: document.referrer
-      }, false);
-    })
+      try {
+        api.post('/referrals.json', {
+          ref: this.props.params.get('ref'),
+          path: this.props.pathname,
+          referrer: document.referrer
+        }, false);
+      } catch(e) {
+        console.error(e);
+      }
+    });
   }
 
   render() {

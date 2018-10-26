@@ -56,7 +56,7 @@ class ProfileForm extends Component {
     return true;
   }
 
-  xhrUploadS3 = async ({ file, onProgress, onSuccess, onError }) => {
+  xhrUploadS3 = ({ file, onProgress, onSuccess, onError }) => {
     try {
       const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
       var formData = new FormData();

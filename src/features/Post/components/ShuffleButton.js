@@ -55,32 +55,30 @@ class ShuffleButton extends PureComponent {
     $coinContainer.classList.add('play');
 
     this.shuffleTimeout = setTimeout(() => {
-      try {
-        api.post('/hunt_transactions/daily_shuffle.json', null, true, (res) => {
-          clearInterval(this.tickInterval);
-          this.setState({ amount: res.amount, claimed: true });
-          $coin.classList.remove('play');
+      api.post('/hunt_transactions/daily_shuffle.json', null, true, (res) => {
+        clearInterval(this.tickInterval);
+        this.setState({ amount: res.amount, claimed: true });
+        $coin.classList.remove('play');
 
-          // Jackpot fireworks
-          if (res.amount === 1000) {
-            document.getElementById("jackpot-sound").play();
+        // Jackpot fireworks
+        if (res.amount === 1000) {
+          document.getElementById("jackpot-sound").play();
 
-            this.setState({ fireworks: true });
-            this.shuffleTimeout2 = setTimeout(() => {
-              this.setState({ fireworks: false });
-              $coinContainer.classList.remove('play');
-            }, 5000);
-          } else {
-            this.shuffleTimeout2 = setTimeout(function() {
-              $coinContainer.classList.remove('play');
-            }, 3000);
-          }
-        });
-      } catch(e) {
+          this.setState({ fireworks: true });
+          this.shuffleTimeout2 = setTimeout(() => {
+            this.setState({ fireworks: false });
+            $coinContainer.classList.remove('play');
+          }, 5000);
+        } else {
+          this.shuffleTimeout2 = setTimeout(function() {
+            $coinContainer.classList.remove('play');
+          }, 3000);
+        }
+      }).catch(e => {
         clearInterval(this.tickInterval);
         $coin.classList.remove('play');
         notification['error']({ message: e.message });
-      }
+      });
 
       this.props.handleSortOption('random');
     }, 3000);

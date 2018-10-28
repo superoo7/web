@@ -49,6 +49,11 @@ class SignUp extends Component {
     this.setState({ accountName: null, accountCheck: 'loading', accountCheckMsg: 'Checking the server ...' }, () => {
       try {
         steem.api.lookupAccountNames([value], (err, result) => {
+          if (err || !result) {
+            console.error(err, result);
+            return callback('Service is temporarily unavailable, Please try again later.');
+          }
+
           if (result[0] !== null) {
             this.setState({ accountCheck: false, accountCheckMsg: 'This username is already in use.' }, () => { return callback(); });
           } else {

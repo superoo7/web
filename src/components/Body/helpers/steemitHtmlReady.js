@@ -9,7 +9,7 @@
 import xmldom from 'xmldom';
 import embedjs from 'embedjs';
 import linksRe from './steemitLinks';
-import { validateAccountName } from './ChainValidation';
+import { validateAccountName } from 'utils/helpers/accountName';
 
 const noop = () => { };
 const DOMParser = new xmldom.DOMParser({

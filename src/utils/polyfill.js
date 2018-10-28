@@ -1,3 +1,5 @@
+/* eslint-disable no-extend-native */
+
 if (!String.prototype.includes) {
   Object.defineProperty(String.prototype, 'includes', {
     value: function(search, start) {

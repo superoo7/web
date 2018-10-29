@@ -15,7 +15,7 @@ import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
 import CustomUploadDragger from 'components/CustomUploadDragger';
-import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers'
+import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers';
 
 const FormItem = Form.Item;
 let currentBeneficiaryId = 0;
@@ -44,7 +44,7 @@ class PostForm extends Component {
       shouldRecalculateBeneficiary: false,
       duplicatedUrl: null,
       description: '',
-      inlineUploading: false
+      inlineUploading: false,
     };
     this.beneficiaryInput = {};
   }
@@ -102,15 +102,13 @@ class PostForm extends Component {
         this.handleImageChange({ fileList: draft.images });
         this.prepareForEdit(draft);
       }
-      // TODO: Should show add the inputs properly
-      // updateDraft('beneficiaries', draft.beneficiaries || []);
     }
 
     if (this.props.me) {
       this.saveAndUpdateDraft('author', this.props.me);
     }
 
-    window.onbeforeunload = function () {
+    window.onbeforeunload = function() {
       return "Leave site? Changes you made may not be saved.";
     }
   }
@@ -326,7 +324,7 @@ class PostForm extends Component {
   handleDescriptionChange = (e, text = null) => {
     this.setState({
       description: text || e.target.value
-    }, () => this.saveAndUpdateDraft('description', sanitizeText(this.state.description) || initialState.draft.description))
+    }, () => this.saveAndUpdateDraft('description', sanitizeText(this.state.description) || initialState.draft.description));
   };
   handleImageChange = ({ file, fileList }) => {
     const images = fileList.map(function (f) {
@@ -343,7 +341,7 @@ class PostForm extends Component {
       }
       return null;
     });
-    console.log(file, fileList);
+    // console.log(file, fileList);
     this.setState({ fileList: fileList.filter(f => f.status === "done" || f.status === "uploading") });
     this.saveAndUpdateDraft('images', images.filter(x => !!x));
   };
@@ -373,7 +371,7 @@ class PostForm extends Component {
   }
 
   xhrUpload = ({ file, onProgress, onSuccess}) => {
-    console.log(file, this.state.fileList, "=====xhrUpload=====");
+    // console.log(file, this.state.fileList, "=====xhrUpload=====");
     if (!uploadImage(
       file,
       (res) => this.onXhrUploadSuccess(res, onSuccess, file),
@@ -390,7 +388,7 @@ class PostForm extends Component {
     const text = innerHTML.slice(0, selectionStart)
       + `![${response.name}](${getCachedImage(response.link)})`
       + innerHTML.slice(selectionStart + 1);
-    this.handleDescriptionChange(null, text)
+    this.handleDescriptionChange(null, text);
   }
 
   onInlineUploadFail = (e) => {
@@ -641,7 +639,7 @@ class PostForm extends Component {
               <a href="https://steemit.com/steemhunt/@steemhunt/introducing-incentives-for-steemhunt-sponsors" target="_blank" rel="noopener noreferrer">
                 delegated Steem Power to @steemhunt.
               </a>
-              <br />
+              <br/>
               {timeUntilMidnightSeoul()}
             </p>
           </FormItem>

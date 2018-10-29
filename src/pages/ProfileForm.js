@@ -8,7 +8,7 @@ import { updateProfileDraft, resetProfileDraft } from 'features/User/actions/upd
 import { Form, Input, Button, Spin, Icon, Upload, notification } from 'antd';
 import { getCachedImage } from 'features/Post/utils';
 import SteemConnect from 'utils/steemConnectAPI';
-import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers'
+import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers';
 
 const FormItem = Form.Item;
 

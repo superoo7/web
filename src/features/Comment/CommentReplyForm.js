@@ -8,7 +8,7 @@ import { replyBegin, editReplyBegin } from './actions/reply';
 import { getCachedImage } from 'features/Post/utils';
 import { selectIsCommentPublishing, selectHasCommentSucceeded } from './selectors';
 import { scrollTo } from 'utils/scroller';
-import { uploadImage } from 'utils/helpers/uploadHelpers'
+import { uploadImage } from 'utils/helpers/uploadHelpers';
 
 class CommentReplyForm extends Component {
   static propTypes = {
@@ -72,19 +72,19 @@ class CommentReplyForm extends Component {
     this.setState({
       body: text
     });
-  }
+  };
 
   onUploadFail = (e) => {
     notification['error']({ message: e.response.data.error });
-  }
+  };
 
   inputUpload = (e) => {
     const file = e.target.files[0];
     this.setState({ inlineUploading: true }, () => {
       uploadImage(file, this.onUploadSuccess, this.onUploadFail)
-      .then(() => this.setState({ inlineUploading: false }));
+        .then(() => this.setState({ inlineUploading: false }));
     })
-  }
+  };
 
   render() {
     const { editMode, closeForm } = this.props;

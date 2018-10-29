@@ -82,7 +82,10 @@ class ProfileForm extends Component {
     e.preventDefault();
 
     const { profileDraft, me, myAccount, history, refreshMe } = this.props;
-    const profile = myAccount.json_metadata.profile;
+    let profile = myAccount.json_metadata.profile;
+    if (!profile) {
+      profile = { name: '', about: '', website: '', cover_image: '', profile_image: '' };
+    }
 
     const values = {
       name: profileDraft.name || profile.name,

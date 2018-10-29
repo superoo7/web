@@ -5,7 +5,7 @@ import { createStructuredSelector } from 'reselect';
 import { Button, Carousel, Icon, Timeline, Tag, Modal, Input, Row, Col, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
-import { getPostPath, getTagPath, isEditable, addReferral } from '../utils';
+import { getPostPath, getTagPath, isEditable, addReferral, getPostKey } from '../utils';
 import VoteButton from 'features/Vote/VoteButton';
 import Author from 'components/Author';
 import { selectMe } from 'features/User/selectors';
@@ -271,6 +271,7 @@ class PostView extends Component {
             className="round-border inversed-color padded-button checkitout-button"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => window.gtag('event', 'check_it_out_clicked', { 'event_category' : 'lead', 'event_label' : getPostKey(post) })}
           >
             CHECK IT OUT
           </Button>

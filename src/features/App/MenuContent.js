@@ -38,22 +38,22 @@ const MenuContent = props => {
           </a>
         </Menu.Item>
         <Menu.Item key="1-5" className="mobile-only">
-          <Link to="/airdrop" onClick={() => this.changeVisibility(false)}>
+          <Link to="/airdrop" onClick={() => props.changeVisibility(false)}>
             <Icon type="gift" /> ABOUT AIRDROPS
           </Link>
         </Menu.Item>
         <Menu.Item key="2">
-          <Link to="/hall-of-fame" onClick={() => this.changeVisibility(false)}>
+          <Link to="/hall-of-fame" onClick={() => props.changeVisibility(false)}>
             <Icon type="trophy" /> HALL OF FAME
           </Link>
         </Menu.Item>
         <Menu.Item key="3">
-          <Link to={`/wallet`} onClick={() => this.changeVisibility(false)}>
+          <Link to={`/wallet`} onClick={() => props.changeVisibility(false)}>
             <Icon type="wallet" /> WALLET <sup>beta</sup>
           </Link>
         </Menu.Item>
         <Menu.Item key="4">
-          <Link to={`/author/@${props.me}`} onClick={() => this.changeVisibility(false)}>
+          <Link to={`/author/@${props.me}`} onClick={() => props.changeVisibility(false)}>
             <Icon type="user" /> MY PROFILE
           </Link>
         </Menu.Item>
@@ -95,7 +95,7 @@ const MenuContent = props => {
     return (
       <Menu theme="dark">
         <Menu.Item key="0" className="two-column-hidden">
-          <Link to="/about" onClick={() => this.changeVisibility(false)}>
+          <Link to="/about" onClick={() => props.changeVisibility(false)}>
             <Icon type="question-circle-o" /> ABOUT STEEMHUNT
           </Link>
         </Menu.Item>
@@ -105,12 +105,12 @@ const MenuContent = props => {
           </a>
         </Menu.Item>
         <Menu.Item key="1-5">
-          <Link to="/airdrop" onClick={() => this.changeVisibility(false)}>
+          <Link to="/airdrop" onClick={() => props.changeVisibility(false)}>
             <Icon type="gift" /> ABOUT AIRDROPS
           </Link>
         </Menu.Item>
         <Menu.Item key="2">
-          <Link to="/hall-of-fame" onClick={() => this.changeVisibility(false)}>
+          <Link to="/hall-of-fame" onClick={() => props.changeVisibility(false)}>
             <Icon type="trophy" /> HALL OF FAME
           </Link>
         </Menu.Item>

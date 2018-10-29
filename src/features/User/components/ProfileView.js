@@ -12,6 +12,7 @@ import { Icon, Timeline, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { formatNumber } from 'utils/helpers/steemitHelpers';
 import { getCachedImage } from 'features/Post/utils';
+import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
 
 export default class ProfileView extends Component {
   render() {
@@ -25,7 +26,7 @@ export default class ProfileView extends Component {
     let coverStyle;
     const profileStyle = {
       backgroundColor: COLOR_LIGHT_GREY,
-      backgroundImage: `url(https://i.imgur.com/OUdHb2P.png)`,
+      backgroundImage: `url(${profilePlaceholder})`,
     };
 
     const profileName = onEditing ? (profileDraft.name || profile.name) : (profile.name || account.name);

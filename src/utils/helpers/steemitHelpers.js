@@ -76,9 +76,13 @@ export const calculateContentPayout = content => {
 };
 
 export const hasVoted = (content, name) => {
+  if (!content || !name) {
+    return false;
+  }
+
   return (
-    (content.valid_votes && !!content.valid_votes.find(vote => vote.voter === name && vote.percent > 0)) ||
-    (content.active_votes && !!content.active_votes.find(vote => vote.voter === name && vote.percent > 0))
+    (content.valid_votes && !!content.valid_votes.find(vote => vote && vote.voter === name && vote.percent > 0)) ||
+    (content.active_votes && !!content.active_votes.find(vote => vote && vote.voter === name && vote.percent > 0))
   );
 }
 export const formatAmount = amount => numeral(amount).format('$0,0.00');

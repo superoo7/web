@@ -61,12 +61,16 @@ export function getMeReducer(state, action) {
 }
 
 function getRCInfo(account) {
-  return new Promise(function(resolve, _) {
+  return new Promise(function(resolve, reject) {
     steem.api.send('rc_api', {
       method: 'find_rc_accounts',
       params: {'accounts': [account]},
     }, function(_, res) {
-      resolve(res.rc_accounts[0]);
+      if (res && res.rc_accounts) {
+        resolve(res.rc_accounts[0]);
+      } else {
+        reject(Error('RC API failed'));
+      }
     });
   });
 }

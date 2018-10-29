@@ -48,11 +48,6 @@ export const selectMyFollowingsList = () => createSelector(
   (me, state) => (state[me] && state[me].list) || [],
 );
 
-export const selectMyFollowingsListLoaded = () => createSelector(
-  [selectMe(), selectFollowings()],
-  (me, state) => !!state[me],
-);
-
 export const selectMyFollowingsLoadStatus = () => createSelector(
   [selectMe(), selectFollowings()],
   (me, state) => (state[me] && state[me].loadStatus) || {},

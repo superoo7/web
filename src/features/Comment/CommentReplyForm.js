@@ -111,7 +111,7 @@ class CommentReplyForm extends Component {
           <div className="inline-upload-container">
             <a onClick={() => this.inlineFileField.click()}>Upload Image</a>
             {this.state.inlineUploading && <Icon type="loading" spin="true" />}
-            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUpload} accept="image/x-png,image/gif,image/jpeg" />
+            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUpload} accept="image/x-png,image/jpeg" />
           </div>
         </div>
       </div>

@@ -4,6 +4,10 @@ import { notification } from 'antd';
 const UPLOAD_API = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
 
 export function validateImage(file) {
+  if (!file) {
+    return false;
+  }
+
   if (!file.type.match(/png|jpg|jpeg|gif/)) { // because `accept` doesn't work on some browsers
     notification['error']({ message: 'You can only upload standard image files (png, gif, jpg).' });
     return false;

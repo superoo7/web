@@ -75,7 +75,7 @@ class CommentReplyForm extends Component {
   }
 
   onUploadFail = (e) => {
-    notification['error']({ message: e.response });
+    notification['error']({ message: e.response.data.error });
   }
 
   inputUpload = (e) => {

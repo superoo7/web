@@ -12,7 +12,14 @@ const VideoTag = ({ href }) => {
 
 export default class CustomUploadDragger extends Upload.Dragger {
 
+  componentDidMount() {
+    this.handleVideoFiles();
+  }
   componentDidUpdate() {
+    this.handleVideoFiles();
+  }
+
+  handleVideoFiles() {
     const nodes = document.getElementsByClassName('ant-upload-list-item-thumbnail');
     for (let i = 0; i < nodes.length; i ++) {
       if (/\.mp4/.test(nodes[i].getAttribute("href"))) {
@@ -22,7 +29,7 @@ export default class CustomUploadDragger extends Upload.Dragger {
           temp.className = "thumbnail-video-container"
           const href = nodes[i].getAttribute("href");
           ReactDOM.render(<VideoTag href={href} />, temp);
-          nodes[i].replaceChild(temp, noImageTag)
+          nodes[i].replaceChild(temp, noImageTag);
         }
       }
     }

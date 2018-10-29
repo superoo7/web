@@ -15,7 +15,7 @@ import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
 import CustomUploadDragger from 'components/CustomUploadDragger';
-import { uploadImage } from 'utils/helpers/uploadHelpers'
+import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers'
 
 const FormItem = Form.Item;
 let currentBeneficiaryId = 0;
@@ -116,7 +116,14 @@ class PostForm extends Component {
   }
 
   componentWillUnmount() {
-    this.checkAndResetDraft();
+    const { match: { params: { author, permlink } }} = this.props;
+
+    if (author && permlink) {
+      this.props.resetDraft();
+      localStorage.removeItem('draft');
+    } else {
+      this.checkAndResetDraft();
+    }
 
     window.onbeforeunload = null;
   }
@@ -135,14 +142,14 @@ class PostForm extends Component {
       if (this.props.draft.permlink !== nextProps.draft.permlink) {
         this.prepareForEdit(nextProps.draft);
       }
-    } else if (!localStorage.getItem('draft')) {
-      // if localStorage does not exist
-      this.setState({ editMode: false });
-      this.checkAndResetDraft();
-    }
-
-    if (nextProps.me !== nextProps.draft.author) {
-      this.saveAndUpdateDraft('author', nextProps.me);
+    } else {
+      if (author && permlink) {
+        this.props.resetDraft();
+        localStorage.removeItem('draft');
+      } else if (!localStorage.getItem('draft')) {
+        this.setState({ editMode: false });
+        this.checkAndResetDraft();
+      }
     }
   }
 
@@ -304,8 +311,6 @@ class PostForm extends Component {
     });
   };
 
-  // MARK: - Handle uploads
-
   handleImagePreviewCancel = () => this.setState({ previewVisible: false });
   handleImagePreview = (file) => {
     this.setState({
@@ -338,9 +343,8 @@ class PostForm extends Component {
       }
       return null;
     });
-
-
-    this.setState({ fileList: fileList.filter(f => f.status === "done" || "uploading") });
+    console.log(file, fileList);
+    this.setState({ fileList: fileList.filter(f => f.status === "done" || f.status === "uploading") });
     this.saveAndUpdateDraft('images', images.filter(x => !!x));
   };
   handleTagsChange = (tags) => this.saveAndUpdateDraft('tags', tags);
@@ -348,9 +352,6 @@ class PostForm extends Component {
   initialValue = (field, defaultValue = null) => initialState.draft[field] === this.props.draft[field] ? defaultValue : this.props.draft[field];
 
   onXhrUploadSuccess = (res, onSuccess, file) => {
-    if (res.data.error) {
-      notification['error']({ message: res.data.error });
-    }
     const { response } = res.data;
     const result = {
       uid: response.uid,
@@ -362,17 +363,25 @@ class PostForm extends Component {
     onSuccess(result, file);
   }
 
+  onXhrUploadFail = (e, file) => {
+    notification['error']({ message: e.response.data.error });
+    this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) });
+  }
+
   onXhrUploadProgress = (onProgress, total, loaded, file) => {
     onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
   }
 
   xhrUpload = ({ file, onProgress, onSuccess}) => {
-    uploadImage(
+    console.log(file, this.state.fileList, "=====xhrUpload=====");
+    if (!uploadImage(
       file,
       (res) => this.onXhrUploadSuccess(res, onSuccess, file),
-      this.onInlineUploadFail,
+      (res) => this.onXhrUploadFail(res, file),
       ({total, loaded}) => this.onXhrUploadProgress(onProgress, total, loaded, file)
-    )
+    )) {
+      return false;
+    }
   }
 
   onInlineUploadSuccess = (res) => {
@@ -385,7 +394,7 @@ class PostForm extends Component {
   }
 
   onInlineUploadFail = (e) => {
-    notification['error']({ message: e.response });
+    notification['error']({ message: e.response.data.error });
   }
 
   inputUpload = (e) => {
@@ -555,7 +564,7 @@ class PostForm extends Component {
                 onChange={this.handleImageChange}
                 multiple={true}
                 accept="image/x-png,image/gif,image/jpeg"
-                beforeUpload={this.beforeUpload}
+                beforeUpload={(file, fileList) => validateImage(file)}
               >
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
@@ -588,7 +597,7 @@ class PostForm extends Component {
             ref={(ref) => { this.descriptionRef = ref }}
             placeholder="Comment on this product..."
             rows={4}
-            value={this.state.description}
+            value={this.state.description || this.initialValue('description')}
             onChange={this.handleDescriptionChange}
             maxLength={1000} />
           <div className="inline-upload-container">

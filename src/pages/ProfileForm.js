@@ -8,7 +8,7 @@ import { updateProfileDraft, resetProfileDraft } from 'features/User/actions/upd
 import { Form, Input, Button, Spin, Icon, Upload, notification } from 'antd';
 import { getCachedImage } from 'features/Post/utils';
 import SteemConnect from 'utils/steemConnectAPI';
-import { uploadImage } from 'utils/helpers/uploadHelpers'
+import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers'
 
 const FormItem = Form.Item;
 
@@ -43,9 +43,6 @@ class ProfileForm extends Component {
   }
 
   onXhrUploadSuccess(res, onSuccess, file) {
-    if (res.data.error) {
-      notification['error']({ message: res.data.error });
-    }
     const { response } = res.data;
     const result = {
       uid: response.uid, url: getCachedImage(response.link),
@@ -56,7 +53,7 @@ class ProfileForm extends Component {
   }
 
   onXhrUploadFail(e) {
-    notification['error']({ message: e.response });
+    notification['error']({ message: e.response.data.error });
   }
 
   xhrUpload = ({ file, onSuccess }) => {
@@ -216,12 +213,13 @@ class ProfileForm extends Component {
           })(
             <Upload
               name="cover_image"
+              accept="image/x-png,image/jpeg"
               listType="picture-card"
               className="singular-uploader large"
               showUploadList={false}
               customRequest={this.xhrUpload}
               onChange={(props) => this.handleUploadChange(props, 'cover_image')}
-              beforeUpload={this.beforeUpload}
+              beforeUpload={(file, fileList) => validateImage(file)}
             >
               {this.renderImageOrButton(coverImage, this.state.cover_image_loading)}
             </Upload>
@@ -237,12 +235,13 @@ class ProfileForm extends Component {
           })(
             <Upload
               name="profile_image"
+              accept="image/x-png,image/jpeg"
               listType="picture-card"
               className="singular-uploader small"
               showUploadList={false}
               customRequest={this.xhrUpload}
               onChange={(props) => this.handleUploadChange(props, 'profile_image')}
-              beforeUpload={this.beforeUpload}
+              beforeUpload={(file, fileList) => validateImage(file)}
             >
               {this.renderImageOrButton(profileImage, this.state.profile_image_loading)}
             </Upload>

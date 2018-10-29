@@ -51,6 +51,25 @@
     border:0;
   }
 
+  .inline-upload-container {
+    position: absolute;
+    width: 300px;
+    height: 25px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    a {
+      text-align: left;
+    }
+    .anticon-loading {
+      margin-left: 10px;
+      color: $primary;
+    }
+    input {
+      display: none;
+    }
+  }
+
   .singular-uploader {
     &.small {
       img, .uploader-placeholder {
@@ -452,6 +471,28 @@
 
         @include responsive(mobile) {
           padding-right: 6rem;
+        }
+      }
+
+      .inline-upload-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 5px;
+        margin-top: 3px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        a {
+          text-align: left;
+          font-size: 13px;
+        }
+        .anticon-loading {
+          margin-left: 10px;
+          color: $primary;
+        }
+        input {
+          display: none;
         }
       }
 

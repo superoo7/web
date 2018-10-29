@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Button, Carousel, Icon, Timeline, Tag, Modal, Input, Row, Col, Tooltip } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Carousel, Icon, Timeline, Tag, Modal, Input, Row, Col, Tooltip, Popconfirm } from 'antd';
+import { Link, withRouter } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
 import { getPostPath, getTagPath, isEditable, addReferral, getPostKey } from '../utils';
 import VoteButton from 'features/Vote/VoteButton';
@@ -115,6 +115,19 @@ class PostView extends Component {
         this.props.moderatorReply(comment);
       }
   };
+
+  checkDraft() {
+    const { post } = this.props;
+    const draftString = localStorage.getItem('draft');
+    if (!draftString) {
+      this.props.history.push(`${getPostPath(post)}/edit`);
+    }
+  }
+
+  onClickForceEdit() {
+    const { post } = this.props;
+    this.props.history.push(`${getPostPath(post)}/edit`);
+  }
 
   render() {
     const { me, post } = this.props;
@@ -230,9 +243,9 @@ class PostView extends Component {
 
           <div className="edit-buttons">
             {shouldShowEdit &&
-              <Link to={`${getPostPath(post)}/edit`}>
-                <Button icon="edit" size="small" ghost>Edit</Button>
-              </Link>
+              <Popconfirm placement="bottomRight" title={`Your saved local post draft will be deleted. Are you sure?`} onConfirm={() => this.onClickForceEdit()} okText="Yes" cancelText="No">
+                <Button onClick={() => this.checkDraft()} icon="edit" size="small" ghost>Edit</Button>
+              </Popconfirm>
             }
             {isModerator(me) &&
               <span>
@@ -400,4 +413,4 @@ const mapDispatchToProps = (dispatch, props) => ({
   moderatorReply: (body) => dispatch(replyBegin(props.post, body, true)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostView);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PostView));

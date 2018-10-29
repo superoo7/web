@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { createStructuredSelector } from 'reselect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Input } from 'antd';
+import { Button, Input, Icon, notification } from 'antd';
 import { isEmpty } from 'lodash';
 import { replyBegin, editReplyBegin } from './actions/reply';
+import { getCachedImage } from 'features/Post/utils';
 import { selectIsCommentPublishing, selectHasCommentSucceeded } from './selectors';
 import { scrollTo } from 'utils/scroller';
+import { uploadImage } from 'utils/helpers/uploadHelpers';
 
 class CommentReplyForm extends Component {
   static propTypes = {
@@ -23,6 +25,7 @@ class CommentReplyForm extends Component {
     super();
     this.state = {
       body: '',
+      inlineUploading: false
     }
   }
 
@@ -60,6 +63,29 @@ class CommentReplyForm extends Component {
     }
   };
 
+  onUploadSuccess = (res) => {
+    const { response } = res.data;
+    const { selectionStart, innerHTML } = this.form.textAreaRef;
+    const text = innerHTML.slice(0, selectionStart)
+      + `![${response.name}](${getCachedImage(response.link)})`
+      + innerHTML.slice(selectionStart + 1);
+    this.setState({
+      body: text
+    });
+  };
+
+  onUploadFail = (e) => {
+    notification['error']({ message: e.response.data.error });
+  };
+
+  inputUpload = (e) => {
+    const file = e.target.files[0];
+    this.setState({ inlineUploading: true }, () => {
+      uploadImage(file, this.onUploadSuccess, this.onUploadFail)
+        .then(() => this.setState({ inlineUploading: false }));
+    })
+  };
+
   render() {
     const { editMode, closeForm } = this.props;
 
@@ -72,7 +98,7 @@ class CommentReplyForm extends Component {
           value={this.state.body}
           autosize />
         <div className="actions">
-          {closeForm  && (
+          {closeForm && (
             <Button shape="circle" onClick={closeForm} icon="close" size="small" className="close-button"></Button>
           )}
           <Button
@@ -82,6 +108,11 @@ class CommentReplyForm extends Component {
           >
             {editMode ? 'Update' : 'Post'}
           </Button>
+          <div className="inline-upload-container">
+            <a onClick={() => this.inlineFileField.click()}>Upload Image</a>
+            {this.state.inlineUploading && <Icon type="loading" spin="true" />}
+            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUpload} accept="image/x-png,image/jpeg" />
+          </div>
         </div>
       </div>
     );

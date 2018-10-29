@@ -15,7 +15,7 @@ import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
 import CustomUploadDragger from 'components/CustomUploadDragger';
-import axios from 'axios';
+import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers';
 
 const FormItem = Form.Item;
 let currentBeneficiaryId = 0;
@@ -43,28 +43,33 @@ class PostForm extends Component {
       beneficiariesValid: true,
       shouldRecalculateBeneficiary: false,
       duplicatedUrl: null,
+      description: '',
+      inlineUploading: false,
     };
     this.beneficiaryInput = {};
   }
 
   componentDidMount() {
-    const { match: { params : { author, permlink }}, getPost, updateDraft } = this.props;
+    const { match: { params: { author, permlink } }, getPost, updateDraft } = this.props;
     const draftString = localStorage.getItem('draft');
 
     // Edit mode
     if (author && permlink) {
-      if(!!draftString) {
+      if (!!draftString) {
         let draft = JSON.parse(draftString);
-        if(author === draft.author && permlink === draft.permlink) {
+        if (author === draft.author && permlink === draft.permlink) {
           // if there is saved localStorage
           updateDraft('url', draft.url);
           updateDraft('title', draft.title);
           updateDraft('tagline', draft.tagline);
           updateDraft('description', draft.description);
+          this.setState({
+            description: draft.description || ''
+          })
           updateDraft('tags', draft.tags);
-          if(draft.images !== []) {
+          if (draft.images !== []) {
             updateDraft('images', draft.image);
-            this.handleImageChange({fileList: draft.images});
+            this.handleImageChange({ fileList: draft.images });
             this.prepareForEdit(draft);
           }
         } else {
@@ -75,27 +80,28 @@ class PostForm extends Component {
       }
       this.setState({ editMode: true, resetted: false });
 
-    // Fresh new post
+      // Fresh new post
     } else if (!draftString) {
       // if localStorage does not exist
       this.checkAndResetDraft();
 
-    // New post with draft
+      // New post with draft
     } else {
       // if there is saved localStorage
       let draft = JSON.parse(draftString);
       updateDraft('url', draft.url || '#');
       updateDraft('title', draft.title || 'Title');
       updateDraft('tagline', draft.tagline || 'Short Description');
-      updateDraft('description', draft.description || '');
       updateDraft('tags', draft.tags || []);
-      if(draft.images !== []) {
+      updateDraft('description', draft.description || '');
+      this.setState({
+        description: draft.description || ''
+      })
+      if (draft.images !== []) {
         updateDraft('images', draft.image);
-        this.handleImageChange({fileList: draft.images});
+        this.handleImageChange({ fileList: draft.images });
         this.prepareForEdit(draft);
       }
-      // TODO: Should show add the inputs properly
-      // updateDraft('beneficiaries', draft.beneficiaries || []);
     }
 
     if (this.props.me) {
@@ -108,13 +114,20 @@ class PostForm extends Component {
   }
 
   componentWillUnmount() {
-    this.checkAndResetDraft();
+    const { match: { params: { author, permlink } }} = this.props;
+
+    if (author && permlink) {
+      this.props.resetDraft();
+      localStorage.removeItem('draft');
+    } else {
+      this.checkAndResetDraft();
+    }
 
     window.onbeforeunload = null;
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match: { params : { author, permlink }} } = this.props;
+    const { match: { params: { author, permlink } } } = this.props;
     const nextAuthor = nextProps.match.params.author;
     const nextPermlink = nextProps.match.params.permlink;
 
@@ -127,14 +140,14 @@ class PostForm extends Component {
       if (this.props.draft.permlink !== nextProps.draft.permlink) {
         this.prepareForEdit(nextProps.draft);
       }
-    } else if(!localStorage.getItem('draft')) {
-      // if localStorage does not exist
-      this.setState({ editMode: false });
-      this.checkAndResetDraft();
-    }
-
-    if (nextProps.me !== nextProps.draft.author) {
-      this.saveAndUpdateDraft('author', nextProps.me);
+    } else {
+      if (author && permlink) {
+        this.props.resetDraft();
+        localStorage.removeItem('draft');
+      } else if (!localStorage.getItem('draft')) {
+        this.setState({ editMode: false });
+        this.checkAndResetDraft();
+      }
     }
   }
 
@@ -142,21 +155,6 @@ class PostForm extends Component {
     if (this.state.shouldRecalculateBeneficiary) {
       this.onBeneficiariesChanged();
     }
-  }
-
-  beforeUpload = (file) => {
-    if (!file.type.match(/png|jpg|jpeg|gif/)) { // because `accept` doesn't work on some browsers
-      this.setState({ uploadError: 'You can only upload standard image files (png, gif, jpg).' });
-      return false;
-    }
-
-    if (file.size / 1024 / 1024 >= 5) {
-      this.setState({ uploadError: 'Image file size must be smaller than 5MB.' });
-      return false;
-    }
-
-    this.setState({ uploadError: null });
-    return true;
   }
 
   saveAndUpdateDraft = (field, value) => {
@@ -185,7 +183,7 @@ class PostForm extends Component {
         {
           uid: i,
           name: f.name,
-          url:  getCachedImage(f.link),
+          url: getCachedImage(f.link),
           status: 'done',
           link: f.link,
         }
@@ -311,8 +309,6 @@ class PostForm extends Component {
     });
   };
 
-  // MARK: - Handle uploads
-
   handleImagePreviewCancel = () => this.setState({ previewVisible: false });
   handleImagePreview = (file) => {
     this.setState({
@@ -325,9 +321,13 @@ class PostForm extends Component {
 
   handleTitleChange = (e) => this.saveAndUpdateDraft('title', sanitizeText(e.target.value, true) || initialState.draft.title);
   handleTaglineChange = (e) => this.saveAndUpdateDraft('tagline', sanitizeText(e.target.value, true) || initialState.draft.tagline);
-  handleDescriptionChange = (e) => this.saveAndUpdateDraft('description', sanitizeText(e.target.value) || initialState.draft.description);
-  handleImageChange = ({ fileList }) => {
-    const images = fileList.map(function(f) {
+  handleDescriptionChange = (e, text = null) => {
+    this.setState({
+      description: text || e.target.value
+    }, () => this.saveAndUpdateDraft('description', sanitizeText(this.state.description) || initialState.draft.description));
+  };
+  handleImageChange = ({ file, fileList }) => {
+    const images = fileList.map(function (f) {
       if (f.response && f.response.link) {
         return {
           name: f.response.name,
@@ -341,46 +341,66 @@ class PostForm extends Component {
       }
       return null;
     });
-    this.setState({ fileList });
+    // console.log(file, fileList);
+    this.setState({ fileList: fileList.filter(f => f.status === "done" || f.status === "uploading") });
     this.saveAndUpdateDraft('images', images.filter(x => !!x));
   };
   handleTagsChange = (tags) => this.saveAndUpdateDraft('tags', tags);
 
   initialValue = (field, defaultValue = null) => initialState.draft[field] === this.props.draft[field] ? defaultValue : this.props.draft[field];
 
-  xhrUploadS3 = ({ file, onProgress, onSuccess, _ }) => {
-    const onError = (e) => {
-      console.error(e);
-      this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) }); // Remove error image
-      notification['error']({ message: e.message });
+  onXhrUploadSuccess = (res, onSuccess, file) => {
+    const { response } = res.data;
+    const result = {
+      uid: response.uid,
+      url: getCachedImage(response.link),
+      name: response.name,
+      link: response.link,
+      status: 'done'
     };
+    onSuccess(result, file);
+  }
 
-    try {
-      //const res = await api.post('/posts/signed_url', {filename: file.name});
-      const uploadUrl = `${process.env.REACT_APP_API_ROOT}/posts/upload`;
-      var formData = new FormData();
-      formData.append("image", file);
-      axios.post(uploadUrl, formData, { headers: {'Content-Type': 'multipart/form-data' }, onUploadProgress: ({ total, loaded }) => {
-        onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
-      },})
-      .then((res) => {
-        if (res.data.error) {
-          throw Error(res.data.error);
-        }
+  onXhrUploadFail = (e, file) => {
+    notification['error']({ message: e.response.data.error });
+    this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) });
+  }
 
-        const { response } = res.data;
-        const result = {
-          uid: response.uid,
-          url: getCachedImage(response.link),
-          name: response.name,
-          link: response.link,
-          status: 'done'
-        };
-        onSuccess(result, file);
-      }).catch((e) => onError(e));
-    } catch(e) {
-      onError(e);
+  onXhrUploadProgress = (onProgress, total, loaded, file) => {
+    onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
+  }
+
+  xhrUpload = ({ file, onProgress, onSuccess}) => {
+    // console.log(file, this.state.fileList, "=====xhrUpload=====");
+    if (!uploadImage(
+      file,
+      (res) => this.onXhrUploadSuccess(res, onSuccess, file),
+      (res) => this.onXhrUploadFail(res, file),
+      ({total, loaded}) => this.onXhrUploadProgress(onProgress, total, loaded, file)
+    )) {
+      return false;
     }
+  }
+
+  onInlineUploadSuccess = (res) => {
+    const { response } = res.data;
+    const { selectionStart, innerHTML } = this.descriptionRef.textAreaRef;
+    const text = innerHTML.slice(0, selectionStart)
+      + `![${response.name}](${getCachedImage(response.link)})`
+      + innerHTML.slice(selectionStart + 1);
+    this.handleDescriptionChange(null, text);
+  }
+
+  onInlineUploadFail = (e) => {
+    notification['error']({ message: e.response.data.error });
+  }
+
+  inputUpload = (e) => {
+    const file = e.target.files[0];
+    this.setState({ inlineUploading: true }, () => {
+      uploadImage(file, this.onInlineUploadSuccess, this.onInlineUploadFail)
+      .then(() => this.setState({ inlineUploading: false }));
+    });
   }
 
   render() {
@@ -516,7 +536,7 @@ class PostForm extends Component {
         >
           {getFieldDecorator('tagline', {
             initialValue: this.initialValue('tagline'),
-            rules: [ { required: true, message: 'Short description cannot be empty', whitespace: true } ],
+            rules: [{ required: true, message: 'Short description cannot be empty', whitespace: true }],
           })(
             <Input
               placeholder="A social media where everyone gets paid for participation"
@@ -535,14 +555,14 @@ class PostForm extends Component {
               rules: [{ validator: this.checkImages }],
             })(
               <CustomUploadDragger name="image"
-                customRequest={this.xhrUploadS3}
+                customRequest={this.xhrUpload}
                 listType="picture-card"
                 fileList={this.state.fileList}
                 onPreview={this.handleImagePreview}
                 onChange={this.handleImageChange}
                 multiple={true}
                 accept="image/x-png,image/gif,image/jpeg"
-                beforeUpload={this.beforeUpload}
+                beforeUpload={(file, fileList) => validateImage(file)}
               >
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
@@ -557,10 +577,10 @@ class PostForm extends Component {
           <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} width="50%" className="preview-modal">
             {
               /\.mp4$/.test(this.state.previewImage) ?
-              <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
-                <source src={this.state.previewImage} />
-              </video> :
-              <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+                <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
+                  <source src={this.state.previewImage} />
+                </video> :
+                <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
             }
           </Modal>
         </FormItem>
@@ -571,17 +591,19 @@ class PostForm extends Component {
           extra={`${this.props.draft.description.length} / 1000`}
           className="description"
         >
-          {getFieldDecorator('description', {
-            initialValue: this.initialValue('description'),
-          })(
-            <Input.TextArea
-              placeholder="Comment on this product..."
-              rows={4}
-              onChange={this.handleDescriptionChange}
-              maxLength={1000} />
-          )}
+          <Input.TextArea
+            ref={(ref) => { this.descriptionRef = ref }}
+            placeholder="Comment on this product..."
+            rows={4}
+            value={this.state.description || this.initialValue('description')}
+            onChange={this.handleDescriptionChange}
+            maxLength={1000} />
+          <div className="inline-upload-container">
+            <a onClick={() => this.inlineFileField.click()}>Upload Image</a>
+            {this.state.inlineUploading && <Icon type="loading" spin="true" />}
+            <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUpload} accept="image/x-png,image/jpeg" />
+          </div>
         </FormItem>
-
         <FormItem
           {...formItemLayout}
           label="Tags"
@@ -602,10 +624,10 @@ class PostForm extends Component {
         {!this.state.editMode &&
           <FormItem {...formItemLayoutWithOutLabel}>
             {!this.state.beneficiariesValid && (
-                <div className="ant-form-item-control has-error">
-                  <p className="ant-form-explain">Sum of reward values must be less than or equal to 85%</p>
-                </div>
-              )
+              <div className="ant-form-item-control has-error">
+                <p className="ant-form-explain">Sum of reward values must be less than or equal to 85%</p>
+              </div>
+            )
             }
             {beneficiaryIds.length < 5 &&
               <Button type="dashed" onClick={this.addBeneficiary}>

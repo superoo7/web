@@ -361,8 +361,17 @@ class PostForm extends Component {
     onSuccess(result, file);
   }
 
+  getErrorMessage(e) {
+    if (e && e.response && e.response.data && e.response.data.error) {
+      return e.response.data.error;
+    } else {
+      console.error('Upload error', e);
+      return 'Image upload failed. Please check your Internet connection.';
+    }
+  }
+
   onXhrUploadFail = (e, file) => {
-    notification['error']({ message: e.response.data.error });
+    notification['error']({ message: this.getErrorMessage(e) });
     this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) });
   }
 
@@ -392,7 +401,7 @@ class PostForm extends Component {
   }
 
   onInlineUploadFail = (e) => {
-    notification['error']({ message: e.response.data.error });
+    notification['error']({ message: this.getErrorMessage(e) });
   }
 
   inputUpload = (e) => {

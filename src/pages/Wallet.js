@@ -42,6 +42,13 @@ class Wallet extends Component {
     ethModalVisible: false,
     withdrawalAmount: 1000.00,
     activeTabKey: '1',
+    modalVisible: false,
+  };
+
+  toggleModal = () => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+    });
   };
 
   componentDidMount() {
@@ -132,6 +139,33 @@ class Wallet extends Component {
             </Tooltip>
           </div>
         </div>
+        <div className="warning left-padded right-padded">
+          <span className="pink">Warning!</span>
+          &nbsp;Your airdropped HUNT tokens may be retrieved if you are listed on our <a href="https://github.com/Steemhunt/whitelist/blob/master/steemhunt/blacklist.json" target="_blank" rel="noopener noreferrer">permanent blacklist</a> by abusing the system.
+          &nbsp;<Icon type="question-circle-o" className="help-hunt-score fake-link" onClick={this.toggleModal} />
+          <Modal
+            title="Airdrops Won&apos;t be Proceeded to Blacklisted Users"
+            visible={this.state.modalVisible}
+            onOk={this.toggleModal}
+            onCancel={this.toggleModal}
+            footer={null}
+            bodyStyle={{
+              overflow: 'scroll',
+              maxHeight: '50vh',
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            <p>HUNT token airdrops are designed for hunters/sponsors who contributed on increasing the value of HUNT platform. To maintain this core value, Steemhunt DO NOT allow a single user running alt accounts to abuse our system.</p>
+
+            <p>We blacklist users if the user attempts any of the following actions:</p>
+            <ol>
+              <li>Operates alternative accounts to disrupt Steemhunt voting pool, its ranking chart, and HUNT token airdrops</li>
+              <li>Creates spam posts or comments</li>
+              <li>Commits Plagiarism</li>
+            </ol>
+            If your name is listed in the <a href="https://github.com/Steemhunt/whitelist/blob/master/steemhunt/blacklist.json" target="_blank" rel="noopener noreferrer">permanent blacklist</a>, your reserved HUNT tokens to be airdropped will be retrieved.
+          </Modal>
+        </div>
 
         {this.state.withdrawStepVisible &&
           <div>
@@ -213,7 +247,6 @@ class Wallet extends Component {
             }
           </div>
         }
-
 
         <Tabs activeKey={this.state.activeTabKey} onTabClick={(key) => this.setState({ activeTabKey: key })}>
           <Tabs.TabPane tab="Airdrop" key="1">

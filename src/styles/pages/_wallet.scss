@@ -2,7 +2,6 @@
   .balance-bar, .eth-bar, .withdraw-bar {
     padding-top: 30px;
     padding-bottom: 30px;
-    margin-bottom: 50px;
     color: white;
     background-image: linear-gradient(to top, #fa7f92, #fc6f6f);
     overflow: hidden;
@@ -32,6 +31,12 @@
       margin-top: -0.3125rem;
       font-size: 1.75rem;
     }
+  }
+
+  .warning {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-size: 0.825rem;
   }
 
   .eth-bar, .withdraw-bar {

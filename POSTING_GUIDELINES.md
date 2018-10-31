@@ -24,7 +24,7 @@ If you are posting any conceptual product, it must be past the planning stage. I
 ## 3. Product Link
 We only accept these four product links (Your post will be delisted if you include other websites than those listed below):
 
-3-1. Official product website<br>
+3-1. Official product website (Should be the product's website, not the general page)<br>
 3-2. Major app store link (AppStore, PlayStore, etc)<br>
 3-3. Crowdfunding sites (Kickstarter, Indiegogo, etc) - The funding should be active status or fully pledged. The project that has failed to be pledged won't be accepted.<br>
 3-4. Github, Bitbucket repositories for open source projects 
@@ -67,4 +67,4 @@ Steemhunt is running a blacklist to maintain a fair community platform. If you c
 Even if you are blacklisted, you can still use our platform (posting, upvoting, and commenting), however, you won't be able to get upvoted nor received airdrops by Steemhunt. We announce the blacklist via #blacklist channel in our [Discord Group](https://discord.gg/mWXpgks) You can also appeal via #blacklist-appeal channel if you think you did not commit any of the actions above.
 
 
-Please note that our moderators are human, so they may make mistakes/errors during the moderation process. If you have query, please join our [Discord Group](https://discord.gg/mWXpgks) and request to re-review in the #moderation-errors channel. *These posting guidelines were updated on October 27, 2018.*
+Please note that our moderators are human, so they may make mistakes/errors during the moderation process. If you have query, please join our [Discord Group](https://discord.gg/mWXpgks) and request to re-review in the #moderation-errors channel. *These posting guidelines were updated on October 31, 2018.*

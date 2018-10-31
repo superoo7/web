@@ -237,7 +237,7 @@ class PostView extends Component {
     return (
       <div className="post-view diagonal-split-view">
         <div className="top-container primary-gradient">
-          <Tooltip title={`Posted on ${moment(post.listed_at).format('YYYY-MM-DD HH:mmZ')}`}>
+          <Tooltip title={`Posted on ${moment(post.created_at).format('YYYY-MM-DD HH:mmZ')}`}>
             <span className="featured-date round-border" data-id={post.id}>Featured on {shortFormat(post.listed_at)}</span>
           </Tooltip>
 

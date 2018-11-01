@@ -38,11 +38,12 @@ Write a short description and hunter’s comment with your own words. Do not cop
 Steemhunt is a “product hunting” site, **not a writing curation site**. We have a certain format that all hunters should follow when posting a product in order to make a fair/effective ranking chart. Please follow the directions below:
 
 5-1. The field “name of product” should ONLY contain the official name of the product. Please do not include special characters such as trademark or copyright symbols in that field.<br>
-5-2. Do not duplicate the product name or use any non-product-specific words in the field “short description.” <br>
-5-3. Do not attach non-related screenshot images or videos.<br>
-5-4. Do not use low quality product images.<br>
-5-5. Do not share any scams, highly suspicious cryptocurrency/fin-tech, illegal products, or any type of weaponry.<br>
-5-6. Do not share porn or anything under the #nsfw category.
+5-2. The screenshot images should ONLY be the product itself. Please do not share descriptive images from another site other than the product (e.g. App Store download page).
+5-3. Do not duplicate the product name or use any non-product-specific words in the field “short description.” <br>
+5-4. Do not attach non-related screenshot images or videos.<br>
+5-5. Do not use low quality product images.<br>
+5-6. Do not share any scams, highly suspicious cryptocurrency/fin-tech, illegal products, or any type of weaponry.<br>
+5-7. Do not share porn or anything under the #nsfw category.
 
 ## 6. No Duplication Allowed
 Steemhunt does not allow the same product to be posted twice. The website automatically checks the URL, but it is still your responsibility to check that the product has not been posted previously. If your product has already been featured from the same brand/maker, the duplication is allowed only when the product is a newer model (V2) or has been majorly updated from the original one.
@@ -67,4 +68,4 @@ Steemhunt is running a blacklist to maintain a fair community platform. If you c
 Even if you are blacklisted, you can still use our platform (posting, upvoting, and commenting), however, you won't be able to get upvoted nor received airdrops by Steemhunt. We announce the blacklist via #blacklist channel in our [Discord Group](https://discord.gg/mWXpgks) You can also appeal via #blacklist-appeal channel if you think you did not commit any of the actions above.
 
 
-Please note that our moderators are human, so they may make mistakes/errors during the moderation process. If you have query, please join our [Discord Group](https://discord.gg/mWXpgks) and request to re-review in the #moderation-errors channel. *These posting guidelines were updated on October 31, 2018.*
+Please note that our moderators are human, so they may make mistakes/errors during the moderation process. If you have query, please join our [Discord Group](https://discord.gg/mWXpgks) and request to re-review in the #moderation-errors channel. *These posting guidelines were updated on November 1, 2018.*

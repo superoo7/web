@@ -44,7 +44,7 @@ class App extends Component {
           <meta itemprop="description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
           <meta itemprop="image" content={`${process.env.PUBLIC_URL}/og-image-1200.png`} />
           { /* Twitter */ }
-          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content="Steemhunt - Dig Products, Earn STEEMs" />
           <meta name="twitter:description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
           <meta name="twitter:image:src" content={`${process.env.PUBLIC_URL}/og-image-1024.png`} />

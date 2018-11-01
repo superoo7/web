@@ -38,7 +38,7 @@ Write a short description and hunter’s comment with your own words. Do not cop
 Steemhunt is a “product hunting” site, **not a writing curation site**. We have a certain format that all hunters should follow when posting a product in order to make a fair/effective ranking chart. Please follow the directions below:
 
 5-1. The field “name of product” should ONLY contain the official name of the product. Please do not include special characters such as trademark or copyright symbols in that field.<br>
-5-2. The screenshot images should ONLY be the product itself. Please do not share descriptive images from another site other than the product (e.g. App Store download page).
+5-2. The screenshot images should ONLY be the product itself. Please do not share descriptive images from another site other than the product (e.g. App Store download page).<br>
 5-3. Do not duplicate the product name or use any non-product-specific words in the field “short description.” <br>
 5-4. Do not attach non-related screenshot images or videos.<br>
 5-5. Do not use low quality product images.<br>

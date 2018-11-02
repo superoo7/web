@@ -75,7 +75,7 @@ class CommentReplyForm extends Component {
   };
 
   onUploadFail = (e) => {
-    let msg = 'Upload failed, please check your Internet connection'.
+    let msg = 'Upload failed, please check your Internet connection.';
     if(e && e.response && e.response.data && e.response.data.error) {
       msg = e.response.data.error;
     }

@@ -73,16 +73,20 @@ function encode(uri) {
   return encodeURI(decodeURI(uri));
 }
 
-export const getCachedImage = function(url, width = 0, height = 0) {
+export const getCachedImage = function(url, width = 0, height = 0, onlyImage = false) {
   if (/\.gif$/.test(url)) {
     return encode(`https://steemitimages.com/0x0/${url}`);
   }
 
   if (/\.mp4$/.test(url)) {
-    if (width === 240 && height === 240) {
-      return encode(url.replace('.mp4', '-240x240.mp4'));
+    if (onlyImage) {
+      return encode(url.replace('.mp4', '-thumb.jpg'));
     } else {
-      return encode(url);
+      if (width === 240 && height === 240) {
+        return encode(url.replace('.mp4', '-240x240.mp4'));
+      } else {
+        return encode(url);
+      }
     }
   }
 
@@ -91,12 +95,12 @@ export const getCachedImage = function(url, width = 0, height = 0) {
 
 
 // HACK: to avoid image server blocks on FB
-export const getCachedImageHack = function(url, width = 0, height = 0) {
+export const getCachedImageHack = function(url, width = 0, height = 0, onlyImage = false) {
   if (url.includes('https://huntimages.s3.us-west-2.amazonaws.com/production/steemhunt/')) {
     return getCachedImage(url.replace('https://huntimages.s3.us-west-2.amazonaws.com/production/steemhunt/', 'https://s3-us-west-2.amazonaws.com/huntimages/production/steemhunt/'), width, height);
   }
 
-  return getCachedImage(url, width, height);
+  return getCachedImage(url, width, height, onlyImage);
 }
 
 export const stripCachedURL = function(url) {

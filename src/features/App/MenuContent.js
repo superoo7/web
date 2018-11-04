@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Icon, Progress } from 'antd';
 import { formatNumber } from 'utils/helpers/steemitHelpers';
+import { ShareButtonContent } from 'features/Post/components/ShareButton';
 
 function adjustRecharge(lastValue, lastUpdated) {
   const secPassed = (Date.now() - (new Date(lastUpdated * 1000))) / 1000;
@@ -19,110 +20,129 @@ function currentRC({ max_rc, rc_manabar}) {
   return adjustRecharge(100 * rc_manabar.current_mana / max_rc, rc_manabar.last_update_time);
 }
 
-const MenuContent = props => {
-  if(props.me) {
-    return (
-      <Menu theme="dark">
-        {!props.isFollowing && props.me !== 'steemhunt' &&
-          <Menu.Item key="0">
-             <span onClick={props.follow}>
-              <Icon type={props.isFollowLoading ? 'loading' : 'star-o'} />
-              FOLLOW STEEMHUNT
+export default class MenuContent extends PureComponent {
+  state = {
+    shareVisible: false,
+  };
+
+  toggleShare = () => {
+    this.setState({
+      shareVisible: !this.state.shareVisible,
+    });
+  }
+
+  render() {
+    const { me, myAccount, isFollowing, follow, isFollowLoading, changeVisibility, logout } = this.props;
+
+    if(me) {
+      return (
+        <Menu theme="dark">
+          {!isFollowing && me !== 'steemhunt' &&
+            <Menu.Item key="0">
+               <span onClick={follow}>
+                <Icon type={isFollowLoading ? 'loading' : 'star-o'} />
+                FOLLOW STEEMHUNT
+              </span>
+            </Menu.Item>
+          }
+
+          <Menu.Item key="1">
+            <a href="https://token.steemhunt.com" rel="noopener noreferrer" target="_blank">
+              <Icon type="api" /> ABOUT HUNT PLATFORM
+            </a>
+          </Menu.Item>
+          <Menu.Item key="1-5" className="mobile-only">
+            <Link to="/airdrop" onClick={() => changeVisibility(false)}>
+              <Icon type="gift" /> ABOUT AIRDROPS
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Link to="/hall-of-fame" onClick={() => changeVisibility(false)}>
+              <Icon type="trophy" /> HALL OF FAME
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <Link to={`/wallet`} onClick={() => changeVisibility(false)}>
+              <Icon type="wallet" /> WALLET <sup>beta</sup>
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="4">
+            <Link to={`/author/@${me}`} onClick={() => changeVisibility(false)}>
+              <Icon type="user" /> MY PROFILE
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="4-sub" className="sub" disabled>
+            <div className="group">
+              <div className="label">
+                Level: {myAccount.level}&nbsp;
+                ({formatNumber(myAccount.user_score, '0,0.00')}
+                  {myAccount.boost_score && myAccount.boost_score > 1 && <span> x {myAccount.boost_score}</span> })
+              </div>
+              <Progress percent={Math.round(100 * myAccount.user_score / 8)} status="active" />
+            </div>
+            <div className="group">
+              <div className="label">
+                Voting Mana
+              </div>
+              <Progress percent={Math.round(currentVP(myAccount))} status="active" />
+            </div>
+            <div className="group">
+              <div className="label">
+                Resource Credits
+              </div>
+              <Progress percent={Math.round(currentRC(myAccount))} status="active" />
+            </div>
+          </Menu.Item>
+          <Menu.Item key="5">
+            <a href="https://discord.gg/mWXpgks" rel="noopener noreferrer" target="_blank">
+              <Icon type="message" /> CHAT ON DISCORD
+            </a>
+          </Menu.Item>
+          <Menu.Item key="6" onClick={this.toggleShare}>
+            <Icon type="message" /> SPREAD STEEMHUNT
+          </Menu.Item>
+          {this.state.shareVisible &&
+            <Menu.Item key="6-1" className="share-buttons">
+              <ShareButtonContent me={me} url="https://steemhunt.com" />
+            </Menu.Item>
+          }
+          <Menu.Item key="7">
+            <span onClick={logout}>
+              <Icon type="poweroff" /> LOGOUT
             </span>
           </Menu.Item>
-        }
-
-        <Menu.Item key="1">
-          <a href="https://token.steemhunt.com" rel="noopener noreferrer" target="_blank">
-            <Icon type="api" /> ABOUT HUNT PLATFORM
-          </a>
-        </Menu.Item>
-        <Menu.Item key="1-5" className="mobile-only">
-          <Link to="/airdrop" onClick={() => props.changeVisibility(false)}>
-            <Icon type="gift" /> ABOUT AIRDROPS
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="2">
-          <Link to="/hall-of-fame" onClick={() => props.changeVisibility(false)}>
-            <Icon type="trophy" /> HALL OF FAME
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="3">
-          <Link to={`/wallet`} onClick={() => props.changeVisibility(false)}>
-            <Icon type="wallet" /> WALLET <sup>beta</sup>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="4">
-          <Link to={`/author/@${props.me}`} onClick={() => props.changeVisibility(false)}>
-            <Icon type="user" /> MY PROFILE
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="4-sub" className="sub" disabled>
-          <div className="group">
-            <div className="label">
-              Level: {props.myAccount.level}&nbsp;
-              ({formatNumber(props.myAccount.user_score, '0,0.00')}
-                {props.myAccount.boost_score && props.myAccount.boost_score > 1 && <span> x {props.myAccount.boost_score}</span> })
-            </div>
-            <Progress percent={Math.round(100 * props.myAccount.user_score / 8)} status="active" />
-          </div>
-          <div className="group">
-            <div className="label">
-              Voting Mana
-            </div>
-            <Progress percent={Math.round(currentVP(props.myAccount))} status="active" />
-          </div>
-          <div className="group">
-            <div className="label">
-              Resource Credits
-            </div>
-            <Progress percent={Math.round(currentRC(props.myAccount))} status="active" />
-          </div>
-        </Menu.Item>
-        <Menu.Item key="5">
-          <a href="https://discord.gg/mWXpgks" rel="noopener noreferrer" target="_blank">
-            <Icon type="message" /> CHAT ON DISCORD
-          </a>
-        </Menu.Item>
-        <Menu.Item key="6">
-          <span onClick={props.logout}>
-            <Icon type="poweroff" /> LOGOUT
-          </span>
-        </Menu.Item>
-      </Menu>
-    );
-  } else {
-    return (
-      <Menu theme="dark">
-        <Menu.Item key="0" className="two-column-hidden">
-          <Link to="/about" onClick={() => props.changeVisibility(false)}>
-            <Icon type="question-circle-o" /> ABOUT STEEMHUNT
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="1">
-          <a href="https://token.steemhunt.com" rel="noopener noreferrer" target="_blank">
-            <Icon type="api" /> ABOUT HUNT PLATFORM
-          </a>
-        </Menu.Item>
-        <Menu.Item key="1-5">
-          <Link to="/airdrop" onClick={() => props.changeVisibility(false)}>
-            <Icon type="gift" /> ABOUT AIRDROPS
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="2">
-          <Link to="/hall-of-fame" onClick={() => props.changeVisibility(false)}>
-            <Icon type="trophy" /> HALL OF FAME
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="3">
-          <a href="https://discord.gg/mWXpgks" rel="noopener noreferrer" target="_blank">
-            <Icon type="message" /> CHAT ON DISCORD
-          </a>
-        </Menu.Item>
-      </Menu>
-    );
+        </Menu>
+      );
+    } else {
+      return (
+        <Menu theme="dark">
+          <Menu.Item key="0" className="two-column-hidden">
+            <Link to="/about" onClick={() => changeVisibility(false)}>
+              <Icon type="question-circle-o" /> ABOUT STEEMHUNT
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="1">
+            <a href="https://token.steemhunt.com" rel="noopener noreferrer" target="_blank">
+              <Icon type="api" /> ABOUT HUNT PLATFORM
+            </a>
+          </Menu.Item>
+          <Menu.Item key="1-5">
+            <Link to="/airdrop" onClick={() => changeVisibility(false)}>
+              <Icon type="gift" /> ABOUT AIRDROPS
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Link to="/hall-of-fame" onClick={() => changeVisibility(false)}>
+              <Icon type="trophy" /> HALL OF FAME
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <a href="https://discord.gg/mWXpgks" rel="noopener noreferrer" target="_blank">
+              <Icon type="message" /> CHAT ON DISCORD
+            </a>
+          </Menu.Item>
+        </Menu>
+      );
+    }
   }
-};
-
-export default MenuContent;
-
+}

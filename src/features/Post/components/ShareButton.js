@@ -1,11 +1,61 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Popover, Icon, message, Modal, Button } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { getCachedImageHack } from 'features/Post/utils';
 
-class ShareButton extends Component {
+export class ShareButtonContent extends PureComponent {
+  render() {
+    const { post, me, url } = this.props;
+    const shareUrl = (url ? url : window.location.href) + (me ? `%3Fref=${me}` : '');
+
+    return(
+      <div className="social-shares">
+        <a
+          className="share-button"
+          href={'https://www.facebook.com/sharer.php?u=' + shareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i className="icon-facebook share-icon"></i>
+        </a>
+        <div className="vertical-line"></div>
+        <a
+          className="share-button"
+          href={'https://twitter.com/intent/tweet?url=' + shareUrl +
+            (post ? '&text=' + encodeURI(post.title) : '') +
+            '&hashtags=steemhunt'}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i className="icon-twitter share-icon"></i>
+        </a>
+        <div className="vertical-line"></div>
+        <a
+          className="share-button"
+          href={'https://pinterest.com/pin/create/button/?url=' + shareUrl +
+            (post ? '&media=' + getCachedImageHack(post.images[0]['link'], 1200, 630, true) + '&description=' + encodeURI(post.title + ' : ' + post.tagline) : '')
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i className="icon-pinterest-p share-icon"></i>
+        </a>
+        <div className="vertical-line"></div>
+        <CopyToClipboard text={shareUrl.replace('%3F', '?')} onCopy={() => message.success('Successfully copied to your clipboard.')}>
+          <div className="share-button">
+            <i className="icon-link share-icon"></i>
+          </div>
+        </CopyToClipboard>
+      </div>
+    );
+  }
+}
+
+export default class ShareButton extends PureComponent {
   static propTypes = {
     post: PropTypes.object.isRequired,
+    me: PropTypes.string,
   }
 
   constructor(props) {
@@ -23,48 +73,7 @@ class ShareButton extends Component {
 
   render() {
     const { post, me } = this.props;
-    const shareUrl = window.location.href + (me ? `%3Fref=${me}` : '');
-
-    const content = (
-      <div className="social-shares">
-        <a
-          className="share-button"
-          href={'https://www.facebook.com/sharer.php?u=' + shareUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="icon-facebook share-icon"></i>
-        </a>
-        <div className="vertical-line"></div>
-        <a
-          className="share-button"
-          href={'https://twitter.com/intent/tweet?url=' + shareUrl +
-            '&text=' + encodeURI(post.title) +
-            '&hashtags=steemhunt'}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="icon-twitter share-icon"></i>
-        </a>
-        <div className="vertical-line"></div>
-        <a
-          className="share-button"
-          href={'https://pinterest.com/pin/create/button/?url=' + shareUrl +
-            '&media=' + post.images[0].link +
-            '&description=' + encodeURI(post.title + ' : ' + post.tagline)}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="icon-pinterest-p share-icon"></i>
-        </a>
-        <div className="vertical-line"></div>
-        <CopyToClipboard text={window.location.href + (me ? `?ref=${me}` : '')} onCopy={() => message.success('Successfully copied to your clipboard.')}>
-          <div className="share-button">
-            <i className="icon-link share-icon"></i>
-          </div>
-        </CopyToClipboard>
-      </div>
-    )
+    const content = <ShareButtonContent post={post} me={me} />;
 
     const ModalContent = () => {
       return (
@@ -111,5 +120,3 @@ class ShareButton extends Component {
   }
 }
 
-
-export default ShareButton;

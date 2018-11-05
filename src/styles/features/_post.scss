@@ -556,6 +556,14 @@
     }
 
     .comment-title {
+      .dislike-button {
+        position: absolute;
+        right: 0;
+        &.disliked {
+          color: $primary;
+        }
+      }
+
       .author {
         display: inline-block;
       }

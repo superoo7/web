@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import Body from 'components/Body';
-import { List, Avatar } from 'antd';
+import { List, Avatar, Icon } from 'antd';
 import { sortCommentsFromSteem } from 'utils/helpers/stateHelpers';
 import ContentPayoutAndVotes from 'components/ContentPayoutAndVotes';
 import Author from 'components/Author';
@@ -15,6 +15,8 @@ import { isEditable } from 'features/Post/utils';
 import { isAdmin, isModerator, isInfluencer } from 'features/User/utils';
 import { decreaseCommentcount } from 'features/Post/reducer';
 import { shouldCommentVisible } from 'features/Comment/utils/comments';
+import { updateComment } from 'features/Comment/actions/updateComment';
+import api from 'utils/api';
 
 class CommentItem extends PureComponent {
   static propTypes = {
@@ -31,6 +33,7 @@ class CommentItem extends PureComponent {
     this.state = {
       showReplyForm: false,
       showEditForm: false,
+      loadingDislike: false
     };
   }
 
@@ -61,9 +64,40 @@ class CommentItem extends PureComponent {
     this.setState({ showEditForm: !this.state.showEditForm });
   };
 
+  onClickDislike = () => {
+    const { comment } = this.props;
+    this.setState({ loadingDislike: true }, async () => {
+      const res = await api.post(`/comments/dislike.json`, {
+        key: comment.id,
+        permlink: comment.permlink}, true)
+      Object.entries(res).map(([key, value]) => {
+        this.props.updateComment(comment.id, key, value);
+      })
+      this.setState({ loadingDislike: false });
+    })
+  }
+
+  renderDislike() {
+    const { comment } = this.props;
+    if(this.state.loadingDislike) {
+      return null;
+    }
+
+    if (comment.check_disliked) {
+      return (
+        <Icon className={"dislike-button disliked"} type="dislike" theme="outlined" onClick={this.onClickDislike}/>
+      )
+    } else {
+      return (
+        <Icon className={"dislike-button"} type="dislike" theme="outlined" onClick={this.onClickDislike}/>
+      )
+    }
+  }
+
   render() {
     const { post, comment, commentsChild, commentsData, me } = this.props;
     const { showReplyForm, showEditForm } = this.state;
+    const delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
 
     // Hide moderators' comments to normal users
     if (!comment || !shouldCommentVisible(comment, post.author, me)) {
@@ -71,11 +105,12 @@ class CommentItem extends PureComponent {
     }
 
     return (
-      <List.Item className={`comment${(!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) ? ' flagged' : ''}`}>
+      <List.Item className={`comment${delisted ? ' flagged' : ''}`}>
         <List.Item.Meta
           avatar={<Avatar src={`${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${comment.author}?s=64`} />}
           title={
             <div className="comment-title">
+              {this.renderDislike()}
               <Author name={comment.author} />
               {isAdmin(comment.author) ?
                 <span className="badge team">TEAM</span>
@@ -138,6 +173,7 @@ const mapStateToProps = () => createStructuredSelector({
 
 const mapDispatchToProps = (dispatch, props) => ({
   decreaseCommentcount: () => dispatch(decreaseCommentcount(props.post)),
+  updateComment: (commentKey, field, value) => dispatch(updateComment(commentKey, field, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentItem);

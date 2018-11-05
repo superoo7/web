@@ -53,7 +53,12 @@ class ProfileForm extends Component {
   }
 
   onXhrUploadFail(e) {
-    notification['error']({ message: e.response.data.error });
+    if (e && e.response && e.response.data && e.response.data.error) {
+      notification['error']({ message: e.response.data.error });
+    } else {
+      console.error(e);
+      notification['error']({ message: 'Upload failed, please check your Internet connection.' });
+    }
   }
 
   xhrUpload = ({ file, onSuccess }) => {

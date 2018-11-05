@@ -99,7 +99,7 @@ export default class MenuContent extends PureComponent {
             </a>
           </Menu.Item>
           <Menu.Item key="6" onClick={this.toggleShare}>
-            <Icon type="message" /> SPREAD STEEMHUNT
+            <Icon type="share-alt" /> SPREAD STEEMHUNT
           </Menu.Item>
           {this.state.shareVisible &&
             <Menu.Item key="6-1" className="share-buttons">

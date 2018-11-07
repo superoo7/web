@@ -41,9 +41,11 @@ class CommentReplyForm extends Component {
   }
 
   onPasteEvent = (e) => {
-    if (e.target.className === "ant-input inline-uploader") {
-      const item = e.clipboardData.items[0];
-      this.inputUpload(e, item.getAsFile());
+    if (e.target.className === 'ant-input inline-uploader' && e.clipboardData && e.clipboardData.items) {
+      const file = e.clipboardData.items[0].getAsFile();
+      if (file) {
+        this.inputUpload(e, file);
+      }
     }
   }
 

@@ -234,10 +234,9 @@ class VoteButton extends PureComponent {
                 size="small"
                 ghost={true}
                 loading={post.isUpdating}
-              />&nbsp;
+              />
             </Popover>
           }
-          {/* <span className="payout-value">{formatNumber(post.score)}</span> */}
         </div>
       );
     }

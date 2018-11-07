@@ -70,12 +70,12 @@ class CommentItem extends PureComponent {
       const res = await api.post(`/comments/dislike.json`, {
         key: comment.id,
         author: comment.author,
-        permlink: comment.permlink}, true)
-      Object.entries(res).map(([key, value]) => {
-        this.props.updateComment(comment.id, key, value);
-      })
+        permlink: comment.permlink
+      }, true);
+
+      this.props.updateComment(comment.id, res);
       this.setState({ loadingDislike: false });
-    })
+    });
   }
 
   renderDislike() {
@@ -175,7 +175,7 @@ const mapStateToProps = () => createStructuredSelector({
 
 const mapDispatchToProps = (dispatch, props) => ({
   decreaseCommentcount: () => dispatch(decreaseCommentcount(props.post)),
-  updateComment: (commentKey, field, value) => dispatch(updateComment(commentKey, field, value)),
+  updateComment: (commentKey, attributes) => dispatch(updateComment(commentKey, attributes)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentItem);

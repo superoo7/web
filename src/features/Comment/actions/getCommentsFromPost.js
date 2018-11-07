@@ -63,15 +63,16 @@ function* getCommentsFromPost({ category, author, permlink }) {
     const state = yield steem.api.getStateAsync(`/${category}/@${author}/${permlink}`);
     const posts = yield select(selectPosts());
 
-    const active_voters = {}
-    Object.keys(state.content).map((commentKey) => {
-      const comment = state.content[commentKey];
-      active_voters[`${comment.id}`] = comment.active_votes.map((voter) => { return {
-        voter: voter.voter,
-        percent: voter.percent
-      } })
-      return true;
-    });
+    const active_voters = {};
+    for(let comment of Object.values(state.content)) {
+      active_voters[`${comment.id}`] = comment.active_votes.map((voter) => {
+        return {
+          voter: voter.voter,
+          percent: voter.percent
+        }
+      });
+    }
+
     const res = yield api.post('/comments/scores.json', { active_voters: JSON.stringify(active_voters) }, true);
     const { score_table } = res;
     // Update payout_value

@@ -45,9 +45,7 @@ export const sortCommentsFromSteem = (list, commentsData, sortBy = 'trending') =
   } else if (sortBy === 'old') {
     compareFunc = (itemA, itemB) => Date.parse(itemB.created) - Date.parse(itemA.created);
   } else if (sortBy === 'score') {
-    compareFunc = (itemA, itemB) => {
-      return assessCommentScore(itemA) - assessCommentScore(itemB)
-    };
+    compareFunc = (itemA, itemB) => assessCommentScore(itemA) - assessCommentScore(itemB);
   }
 
   return newList.sort((item1, item2) =>

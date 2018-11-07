@@ -84,17 +84,17 @@ export default class ContentPayoutAndVotes extends PureComponent {
       const activeVotes = content.active_votes || [];
 
       const lastActiveVotes = activeVotes.sort((a, b) => userScoreTable[a.voter] - userScoreTable[b.voter]).reverse().slice(0, NB_SHOW_VOTES);
-      userScoresTooltipMsg = lastActiveVotes.map(vote => {
-        if (userScoreTable[vote.voter]) {
+      userScoresTooltipMsg = lastActiveVotes
+        .filter(vote => userScoreTable[vote.voter])
+        .map(vote => {
           return (
             <div className="voting-list" key={vote.voter}>
               <Author name={vote.voter} />
               <span className="weight">({vote.percent / 100}%)</span>
               <span className="value">+{formatNumber(userScoreTable[vote.voter])}</span>
             </div>
-          )
-        }
-      });
+          );
+        });
     }
 
     if (type === 'post') {
@@ -112,12 +112,14 @@ export default class ContentPayoutAndVotes extends PureComponent {
     } else { // comment
       return (
         <span className="vote-count">
-          { content.scores.total > 0 &&
+          { content.scores.total > 0 ?
             <Popover content={userScoresTooltipMsg || "No votings yet"} placement="bottom">
               <span className="payout fake-link">{formatNumber(content.scores.total)}</span>
-              <span className="separator">|</span>
             </Popover>
+            :
+            <span className="payout fake-link">{formatNumber(content.scores.total)}</span>
           }
+          <span className="separator">|</span>
           <Popover content={lastVotesTooltipMsg} placement="bottom">
             <span className="fake-link hover-link">{formatAmount(content.payout_value)}</span>
           </Popover>

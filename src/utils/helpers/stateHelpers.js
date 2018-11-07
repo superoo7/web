@@ -5,6 +5,15 @@
  * @param {String} sortBy - how comments should be sorted
  * @returns {Array} - list of sorted IDs
  */
+
+function assessCommentScore(comment) {
+  let score = comment.scores.total
+  if (comment.is_delisted) {
+    score -= 1004;
+  }
+  return score;
+}
+
 export const sortCommentsFromSteem = (list, commentsData, sortBy = 'trending') => {
   let compareFunc;
   const newList = [...list];
@@ -36,7 +45,9 @@ export const sortCommentsFromSteem = (list, commentsData, sortBy = 'trending') =
   } else if (sortBy === 'old') {
     compareFunc = (itemA, itemB) => Date.parse(itemB.created) - Date.parse(itemA.created);
   } else if (sortBy === 'score') {
-    compareFunc = (itemA, itemB) => itemA.scores.total - itemB.scores.total;
+    compareFunc = (itemA, itemB) => {
+      return assessCommentScore(itemA) - assessCommentScore(itemB)
+    };
   }
 
   return newList.sort((item1, item2) =>

@@ -80,7 +80,7 @@ class CommentItem extends PureComponent {
   renderDislike() {
     const { comment } = this.props;
     if(this.state.loadingDislike) {
-      return null;
+      return <Icon className={"dislike-button loading"} type="loading" spin="true" />;
     }
 
     if (comment.check_disliked) {

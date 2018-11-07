@@ -559,7 +559,11 @@
       .dislike-button {
         position: absolute;
         right: 0;
+        color: $text_grey;
         &.disliked {
+          color: $primary;
+        }
+        &.loading {
           color: $primary;
         }
       }

@@ -10,7 +10,7 @@ import Author from 'components/Author';
 import CommentReplyForm from './CommentReplyForm';
 import VoteButton from 'features/Vote/VoteButton';
 import { toTimeAgo } from 'utils/date';
-import { selectMe } from 'features/User/selectors';
+import { selectMe, selectMyAccount } from 'features/User/selectors';
 import { isEditable } from 'features/Post/utils';
 import { isAdmin, isModerator, isInfluencer } from 'features/User/utils';
 import { decreaseCommentcount } from 'features/Post/reducer';
@@ -95,7 +95,7 @@ class CommentItem extends PureComponent {
   }
 
   render() {
-    const { post, comment, commentsChild, commentsData, me } = this.props;
+    const { post, comment, commentsChild, commentsData, me, myAccount } = this.props;
     const { showReplyForm, showEditForm } = this.state;
     const delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
 
@@ -110,7 +110,7 @@ class CommentItem extends PureComponent {
           avatar={<Avatar src={`${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${comment.author}?s=64`} />}
           title={
             <div className="comment-title">
-              {this.renderDislike()}
+              {myAccount.level >= 2 && this.renderDislike()}
               <Author name={comment.author} />
               {isAdmin(comment.author) ?
                 <span className="badge team">TEAM</span>
@@ -169,6 +169,7 @@ class CommentItem extends PureComponent {
 
 const mapStateToProps = () => createStructuredSelector({
   me: selectMe(),
+  myAccount: selectMyAccount()
 });
 
 const mapDispatchToProps = (dispatch, props) => ({

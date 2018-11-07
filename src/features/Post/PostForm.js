@@ -108,6 +108,8 @@ class PostForm extends Component {
       this.saveAndUpdateDraft('author', this.props.me);
     }
 
+    window.addEventListener("paste", this.onPasteEvent);
+
     window.onbeforeunload = function() {
       return "Leave site? Changes you made may not be saved.";
     }
@@ -122,7 +124,7 @@ class PostForm extends Component {
     } else {
       this.checkAndResetDraft();
     }
-
+    window.removeEventListener("paste", this.onPasteEvent);
     window.onbeforeunload = null;
   }
 
@@ -154,6 +156,13 @@ class PostForm extends Component {
   componentDidUpdate() {
     if (this.state.shouldRecalculateBeneficiary) {
       this.onBeneficiariesChanged();
+    }
+  }
+
+  onPasteEvent = (e) => {
+    if (e.target.className === "ant-input inline-uploader") {
+      const item = e.clipboardData.items[0];
+      this.inputUpload(e, item.getAsFile());
     }
   }
 
@@ -404,8 +413,8 @@ class PostForm extends Component {
     notification['error']({ message: this.getErrorMessage(e) });
   }
 
-  inputUpload = (e) => {
-    const file = e.target.files[0];
+  inputUpload = (e, uploadingFile = null) => {
+    const file = uploadingFile || e.target.files[0];
     this.setState({ inlineUploading: true }, () => {
       uploadImage(file, this.onInlineUploadSuccess, this.onInlineUploadFail)
       .then(() => this.setState({ inlineUploading: false }));
@@ -601,6 +610,7 @@ class PostForm extends Component {
           className="description"
         >
           <Input.TextArea
+            className={"inline-uploader"}
             ref={(ref) => { this.descriptionRef = ref }}
             placeholder="Comment on this product..."
             rows={4}

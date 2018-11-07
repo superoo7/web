@@ -33,6 +33,18 @@ class CommentReplyForm extends Component {
     if (this.props.editMode) {
       this.setState({ body: this.props.content.body });
     }
+    window.addEventListener("paste", this.onPasteEvent);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("paste", this.onPasteEvent)
+  }
+
+  onPasteEvent = (e) => {
+    if (e.target.className === "ant-input inline-uploader") {
+      const item = e.clipboardData.items[0];
+      this.inputUpload(e, item.getAsFile());
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -82,8 +94,8 @@ class CommentReplyForm extends Component {
     notification['error']({ message: msg });
   };
 
-  inputUpload = (e) => {
-    const file = e.target.files[0];
+  inputUpload = (e, uploadingFile = null) => {
+    const file = uploadingFile || e.target.files[0];
     this.setState({ inlineUploading: true }, () => {
       uploadImage(file, this.onUploadSuccess, this.onUploadFail)
         .then(() => this.setState({ inlineUploading: false }));
@@ -96,6 +108,7 @@ class CommentReplyForm extends Component {
     return (
       <div className="reply-form">
         <Input.TextArea
+          className={"inline-uploader"}
           placeholder="Say something..."
           onChange={this.onChange}
           ref={node => this.form = node}

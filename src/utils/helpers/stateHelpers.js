@@ -8,7 +8,7 @@
 
 function assessCommentScore(comment) {
   let score = comment.scores.total
-  if (comment.is_delisted) {
+  if (comment.delisted) {
     score -= 1004;
   }
   return score;

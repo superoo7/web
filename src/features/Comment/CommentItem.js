@@ -69,6 +69,7 @@ class CommentItem extends PureComponent {
     this.setState({ loadingDislike: true }, async () => {
       const res = await api.post(`/comments/dislike.json`, {
         key: comment.id,
+        author: comment.author,
         permlink: comment.permlink}, true)
       Object.entries(res).map(([key, value]) => {
         this.props.updateComment(comment.id, key, value);
@@ -97,7 +98,7 @@ class CommentItem extends PureComponent {
   render() {
     const { post, comment, commentsChild, commentsData, me, myAccount } = this.props;
     const { showReplyForm, showEditForm } = this.state;
-    const delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
+    const delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.delisted)
 
     // Hide moderators' comments to normal users
     if (!comment || !shouldCommentVisible(comment, post.author, me)) {

@@ -66,7 +66,10 @@ function* getCommentsFromPost({ category, author, permlink }) {
     const active_voters = {}
     Object.keys(state.content).map((commentKey) => {
       const comment = state.content[commentKey];
-      active_voters[`${comment.id}`] = comment.active_votes.map((voter) => { return voter.voter })
+      active_voters[`${comment.id}`] = comment.active_votes.map((voter) => { return {
+        voter: voter.voter,
+        percent: voter.percent
+      } })
       return true;
     });
     const res = yield api.post('/comments/scores.json', { active_voters: JSON.stringify(active_voters) }, true);
@@ -77,7 +80,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
       if (content) {
         content.payout_value = calculateContentPayout(content); // Sync with local format
         content.scores = score_table[content.id].scores;
-        content.is_delisted = score_table[content.id].is_delisted;
+        content.delisted = score_table[content.id].delisted;
         content.check_disliked = score_table[content.id].check_disliked;
       }
     }

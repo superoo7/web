@@ -1,7 +1,7 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 import steem from 'steem';
 import { notification } from 'antd';
-import { selectMe } from 'features/User/selectors';
+import { selectMyAccount } from 'features/User/selectors';
 import steemConnectAPI from 'utils/steemConnectAPI';
 import { postRefreshBegin } from 'features/Post/actions/refreshPost';
 import { refreshMeBegin } from 'features/User/actions/getMe';
@@ -26,17 +26,17 @@ export function voteFailure(content, accountName, contentType, message) {
   return { type: VOTE_FAILURE, content, accountName, contentType, message };
 }
 
-export function updatePayout(content, contentType) {
-  return { type: UPDATE_PAYOUT, content, contentType };
+export function updatePayout(content, contentType, myAccount, weight) {
+  return { type: UPDATE_PAYOUT, content, contentType, myAccount, weight };
 }
 
 /*--------- SAGAS ---------*/
 function* vote({ content, weight, contentType }) {
-  const accountName = yield select(selectMe());
-  yield put(voteOptimistic(content, accountName, weight, contentType));
+  const myAccount = yield select(selectMyAccount());
+  yield put(voteOptimistic(content, myAccount.username, weight, contentType));
 
   try {
-    yield steemConnectAPI.vote(accountName, content.author, content.permlink, weight);
+    yield steemConnectAPI.vote(myAccount.username, content.author, content.permlink, weight);
 
     // UPDATE PAYOUT
     const { author, permlink } = content;
@@ -49,13 +49,13 @@ function* vote({ content, weight, contentType }) {
     if (contentType === 'post') {
       yield put(postRefreshBegin(updatedContent));
     } else {
-      yield put(updatePayout(updatedContent, contentType));
+      yield put(updatePayout(updatedContent, contentType, myAccount, weight));
     }
 
     yield put(refreshMeBegin());
   } catch(e) {
     yield notification['error']({ message: extractErrorMessage(e) });
-    yield put(voteFailure(content, accountName, contentType, e.message));
+    yield put(voteFailure(content, myAccount.username, contentType, e.message));
   }
 }
 

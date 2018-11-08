@@ -63,26 +63,33 @@ function* getCommentsFromPost({ category, author, permlink }) {
     const state = yield steem.api.getStateAsync(`/${category}/@${author}/${permlink}`);
     const posts = yield select(selectPosts());
 
-    const active_voters = {};
+    const comments_votes = {};
     for(let comment of Object.values(state.content)) {
-      active_voters[`${comment.id}`] = comment.active_votes.map((voter) => {
-        return {
-          voter: voter.voter,
-          percent: voter.percent
-        }
-      });
+      if (!comment.parent_author) { // Filter post
+        continue;
+      }
+
+      comments_votes[`${comment.id}`] = comment.active_votes
+        .filter(vote => vote.voter !== comment.author) // exclude self-vote
+        .map(vote => {
+          return {
+            voter: vote.voter,
+            percent: vote.percent
+          }
+        });
     }
 
-    const res = yield api.post('/comments/scores.json', { active_voters: JSON.stringify(active_voters) }, true);
+    const res = yield api.post('/comments/scores.json', { comments_votes: JSON.stringify(comments_votes) }, true);
     const { score_table } = res;
     // Update payout_value
     const commentsData = mapCommentsBasedOnId(state.content);
     for (const content of Object.values(commentsData)) {
-      if (content) {
-        content.payout_value = calculateContentPayout(content); // Sync with local format
+      content.payout_value = calculateContentPayout(content); // Sync with local format
+
+      if (content.parent_author) {
         content.scores = score_table[content.id].scores;
-        content.delisted = score_table[content.id].delisted;
-        content.check_disliked = score_table[content.id].check_disliked;
+        content.is_delisted = score_table[content.id].is_delisted;
+        content.is_disliked = score_table[content.id].is_disliked;
       }
     }
 

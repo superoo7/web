@@ -84,21 +84,15 @@ class CommentItem extends PureComponent {
       return <Icon className={"dislike-button loading"} type="loading" spin="true" />;
     }
 
-    if (comment.check_disliked) {
-      return (
-        <Icon className={"dislike-button disliked"} type="dislike" theme="outlined" onClick={this.onClickDislike}/>
-      )
-    } else {
-      return (
-        <Icon className={"dislike-button"} type="dislike" theme="outlined" onClick={this.onClickDislike}/>
-      )
-    }
+    return (
+      <Icon className={`dislike-button${comment.is_disliked ? ' disliked' : ''}`} type="dislike" theme="outlined" onClick={this.onClickDislike}/>
+    );
   }
 
   render() {
     const { post, comment, commentsChild, commentsData, me, myAccount } = this.props;
     const { showReplyForm, showEditForm } = this.state;
-    const delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.delisted)
+    const is_delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
 
     // Hide moderators' comments to normal users
     if (!comment || !shouldCommentVisible(comment, post.author, me)) {
@@ -106,7 +100,7 @@ class CommentItem extends PureComponent {
     }
 
     return (
-      <List.Item className={`comment${delisted ? ' flagged' : ''}`}>
+      <List.Item className={`comment${is_delisted ? ' flagged' : ''}`}>
         <List.Item.Meta
           avatar={<Avatar src={`${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${comment.author}?s=64`} />}
           title={

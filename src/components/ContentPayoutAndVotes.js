@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Popover, Icon } from 'antd';
+import { Popover } from 'antd';
 import { sortVotes } from 'utils/helpers/voteHelpers';
 import VotePayout from 'features/Vote/VotePayout';
 import Author from 'components/Author';
@@ -18,20 +18,6 @@ export default class ContentPayoutAndVotes extends PureComponent {
     const { content, type } = this.props;
 
     let activeVotes = content.active_votes || [];
-    if (activeVotes.length === 0) {
-      return (
-        <span className="vote-count">
-          <span className="fake-link hover-link">
-            {content.active_votes === undefined ?
-              <Icon type="loading" />
-              :
-              '0'
-            }
-            &nbsp;votes
-          </span>
-        </span>
-      );
-    }
     activeVotes = activeVotes.filter(v => v.percent !== 0);
 
     // Generate voting-details

@@ -65,7 +65,7 @@ export default class ContentPayoutAndVotes extends PureComponent {
     }
 
     let userScoresTooltipMsg = '';
-    if (type === 'comment') {
+    if (type === 'comment' && content.scores) {
       const userScoreTable = content.scores.user_scores;
       const activeVotes = content.active_votes || [];
 
@@ -98,12 +98,12 @@ export default class ContentPayoutAndVotes extends PureComponent {
     } else { // comment
       return (
         <span className="vote-count">
-          { content.scores.total > 0 ?
+          { content.scores && content.scores.total > 0 ?
             <Popover content={userScoresTooltipMsg || "No votings yet"} placement="bottom">
               <span className="payout fake-link">{formatNumber(content.scores.total)}</span>
             </Popover>
             :
-            <span className="payout fake-link">{formatNumber(content.scores.total)}</span>
+            <span className="payout fake-link">0.0</span>
           }
           <span className="separator">|</span>
           <Popover content={lastVotesTooltipMsg} placement="bottom">

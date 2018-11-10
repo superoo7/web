@@ -4,6 +4,7 @@ import combine from 'utils/combine';
  */
 import getCommentsFromPost, { getCommentsFromPostReducer } from './actions/getCommentsFromPost';
 import { replyManager, editReplyManager, replyReducer } from './actions/reply';
+import { updateCommentReducer } from './actions/updateComment';
 import commentsReducer from './reducer';
 
 export const initialState = {
@@ -22,6 +23,7 @@ export const reducer = (state = initialState, action) => combine(
     getCommentsFromPostReducer,
     commentsReducer,
     replyReducer,
+    updateCommentReducer,
   ],
   state,
   action,

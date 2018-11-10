@@ -556,6 +556,20 @@
     }
 
     .comment-title {
+      .dislike-button {
+        position: absolute;
+        right: 0;
+        color: $text_grey;
+        cursor: pointer;
+
+        &.disliked {
+          color: $primary;
+        }
+        &.loading {
+          color: $primary;
+        }
+      }
+
       .author {
         display: inline-block;
       }
@@ -633,6 +647,9 @@
         }
 
         .vote-button {
+          margin-right: 0.75em;
+          vertical-align: bottom;
+
           .ant-btn-circle {
             width: 1.25rem;
             height: 1.25rem;

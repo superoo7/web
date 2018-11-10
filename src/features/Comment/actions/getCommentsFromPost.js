@@ -8,6 +8,7 @@ import { selectPosts } from 'features/Post/selectors';
 import { hasUpdated } from 'features/Post/utils';
 import { postRefreshBegin, postRefreshSuccess } from 'features/Post/actions/refreshPost';
 import { calculateContentPayout } from 'utils/helpers/steemitHelpers';
+import api from 'utils/api';
 
 /*--------- CONSTANTS ---------*/
 const GET_COMMENTS_FROM_POST_BEGIN = 'GET_COMMENTS_FROM_POST_BEGIN';
@@ -41,7 +42,7 @@ export function getCommentsFromPostReducer(state, action) {
         commentsFromPost: {
           [action.postKey]: {$auto: {
             // SORTS COMMENTS HERE TO AVOID JUMPS WHEN VOTING
-            list: { $set: sortCommentsFromSteem(getRootCommentsList(action.state), mapCommentsBasedOnId(action.state.content), 'trending') },
+            list: { $set: sortCommentsFromSteem(getRootCommentsList(action.state), mapCommentsBasedOnId(action.state.content), 'score') },
           }},
         }
       });
@@ -62,11 +63,33 @@ function* getCommentsFromPost({ category, author, permlink }) {
     const state = yield steem.api.getStateAsync(`/${category}/@${author}/${permlink}`);
     const posts = yield select(selectPosts());
 
+    const comments_votes = {};
+    for(let comment of Object.values(state.content)) {
+      if (!comment.parent_author) { // Filter post
+        continue;
+      }
+
+      comments_votes[`${comment.id}`] = comment.active_votes
+        .filter(vote => vote.voter !== comment.author) // exclude self-vote
+        .map(vote => {
+          return {
+            voter: vote.voter,
+            percent: vote.percent
+          }
+        });
+    }
+
+    const res = yield api.post('/comments/scores.json', { comments_votes: JSON.stringify(comments_votes) }, true);
+    const { score_table } = res;
     // Update payout_value
     const commentsData = mapCommentsBasedOnId(state.content);
     for (const content of Object.values(commentsData)) {
-      if (content) {
-        content.payout_value = calculateContentPayout(content); // Sync with local format
+      content.payout_value = calculateContentPayout(content); // Sync with local format
+
+      if (content.parent_author) {
+        content.scores = score_table[content.id].scores;
+        content.is_delisted = score_table[content.id].is_delisted;
+        content.is_disliked = score_table[content.id].is_disliked;
       }
     }
 

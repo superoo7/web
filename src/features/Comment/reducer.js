@@ -53,8 +53,21 @@ export default function commentsReducer(state, action) {
       }
     }
     case UPDATE_PAYOUT: {
-      const { content, contentType } = action;
+      const { content, contentType, myAccount, weight } = action;
       if (contentType === 'comment') {
+
+        const votedScore = myAccount.user_score * myAccount.boost_score * weight / 10000;
+
+        // Update score table
+        const scores = Object.assign({}, state.commentsData[content.id].scores);
+        if (weight > 0) {
+          scores.total += votedScore;
+          scores.user_scores[myAccount.username] = votedScore;
+        } else {
+          scores.total -= scores.user_scores[myAccount.username];
+          delete scores.user_scores[myAccount.username];
+        }
+
         return update(state, {
           commentsData: {
             [content.id]: {
@@ -63,6 +76,7 @@ export default function commentsReducer(state, action) {
               active_votes: {$set: content.active_votes},
               payout_value: {$set: calculateContentPayout(content)},
               isUpdating: {$set: false},
+              scores: { $set: scores },
             }
           },
         });

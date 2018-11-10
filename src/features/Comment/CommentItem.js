@@ -92,12 +92,12 @@ class CommentItem extends PureComponent {
   render() {
     const { post, comment, commentsChild, commentsData, me, myAccount } = this.props;
     const { showReplyForm, showEditForm } = this.state;
-    const is_delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
 
     // Hide moderators' comments to normal users
     if (!comment || !shouldCommentVisible(comment, post.author, me)) {
       return null;
     }
+    const is_delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
 
     return (
       <List.Item className={`comment${is_delisted ? ' flagged' : ''}`}>

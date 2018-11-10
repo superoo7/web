@@ -18,6 +18,7 @@ import { replyBegin } from 'features/Comment/actions/reply';
 import { selectIsCommentPublishing, selectHasCommentSucceeded } from 'features/Comment/selectors';
 import { getCachedImage } from 'features/Post/utils';
 import ShareButton from './ShareButton';
+import { titleize } from 'utils/helpers/stringHelpers';
 
 class PostView extends Component {
   static propTypes = {
@@ -276,7 +277,7 @@ class PostView extends Component {
               </span>
             }
           </div>
-          <h1>{post.title}</h1>
+          <h1>{titleize(post.title)}</h1>
           <h2>{post.tagline}</h2>
           <Button
             href={addReferral(post.url)}

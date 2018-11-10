@@ -10,6 +10,7 @@ import { getPostPath, getCachedImage } from '../utils';
 import { isModerator } from 'features/User/utils';
 import VoteButton from 'features/Vote/VoteButton';
 import { formatAmount } from 'utils/helpers/steemitHelpers';
+import { titleize } from 'utils/helpers/stringHelpers';
 
 class PostItem extends Component {
   static propTypes = {
@@ -48,7 +49,7 @@ class PostItem extends Component {
         </Link>
         <div className="summary">
           <div className="title">
-            <Link to={getPostPath(post, pathPrefix)}>{post.title}</Link>
+            <Link to={getPostPath(post, pathPrefix)}>{titleize(post.title)}</Link>
             {isModerator(me) &&
               (post.is_verified ?
                 <Icon type="check-circle" className="verified"/>

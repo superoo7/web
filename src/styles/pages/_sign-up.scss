@@ -91,11 +91,14 @@
   p.form-tail {
     font-size: 0.8125rem;
     color: $text_grey;
-    height: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .anticon {
+      vertical-align: -0.16em;
+    }
   }
 }
 

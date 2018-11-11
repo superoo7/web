@@ -17,12 +17,12 @@ export default class PostFeedEmbed extends Component {
 
   renderThumbFirst(thumb) {
     return (
-      <a className="postFeedEmbed" onClick={this.handleThumbClick}>
+      <div className="postFeedEmbed fake-link" onClick={this.handleThumbClick}>
         <div className="postFeedEmbed-icon">
-          <Icon type="play-circle-o" style={{ fontSize: '60px' }}/>
+          <Icon type="play-circle" theme="filled"  style={{ fontSize: '60px', opacity: '0.8' }}/>
         </div>
         <img src={thumb} alt="" />
-      </a>
+      </div>
     );
   }
 

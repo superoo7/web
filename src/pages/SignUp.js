@@ -222,7 +222,7 @@ class SignUp extends Component {
             </Form>
             <p className="form-tail">
               Do you already have an account?<br />
-              <a href={getLoginURL()} className="action less-margin">
+              <a href={getLoginURL()} className="action less-margin" alt="Sign In">
                 Sign In
               </a>
             </p>
@@ -252,7 +252,7 @@ class SignUp extends Component {
                   Send SMS
                 </Button>
                 <p className="form-tail">
-                  <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
+                  <span type="ghost" onClick={() => this.moveStage(-1)} className="fake-link"><Icon type="left" /> Back</span>
                 </p>
               </div>
             </Form>
@@ -272,7 +272,7 @@ class SignUp extends Component {
                   <Input
                     placeholder="Confirmation code (4 digits)"
                     prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    suffix={<a onClick={(e) => this.sendSms(e, true)} disabled={this.state.pinTimer !== null}>{this.state.pinTimer ? `Resend in ${this.state.pinTimer}s` : 'Resend'}</a>}
+                    suffix={<span onClick={(e) => this.sendSms(e, true)} disabled={this.state.pinTimer !== null} className="fake-link">{this.state.pinTimer ? `Resend in ${this.state.pinTimer}s` : 'Resend'}</span>}
                     value={this.state.pinNumber}
                     onChange={this.setPinNumber}
                     autoFocus
@@ -289,7 +289,7 @@ class SignUp extends Component {
                     Verify PIN
                   </Button>
                   <p className="form-tail">
-                    <a type="ghost" onClick={() => this.moveStage(-1)}><Icon type="left" /> Back</a>
+                    <span type="ghost" onClick={() => this.moveStage(-1)} className="fake-link"><Icon type="left" /> Back</span>
                   </p>
                 </div>
               </Form>
@@ -361,7 +361,7 @@ class SignUp extends Component {
               <Button type="primary" block onClick={() => window.location = getLoginURL('/')}>Login Now</Button>
             </div>
             <p className="form-tail">
-              <a href={'/'} className="action less-margin">
+              <a href="/" className="action less-margin" alt="Go to main page">
                 Go to main page
               </a>
             </p>

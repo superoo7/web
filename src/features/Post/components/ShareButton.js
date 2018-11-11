@@ -16,6 +16,7 @@ export class ShareButtonContent extends PureComponent {
           href={'https://www.facebook.com/sharer.php?u=' + shareUrl}
           target="_blank"
           rel="noopener noreferrer"
+          alt="Share on Facebook"
         >
           <i className="icon-facebook share-icon"></i>
         </a>
@@ -27,6 +28,7 @@ export class ShareButtonContent extends PureComponent {
             '&hashtags=steemhunt'}
           target="_blank"
           rel="noopener noreferrer"
+          alt="Share on Twitter"
         >
           <i className="icon-twitter share-icon"></i>
         </a>
@@ -38,6 +40,7 @@ export class ShareButtonContent extends PureComponent {
           }
           target="_blank"
           rel="noopener noreferrer"
+          alt="Share on Pinterest"
         >
           <i className="icon-pinterest-p share-icon"></i>
         </a>
@@ -97,9 +100,9 @@ export default class ShareButton extends PureComponent {
           <Button icon="share-alt" className="share-button">SHARE</Button>
         </Popover>
         <div className="share-comment">Get social share airdrop!
-          <a onClick={this.toggleModal}>
+          <span onClick={this.toggleModal} className="fake-link">
             &nbsp;<Icon type="question-circle-o" />
-          </a>
+          </span>
         </div>
         <Modal
           title="Share the hunt and get free HUNT tokens!"

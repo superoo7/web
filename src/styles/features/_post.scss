@@ -483,9 +483,8 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        a {
-          text-align: left;
-          font-size: 13px;
+        .fake-link {
+          font-size: 0.8125rem;
         }
         .anticon-loading {
           margin-left: 10px;

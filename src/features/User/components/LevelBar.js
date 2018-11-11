@@ -46,7 +46,7 @@ const ModalContent = () => {
     <div className="pop-content">
       <p>
         A hunter’s level is decided based on their overall hunter contribution within Steemhunt based on four criteria: Account credibility, Activity score, Curation score, and Hunt score.
-        Please check out <a href="https://steemit.com/steemhunt/@steemhunt/steemhunt-abv-2-0-introducing-hunter-level-based-steemhunt-upvotes-or-new-category-search-feature" target="_blank" rel="noopener noreferrer">this announcement</a> for more details.
+        Please check out <a href="https://steemit.com/steemhunt/@steemhunt/steemhunt-abv-2-0-introducing-hunter-level-based-steemhunt-upvotes-or-new-category-search-feature" target="_blank" rel="noopener noreferrer" alt="Go to announcement">this announcement</a> for more details.
       </p>
 
       <h4>The hunter level will increase when:</h4>
@@ -84,10 +84,11 @@ class LevelBar extends Component {
           <LevelLabels />
           <ColoredCol userScore={account.user_score} />
         </Row>
-        <h2>Hunter Level : {account.level}
-          <a onClick={this.toggleModal}>
+        <h2>
+          Hunter Level : {account.level}
+          &nbsp;<span onClick={this.toggleModal} className="fake-link" alt="about level">
             <Icon className="level-question" type="question-circle-o" />
-          </a>
+          </span>
         </h2>
         <Modal
             title="What is Hunter Level?"

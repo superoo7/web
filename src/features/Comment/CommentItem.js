@@ -128,11 +128,11 @@ class CommentItem extends PureComponent {
                     <VoteButton post={comment} type="comment" layout="comment" />
                     <ContentPayoutAndVotes content={comment} type="comment" />
                     <span className="separator">|</span>
-                    <a className="hover-link" onClick={this.switchReplyForm}>reply</a>
+                    <span className="hover-link fake-link" onClick={this.switchReplyForm}>reply</span>
                     {me === comment.author && isEditable(comment) &&
                       <span>
                         <span className="separator">|</span>
-                        <a className="hover-link" onClick={this.switchEditForm}>edit</a>
+                        <span className="hover-link fake-link" onClick={this.switchEditForm}>edit</span>
                       </span>
                     }
                   </div>

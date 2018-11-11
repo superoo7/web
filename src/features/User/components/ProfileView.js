@@ -126,9 +126,9 @@ export default class ProfileView extends Component {
 
           <div className="other-info">
             {profileWebsite &&
-              <p><a href={profileWebsite} target="_blank"><Icon type="link" /> {profileWebsite.replace(/^https?:\/\//, '')}</a></p>
+              <p><a href={profileWebsite} target="_blank" rel="noopener noreferrer" alt="Go to website"><Icon type="link" /> {profileWebsite.replace(/^https?:\/\//, '')}</a></p>
             }
-            <p><Icon type="book" /> <a href={`https://steemit.com/@${account.name}`} target="_blank" rel="noopener noreferrer">View Steemit blog</a></p>
+            <p><Icon type="book" /> <a href={`https://steemit.com/@${account.name}`} target="_blank" rel="noopener noreferrer" alt="View Steemit blog">View Steemit blog</a></p>
           </div>
         </div>
       </div>

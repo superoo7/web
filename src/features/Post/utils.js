@@ -24,6 +24,7 @@ export const hasUpdated = function(oldPost, newPost) {
     oldPost.children !== newPost.children;
 }
 
+/* eslint-disable no-control-regex */
 export const sanitizeText = function(text, stripEndDot = false) {
   let t = text.trim().replace(/[\x00-\x09\x0B-\x0C\x0E-\x1F\x7F-\x9F]/g, '');
 

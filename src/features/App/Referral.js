@@ -48,9 +48,9 @@ class Referral extends Component {
         <Link to="/about">
           Welcome to Steemhunt <Icon type="right-circle-o" />
         </Link>
-        <a onClick={() => this.props.setBannerState(false)}>
+        <span onClick={() => this.props.setBannerState(false)} alt="Close banner">
           <Icon type="close-circle-o" />
-        </a>
+        </span>
       </div>
     )
   }

@@ -620,7 +620,7 @@ class PostForm extends Component {
             onChange={this.handleDescriptionChange}
             maxLength={1000} />
           <div className="inline-upload-container">
-            <a onClick={() => this.inlineFileField.click()}>Upload Image</a>
+            <span onClick={() => this.inlineFileField.click()} className="fake-link">Upload Image</span>
             {this.state.inlineUploading && <Icon type="loading" spin="true" />}
             <input type="file" ref={(ref) => { this.inlineFileField = ref }} onChange={this.inputUpload} accept="image/x-png,image/jpeg" />
           </div>

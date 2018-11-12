@@ -1,5 +1,7 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import update from 'immutability-helper';
+import { notification } from 'antd';
+import { extractErrorMessage } from 'utils/errorMessage';
 import api from 'utils/api';
 
 /*--------- CONSTANTS ---------*/
@@ -54,6 +56,7 @@ function* getTransactions() {
 
     yield put(getTransactionsSuccess(result));
   } catch(e) {
+    yield notification['error']({ message: extractErrorMessage(e) });
     yield put(getTransactionsFailure(e.message));
   }
 }

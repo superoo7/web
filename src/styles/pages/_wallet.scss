@@ -121,6 +121,13 @@
       .icon {
         margin-top: 1rem;
         background-color: $primary;
+        vertical-align: -0.0625em;
+
+        &.sent {
+          background-color: #fff;
+          color: $primary;
+          border: 1px solid $primary;
+        }
       }
 
       .title {

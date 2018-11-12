@@ -137,6 +137,12 @@ hr {
   height: auto !important;
   font-weight: 300 !important;
   text-decoration: none !important;
+  line-height: 1.2 !important;
+
+  span {
+    height: auto !important;
+    line-height: 1.2 !important;
+  }
 
   @include responsive(mobile) {
     font-size: 0.8rem;
@@ -361,7 +367,6 @@ hr {
     }
     .checkitout-button {
       margin-top: 0.75rem;
-      line-height: 1.2;
     }
   }
 

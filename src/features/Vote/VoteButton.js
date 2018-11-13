@@ -29,18 +29,6 @@ class VoteButton extends PureComponent {
     }
   }
 
-  componentDidMount() {
-    this.loadVoteWeight();
-  }
-
-  loadVoteWeight = () => {
-    const voteString = localStorage.getItem(`vote-weight-${this.props.type}`);
-    const voteWeight = parseInt(voteString, 10)
-    if (voteString && !!voteWeight) {
-      this.setState({ voteWeight: voteWeight });
-    }
-  };
-
   openSignin = () => {
     notification.open({
       message: 'Login Required',
@@ -76,8 +64,18 @@ class VoteButton extends PureComponent {
       if (!this.props.isConnected) {
         return this.openSignin();
       }
+
+      // Load the last percentage
+      const voteString = localStorage.getItem(`vote-weight-${this.props.type}`);
+      const voteWeight = parseInt(voteString, 10);
+      if (voteString && voteWeight) {
+        this.setState({ voteWeight: voteWeight });
+      }
+    } else {
+      // Save the last percentage
+      localStorage.setItem(`vote-weight-${this.props.type}`, this.state.voteWeight);
     }
-    localStorage.setItem(`vote-weight-${this.props.type}`, this.state.voteWeight);
+
     this.setState({ sliderOpened: visible });
   };
 

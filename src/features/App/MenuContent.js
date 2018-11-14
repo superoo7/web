@@ -74,11 +74,9 @@ export default class MenuContent extends PureComponent {
           <Menu.Item key="4-sub" className="sub" disabled>
             <div className="group">
               <div className="label">
-                Level: {myAccount.level}&nbsp;
-                ({formatNumber(myAccount.user_score, '0,0.00')}
-                  {myAccount.boost_score && myAccount.boost_score > 1 && <span> x {myAccount.boost_score}</span> })
+                User Score
               </div>
-              <Progress percent={Math.round(100 * myAccount.user_score / 8)} status="active" />
+              <Progress percent={Math.round(10 * myAccount.detailed_user_score.score)} status="active" />
             </div>
             <div className="group">
               <div className="label">

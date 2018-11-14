@@ -91,15 +91,12 @@ export default class ProfileView extends Component {
         <div className="bottom-container">
           <div className="profile-picture" style={profileStyle}></div>
           <div className="profile-level">
-            {account.user_score != null &&
-              <LevelBar account={account} />
+            {account.detailed_user_score != null &&
+              <LevelBar scores={account.detailed_user_score} />
             }
           </div>
           <div className="timeline-container">
             <ul className="left">
-              {account.user_score != null &&
-                <li className="pink">User Score</li>
-              }
               <li>Reputation</li>
               <li>Followers</li>
               <li>Steem Power</li>
@@ -107,14 +104,6 @@ export default class ProfileView extends Component {
             </ul>
 
             <Timeline>
-              {account.user_score != null &&
-                <Timeline.Item className="pink">
-                  {formatNumber(account.user_score)}
-                  {account.boost_score && account.boost_score > 1 &&
-                    <span> (x{account.boost_score})</span>
-                  }
-                </Timeline.Item>
-              }
               <Timeline.Item>
                 {account.reputation}
               </Timeline.Item>

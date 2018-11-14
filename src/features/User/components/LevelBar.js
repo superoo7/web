@@ -1,45 +1,6 @@
 import React, { Component } from 'react';
-import { Row, Col, Icon, Modal } from 'antd';
-import { LEVEL_TIER } from 'features/User/utils';
-
-const ColoredCol = ({ userScore }) => {
-  const bars = Array(LEVEL_TIER[LEVEL_TIER.length - 1] + 1).fill().map((_, i) => i);
-  bars.shift();
-
-  return bars.map((i) => {
-    let weight = 0;
-    if (i <= userScore) {
-      weight = 1;
-    } else if (i - 1 < userScore < i) {
-      weight = (userScore - (i - 1));
-    }
-
-    let width = (weight > 0) ? `${weight * 100 || 0}%` : 0
-
-    return (
-      <Col className="level-col" key={`colored-${i}`} span={3}>
-        <div style={{
-          backgroundColor: '#ff9c99',
-          height: '100%',
-          width: width,
-        }}>
-        </div>
-      </Col>
-    );
-  });
-}
-
-const LevelLabels = () => {
-  const levels = Array(LEVEL_TIER.length + 1).fill().map((_, i) => i);
-
-  return [0].concat(LEVEL_TIER).map(Number).map((tier, i) => {
-    const left = `calc(${(tier / 8) * 100}% - 15px)`;
-
-    return (
-      <span key={i} className="bar-label" style={{ left: left }}>{`LV. ${levels[i]}`}</span>
-    )
-  });
-}
+import { Icon, Modal, Progress } from 'antd';
+import { formatNumber } from 'utils/helpers/steemitHelpers';
 
 const ModalContent = () => {
   return (
@@ -76,20 +37,25 @@ class LevelBar extends Component {
   }
 
   render() {
-    const { account } = this.props;
+    const { scores } = this.props;
 
     return (
-      <div className="level-bar">
-        <Row className="level-row">
-          <LevelLabels />
-          <ColoredCol userScore={account.user_score} />
-        </Row>
-        <h2>
-          Hunter Level : {account.level}
-          &nbsp;<span onClick={this.toggleModal} className="fake-link" alt="about level">
-            <Icon className="level-question" type="question-circle-o" />
-          </span>
-        </h2>
+      <div>
+        <Progress
+          format={percent => ''}
+          percent={10 * scores.score}
+          successPercent={10 * scores.hunt_balance_score}
+          className="level-bar"/>
+        {scores === 0 ?
+          <h2>User Score: 0 (Blacklisted)</h2>
+        :
+          <h2>
+            User Score: {formatNumber(scores.hunt_balance_score)} <span className="boost-score">+ {formatNumber(scores.good_user_score)}</span> = {formatNumber(scores.score)}
+            &nbsp;<span onClick={this.toggleModal} className="fake-link" alt="about level">
+              <Icon type="question-circle-o" />
+            </span>
+          </h2>
+        }
         <Modal
             title="What is Hunter Level?"
             visible={this.state.modalVisible}

@@ -40,6 +40,39 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      .level-bar {
+        width: 300px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+
+        // Override progress bar
+        .ant-progress-bg {
+          background-color: rgba(252, 111, 111, 0.5);
+        }
+
+        .ant-progress-success-bg {
+          background-color: rgba(252, 111, 111, 1);
+        }
+
+        .ant-progress-show-info .ant-progress-outer {
+          margin: 0;
+          padding: 0;
+        }
+
+        .ant-progress-text {
+          display: none;
+        }
+      }
+
+      h2 {
+        color: $primary;
+        margin: 0;
+
+        .boost-score {
+          color: rgba(252, 111, 111, 0.7);
+        }
+      }
     }
 
     .other-info {

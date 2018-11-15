@@ -44,13 +44,13 @@ class LevelBar extends Component {
         <Progress
           format={percent => ''}
           percent={10 * scores.score}
-          successPercent={10 * scores.hunt_balance_score}
+          successPercent={10 * scores.base}
           className="level-bar"/>
         {scores === 0 ?
           <h2>User Score: 0 (Blacklisted)</h2>
         :
           <h2>
-            User Score: {formatNumber(scores.hunt_balance_score)} <span className="boost-score">+ {formatNumber(scores.good_user_score)}</span> = {formatNumber(scores.score)}
+            User Score: {formatNumber(scores.base)} <span className="boost-score">+ {formatNumber(scores.boost)}</span> = {formatNumber(scores.score)}
             &nbsp;<span onClick={this.toggleModal} className="fake-link" alt="about level">
               <Icon type="question-circle-o" />
             </span>

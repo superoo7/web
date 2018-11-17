@@ -23,7 +23,7 @@ export default class ProfileView extends Component {
       return <CircularProgress />;
     }
 
-    const roleName = getRoleName(me);
+    const roleName = getRoleName(account.name);
     let roleBoost = 1.0;
     if (account.name === me) {
       roleBoost = account.detailed_user_score.role_boost;

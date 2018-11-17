@@ -15,3 +15,12 @@ export const titleize = function(string) {
 
   return string_array.join(' ');
 }
+
+export const isValidUrl = (string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}

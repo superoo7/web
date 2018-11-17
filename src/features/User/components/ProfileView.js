@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { getCachedImage } from 'features/Post/utils';
 import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
 import { getRoleName } from 'features/User/utils';
+import { isValidUrl } from 'utils/helpers/stringHelpers';
 
 export default class ProfileView extends Component {
   render() {
@@ -24,7 +25,7 @@ export default class ProfileView extends Component {
 
     const roleName = getRoleName(me);
     let roleBoost = 1.0;
-    if (account.name === this.props.me) {
+    if (account.name === me) {
       roleBoost = account.detailed_user_score.role_boost;
     }
 
@@ -35,7 +36,7 @@ export default class ProfileView extends Component {
       backgroundImage: `url(${profilePlaceholder})`,
     };
 
-    const profileName = onEditing ? (profileDraft.name || profile.name) : (profile.name || account.name);
+    const profileName = onEditing ? (profileDraft.name || profile.name) : (profile.name && profile.name !== 'undefined' ? profile.name : account.name);
     const profileAbout = onEditing ? (profileDraft.about || profile.about) : profile.about ;
     const profileWebsite = onEditing ? (profileDraft.website || profile.website) : profile.website ;
     const profileImage = onEditing ? (profileDraft.profile_image || profile.profile_image) : profile.profile_image;
@@ -122,7 +123,7 @@ export default class ProfileView extends Component {
           </div>
 
           <div className="other-info">
-            {profileWebsite &&
+            {isValidUrl(profileWebsite) &&
               <p><a href={profileWebsite} target="_blank" rel="noopener noreferrer" alt="Go to website"><Icon type="link" /> {profileWebsite.replace(/^https?:\/\//, '')}</a></p>
             }
             <p><Icon type="book" /> <a href={`https://steemit.com/@${account.name}`} target="_blank" rel="noopener noreferrer" alt="View Steemit blog">View Steemit blog</a></p>

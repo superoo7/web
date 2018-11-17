@@ -80,19 +80,17 @@ function* getCommentsFromPost({ category, author, permlink }) {
         });
     }
 
-    if (getToken()) { // if logged in
-      const res = yield api.post('/comments/scores.json', { comments_votes: JSON.stringify(comments_votes) }, true);
-      const { score_table } = res;
-      // Update payout_value
-      const commentsData = mapCommentsBasedOnId(state.content);
-      for (const content of Object.values(commentsData)) {
-        content.payout_value = calculateContentPayout(content); // Sync with local format
+    const res = yield api.post('/comments/scores.json', { comments_votes: JSON.stringify(comments_votes) }, false);
+    const { score_table } = res;
+    // Update payout_value
+    const commentsData = mapCommentsBasedOnId(state.content);
+    for (const content of Object.values(commentsData)) {
+      content.payout_value = calculateContentPayout(content); // Sync with local format
 
-        if (content.parent_author) {
-          content.scores = score_table[content.id].scores;
-          content.is_delisted = score_table[content.id].is_delisted;
-          content.is_disliked = score_table[content.id].is_disliked;
-        }
+      if (content.parent_author) {
+        content.scores = score_table[content.id].scores;
+        content.is_delisted = score_table[content.id].is_delisted;
+        content.is_disliked = score_table[content.id].is_disliked;
       }
     }
 

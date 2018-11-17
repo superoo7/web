@@ -41,36 +41,28 @@
       justify-content: center;
       align-items: center;
 
-      .level-bar {
-        width: 300px;
-        margin-top: 20px;
-        margin-bottom: 10px;
+      h2 {
+        color: $primary;
+        margin-top: 1.5em;
+        margin-bottom: 0;
 
-        // Override progress bar
-        .ant-progress-bg {
-          background-color: rgba(252, 111, 111, 0.5);
-        }
-
-        .ant-progress-success-bg {
-          background-color: rgba(252, 111, 111, 1);
-        }
-
-        .ant-progress-show-info .ant-progress-outer {
-          margin: 0;
-          padding: 0;
-        }
-
-        .ant-progress-text {
-          display: none;
+        .fake-link {
+          margin-left: 0.4em;
+          vertical-align: -0.01em;
         }
       }
 
-      h2 {
-        color: $primary;
-        margin: 0;
+      .level-bar {
+        width: 300px;
+        margin-top: 10px;
 
-        .boost-score {
-          color: rgba(252, 111, 111, 0.7);
+        .score {
+          color: $primary;
+          margin-bottom: 0.3em;
+        }
+
+        .score-sub {
+          font-size: 0.875rem;
         }
       }
     }

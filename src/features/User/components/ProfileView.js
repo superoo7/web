@@ -10,7 +10,6 @@ import isEmpty from 'lodash/isEmpty';
 import { Helmet } from 'react-helmet';
 import { Icon, Timeline, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { formatNumber } from 'utils/helpers/steemitHelpers';
 import { getCachedImage } from 'features/Post/utils';
 import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
 

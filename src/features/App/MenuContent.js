@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Icon, Progress } from 'antd';
-import { formatNumber } from 'utils/helpers/steemitHelpers';
 import { ShareButtonContent } from 'features/Post/components/ShareButton';
 
 function adjustRecharge(lastValue, lastUpdated) {

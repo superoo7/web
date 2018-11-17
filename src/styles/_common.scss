@@ -387,7 +387,7 @@ hr {
     position: relative;
 
     .timeline-container {
-      padding-top: 26px;
+      padding-top: 20px;
       text-align: left;
       font-size: 0.875rem;
       overflow: hidden;
@@ -478,3 +478,8 @@ hr {
   }
 } // .heading
 
+.level-help {
+  ol {
+    padding-left: 2em;
+  }
+}

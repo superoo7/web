@@ -56,7 +56,7 @@ export default function commentsReducer(state, action) {
       const { content, contentType, myAccount, weight } = action;
       if (contentType === 'comment') {
 
-        const votedScore = myAccount.user_score * weight / 10000;
+        const votedScore = myAccount.detailed_user_score.score * myAccount.detailed_user_score.role_boost * weight / 10000;
 
         // Update score table
         const scores = Object.assign({}, state.commentsData[content.id].scores);

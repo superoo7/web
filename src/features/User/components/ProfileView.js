@@ -12,6 +12,7 @@ import { Icon, Timeline, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { getCachedImage } from 'features/Post/utils';
 import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
+import { getRoleName } from 'features/User/utils';
 
 export default class ProfileView extends Component {
   render() {
@@ -19,6 +20,12 @@ export default class ProfileView extends Component {
 
     if (isEmpty(account) || !this.props.me || (onEditing &&(account.name !== this.props.me))) {
       return <CircularProgress />;
+    }
+
+    const roleName = getRoleName(me);
+    let roleBoost = 1.0;
+    if (account.name === this.props.me) {
+      roleBoost = account.detailed_user_score.role_boost;
     }
 
     let profile = account.json_metadata.profile || {};
@@ -96,6 +103,7 @@ export default class ProfileView extends Component {
           </div>
           <div className="timeline-container">
             <ul className="left">
+              {roleName !== 'User' && <li>Community Role</li>}
               <li>Reputation</li>
               <li>Followers</li>
               <li>Steem Power</li>
@@ -103,6 +111,7 @@ export default class ProfileView extends Component {
             </ul>
 
             <Timeline>
+              {roleName !== 'User' && <Timeline.Item>{roleName} (x{roleBoost} voting boost)</Timeline.Item>}
               <Timeline.Item>
                 {account.reputation}
               </Timeline.Item>

@@ -52,3 +52,20 @@ export function isAdmin(username) {
   ];
   return admins.indexOf(username) !== -1;
 }
+
+export function getRoleName(username) {
+    if (isAdmin(username)) {
+      return 'Admin';
+    }
+    if (isGuardian(username)) {
+      return 'Guardian';
+    }
+    if (isModerator(username)) {
+      return 'Moderator';
+    }
+    if (isInfluencer(username)) {
+      return 'Influencer';
+    }
+
+    return 'User';
+  }

@@ -91,27 +91,31 @@ class VoteButton extends PureComponent {
     const postUpvoted = hasVoted(post, myAccount.name);
     const deleteConfirmation = <div>Are you sure unvote this post?<br />Your voting power won&quot;t recharge even if you unvote.</div>
 
-    const content = isConnected ? (
-      <div className="vote-box">
-        <Slider
-          min={0}
-          max={100}
-          step={1}
-          value={voteWeight}
-          onChange={this.onChangeVotingWeight}
-        />
-        <div className="weight">
-          {voteWeight}%
-          (+{formatNumber(voteWeight * myAccount.user_score * 0.01 * myAccount.boost_score)}, {formatAmount(this.votingValueCalculator(voteWeight))})
+    let content = '';
+    if (isConnected) {
+      const { score, role_boost } = myAccount.detailed_user_score;
+      content = (
+        <div className="vote-box">
+          <Slider
+            min={0}
+            max={100}
+            step={1}
+            value={voteWeight}
+            onChange={this.onChangeVotingWeight}
+          />
+          <div className="weight">
+            {voteWeight}%
+            (+{formatNumber(voteWeight * score * role_boost * 0.01)}, {formatAmount(this.votingValueCalculator(voteWeight))})
+          </div>
+          <Button
+            type="primary"
+            onClick={() => this.doVote(voteWeight * 100)}
+            disabled={voteWeight === 0}>
+            Vote
+          </Button>
         </div>
-        <Button
-          type="primary"
-          onClick={() => this.doVote(voteWeight * 100)}
-          disabled={voteWeight === 0}>
-          Vote
-        </Button>
-      </div>
-    ) : '';
+      );
+    }
 
     if (layout === 'list') {
       return (

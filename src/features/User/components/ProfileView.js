@@ -10,9 +10,9 @@ import isEmpty from 'lodash/isEmpty';
 import { Helmet } from 'react-helmet';
 import { Icon, Timeline, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { formatNumber } from 'utils/helpers/steemitHelpers';
 import { getCachedImage } from 'features/Post/utils';
 import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
+import { getRoleName } from 'features/User/utils';
 
 export default class ProfileView extends Component {
   render() {
@@ -20,6 +20,12 @@ export default class ProfileView extends Component {
 
     if (isEmpty(account) || !this.props.me || (onEditing &&(account.name !== this.props.me))) {
       return <CircularProgress />;
+    }
+
+    const roleName = getRoleName(me);
+    let roleBoost = 1.0;
+    if (account.name === this.props.me) {
+      roleBoost = account.detailed_user_score.role_boost;
     }
 
     let profile = account.json_metadata.profile || {};
@@ -91,15 +97,13 @@ export default class ProfileView extends Component {
         <div className="bottom-container">
           <div className="profile-picture" style={profileStyle}></div>
           <div className="profile-level">
-            {account.user_score != null &&
-              <LevelBar account={account} />
+            {account.detailed_user_score != null &&
+              <LevelBar scores={account.detailed_user_score} />
             }
           </div>
           <div className="timeline-container">
             <ul className="left">
-              {account.user_score != null &&
-                <li className="pink">User Score</li>
-              }
+              {roleName !== 'User' && <li>Community Role</li>}
               <li>Reputation</li>
               <li>Followers</li>
               <li>Steem Power</li>
@@ -107,14 +111,7 @@ export default class ProfileView extends Component {
             </ul>
 
             <Timeline>
-              {account.user_score != null &&
-                <Timeline.Item className="pink">
-                  {formatNumber(account.user_score)}
-                  {account.boost_score && account.boost_score > 1 &&
-                    <span> (x{account.boost_score})</span>
-                  }
-                </Timeline.Item>
-              }
+              {roleName !== 'User' && <Timeline.Item>{roleName} (x{roleBoost} voting boost)</Timeline.Item>}
               <Timeline.Item>
                 {account.reputation}
               </Timeline.Item>

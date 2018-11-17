@@ -40,6 +40,31 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      h2 {
+        color: $primary;
+        margin-top: 1.5em;
+        margin-bottom: 0;
+
+        .fake-link {
+          margin-left: 0.4em;
+          vertical-align: -0.01em;
+        }
+      }
+
+      .level-bar {
+        width: 300px;
+        margin-top: 10px;
+
+        .score {
+          color: $primary;
+          margin-bottom: 0.3em;
+        }
+
+        .score-sub {
+          font-size: 0.875rem;
+        }
+      }
     }
 
     .other-info {

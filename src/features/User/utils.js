@@ -53,6 +53,19 @@ export function isAdmin(username) {
   return admins.indexOf(username) !== -1;
 }
 
-export const LEVEL_TIER = [
-  1.0, 2.0, 3.0, 5.0, 8.0
-];
+export function getRoleName(username) {
+    if (isAdmin(username)) {
+      return 'Admin';
+    }
+    if (isGuardian(username)) {
+      return 'Guardian';
+    }
+    if (isModerator(username)) {
+      return 'Moderator';
+    }
+    if (isInfluencer(username)) {
+      return 'Influencer';
+    }
+
+    return 'User';
+  }

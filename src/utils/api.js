@@ -68,7 +68,7 @@ export default {
       active_votes: post.active_votes,
       children: post.children,
     }
-  }, true),
+  }, false),
   increaseCommentCount: (post) => request('PATCH', `/posts/refresh/@${post.author}/${post.permlink}.json`, {
     post: {
       children: post.children + 1,

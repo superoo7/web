@@ -12,7 +12,7 @@ import VoteButton from 'features/Vote/VoteButton';
 import { toTimeAgo } from 'utils/date';
 import { selectMe, selectMyAccount } from 'features/User/selectors';
 import { isEditable } from 'features/Post/utils';
-import { isAdmin, isModerator, isInfluencer } from 'features/User/utils';
+import { getRoleName, isModerator } from 'features/User/utils';
 import { decreaseCommentcount } from 'features/Post/reducer';
 import { shouldCommentVisible } from 'features/Comment/utils/comments';
 import { updateComment } from 'features/Comment/actions/updateComment';
@@ -98,6 +98,7 @@ class CommentItem extends PureComponent {
       return null;
     }
     const is_delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
+    const roleName = getRoleName(comment.author);
 
     return (
       <List.Item className={`comment${is_delisted ? ' flagged' : ''}`}>
@@ -107,12 +108,7 @@ class CommentItem extends PureComponent {
             <div className="comment-title">
               {myAccount.level >= 2 && this.renderDislike()}
               <Author name={comment.author} />
-              {isAdmin(comment.author) ?
-                <span className="badge team">TEAM</span>
-              :
-                isModerator(comment.author) ? <span className="badge moderator">MODERATOR</span> :
-                isInfluencer(comment.author) && <span className="badge influencer">INFLUENCER</span>
-              }
+              {roleName !== 'User' && <span className={`badge ${roleName.toLowerCase()}`}>{roleName.toUpperCase()}</span>}
               <span className="separator">&middot;</span>
               <span className="date">{toTimeAgo(comment.created)}</span>
             </div>

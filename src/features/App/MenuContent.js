@@ -75,7 +75,7 @@ export default class MenuContent extends PureComponent {
               <div className="label">
                 User Score
               </div>
-              <Progress percent={Math.round(10 * myAccount.detailed_user_score.score)} status="active" />
+              <Progress format={percent => Math.round(10 * percent) / 100} percent={myAccount.detailed_user_score.score * 10} status="active" />
             </div>
             <div className="group">
               <div className="label">

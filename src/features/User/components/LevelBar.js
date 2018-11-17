@@ -51,6 +51,7 @@ class LevelBar extends Component {
         }
         <Progress
           type="dashboard"
+          strokeLinecap="square"
           format={percent => (
             <div>
               <div className="score">{formatNumber(scores.score)}</div>

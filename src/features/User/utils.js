@@ -54,18 +54,34 @@ export function isAdmin(username) {
 }
 
 export function getRoleName(username) {
-    if (isAdmin(username)) {
-      return 'Admin';
-    }
-    if (isGuardian(username)) {
-      return 'Guardian';
-    }
-    if (isModerator(username)) {
-      return 'Moderator';
-    }
-    if (isInfluencer(username)) {
-      return 'Influencer';
-    }
-
-    return 'User';
+  if (isAdmin(username)) {
+    return 'Admin';
   }
+  if (isGuardian(username)) {
+    return 'Guardian';
+  }
+  if (isModerator(username)) {
+    return 'Moderator';
+  }
+  if (isInfluencer(username)) {
+    return 'Influencer';
+  }
+
+  return 'User';
+}
+
+export function getUserScore(myAccount) {
+  if (myAccount && myAccount.detailed_user_score && myAccount.detailed_user_score.score) {
+    return myAccount.detailed_user_score.score;
+  }
+
+  return 0.0;
+}
+
+export function getRoleBoost(myAccount) {
+  if (myAccount && myAccount.detailed_user_score && myAccount.detailed_user_score.role_boost) {
+    return myAccount.detailed_user_score.role_boost;
+  }
+
+  return 1.0;
+}

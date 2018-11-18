@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Icon, Progress } from 'antd';
 import { ShareButtonContent } from 'features/Post/components/ShareButton';
+import { getUserScore } from 'features/User/utils';
 
 function adjustRecharge(lastValue, lastUpdated) {
   const secPassed = (Date.now() - (new Date(lastUpdated * 1000))) / 1000;
@@ -75,7 +76,7 @@ export default class MenuContent extends PureComponent {
               <div className="label">
                 User Score
               </div>
-              <Progress format={percent => Math.round(10 * percent) / 100} percent={myAccount.detailed_user_score.score * 10} status="active" />
+              <Progress format={percent => Math.round(10 * percent) / 100} percent={getUserScore(myAccount) * 10} status="active" />
             </div>
             <div className="group">
               <div className="label">

@@ -4,6 +4,7 @@ import { UPDATE_PAYOUT, VOTE_FAILURE, VOTE_OPTIMISTIC } from '../Vote/actions/vo
 import { GET_COMMENTS_FROM_POST_SUCCESS } from './actions/getCommentsFromPost';
 import { getCommentsChildrenLists, mapCommentsBasedOnId } from './utils/comments';
 import { calculateContentPayout } from 'utils/helpers/steemitHelpers';
+import { getUserScore, getRoleBoost } from 'features/User/utils';
 
 export default function commentsReducer(state, action) {
   switch (action.type) {
@@ -56,7 +57,7 @@ export default function commentsReducer(state, action) {
       const { content, contentType, myAccount, weight } = action;
       if (contentType === 'comment') {
 
-        const votedScore = myAccount.detailed_user_score.score * myAccount.detailed_user_score.role_boost * weight / 10000;
+        const votedScore = getUserScore(myAccount) * getRoleBoost(myAccount) * weight / 10000;
 
         // Update score table
         const scores = Object.assign({}, state.commentsData[content.id].scores);

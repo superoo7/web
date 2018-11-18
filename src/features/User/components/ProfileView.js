@@ -12,7 +12,7 @@ import { Icon, Timeline, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { getCachedImage } from 'features/Post/utils';
 import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
-import { getRoleName } from 'features/User/utils';
+import { getRoleName, getUserScore, getRoleBoost } from 'features/User/utils';
 import { isValidUrl } from 'utils/helpers/stringHelpers';
 
 export default class ProfileView extends Component {
@@ -23,11 +23,9 @@ export default class ProfileView extends Component {
       return <CircularProgress />;
     }
 
+    const isMyProfile = account.name === me;
     const roleName = getRoleName(account.name);
-    let roleBoost = 1.0;
-    if (account.name === me) {
-      roleBoost = account.detailed_user_score.role_boost;
-    }
+    const roleBoost = getRoleBoost(account);
 
     let profile = account.json_metadata.profile || {};
     let coverStyle;
@@ -104,7 +102,7 @@ export default class ProfileView extends Component {
           </div>
           <div className="timeline-container">
             <ul className="left">
-              {roleName !== 'User' && <li>Community Role</li>}
+              {isMyProfile && roleName !== 'User' && <li>Community Role</li>}
               <li>Reputation</li>
               <li>Followers</li>
               <li>Steem Power</li>
@@ -112,7 +110,7 @@ export default class ProfileView extends Component {
             </ul>
 
             <Timeline>
-              {roleName !== 'User' && <Timeline.Item>{roleName} (x{roleBoost} voting boost)</Timeline.Item>}
+              {isMyProfile && roleName !== 'User' && <Timeline.Item>{roleName} (x{roleBoost} voting boost)</Timeline.Item>}
               <Timeline.Item>
                 {account.reputation}
               </Timeline.Item>

@@ -12,7 +12,7 @@ import VoteButton from 'features/Vote/VoteButton';
 import { toTimeAgo } from 'utils/date';
 import { selectMe, selectMyAccount } from 'features/User/selectors';
 import { isEditable } from 'features/Post/utils';
-import { getRoleName, isModerator } from 'features/User/utils';
+import { getRoleName, isModerator, getUserScore } from 'features/User/utils';
 import { decreaseCommentcount } from 'features/Post/reducer';
 import { shouldCommentVisible } from 'features/Comment/utils/comments';
 import { updateComment } from 'features/Comment/actions/updateComment';
@@ -97,16 +97,16 @@ class CommentItem extends PureComponent {
     if (!comment || !shouldCommentVisible(comment, post.author, me)) {
       return null;
     }
-    const is_delisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
+    const isDelisted = ((!isModerator(comment.author) && (comment.net_rshares < 0 || comment.author_reputation < 0)) || comment.is_delisted)
     const roleName = getRoleName(comment.author);
 
     return (
-      <List.Item className={`comment${is_delisted ? ' flagged' : ''}`}>
+      <List.Item className={`comment${isDelisted ? ' flagged' : ''}`}>
         <List.Item.Meta
           avatar={<Avatar src={`${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${comment.author}?s=64`} />}
           title={
             <div className="comment-title">
-              {myAccount.level >= 2 && this.renderDislike()}
+              {getUserScore(myAccount) >= 2 && this.renderDislike()}
               <Author name={comment.author} />
               {roleName !== 'User' && <span className={`badge ${roleName.toLowerCase()}`}>{roleName.toUpperCase()}</span>}
               <span className="separator">&middot;</span>

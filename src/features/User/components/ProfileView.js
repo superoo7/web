@@ -12,14 +12,14 @@ import { Icon, Timeline, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { getCachedImage } from 'features/Post/utils';
 import profilePlaceholder from 'assets/images/profile-placeholder@2x.png';
-import { getRoleName, getUserScore, getRoleBoost } from 'features/User/utils';
+import { getRoleName, getRoleBoost } from 'features/User/utils';
 import { isValidUrl } from 'utils/helpers/stringHelpers';
 
 export default class ProfileView extends Component {
   render() {
     const { me, account, onEditing, profileDraft } = this.props;
 
-    if (isEmpty(account) || !this.props.me || (onEditing &&(account.name !== this.props.me))) {
+    if (isEmpty(account) || (onEditing && account.name !== me)) {
       return <CircularProgress />;
     }
 

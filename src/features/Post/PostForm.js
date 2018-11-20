@@ -16,9 +16,9 @@ import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
 import CustomUploadDragger from 'components/CustomUploadDragger';
 import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers';
+import { validateAccountName } from 'utils/helpers/accountName';
 
 const FormItem = Form.Item;
-let currentBeneficiaryId = 0;
 
 class PostForm extends Component {
   static propTypes = {
@@ -40,17 +40,19 @@ class PostForm extends Component {
       previewImage: '',
       fileList: [],
       uploadError: null,
-      beneficiariesValid: true,
-      shouldRecalculateBeneficiary: false,
       duplicatedUrl: null,
       description: '',
       inlineUploading: false,
+      defaultBeneficiary: null,
+      beneficiariesError: null,
+      shouldRecalculateBeneficiary: false,
+      currentBeneficiaryId: 0,
     };
     this.beneficiaryInput = {};
   }
 
   componentDidMount() {
-    const { match: { params: { author, permlink } }, getPost, updateDraft } = this.props;
+    const { match: { params: { author, permlink } }, getPost, updateDraft, location } = this.props;
     const draftString = localStorage.getItem('draft');
 
     // Edit mode
@@ -105,7 +107,7 @@ class PostForm extends Component {
     }
 
     // Steemplus integration
-    const params = new URLSearchParams(this.props.location.search);
+    const params = new URLSearchParams(location.search);
     if (params.get('url')) {
       updateDraft('url', params.get('url'));
     }
@@ -115,9 +117,9 @@ class PostForm extends Component {
     if (params.get('tagline')) {
       updateDraft('tagline', params.get('tagline'));
     }
-
-    if (this.props.me) {
-      this.saveAndUpdateDraft('author', this.props.me);
+    if (params.get('by')) {
+      this.setState({ defaultBeneficiary: params.get('by') });
+      updateDraft('beneficiaries', [{ account: params.get('by'), weight: 200 }]);
     }
 
     window.addEventListener("paste", this.onPasteEvent);
@@ -162,6 +164,10 @@ class PostForm extends Component {
         this.setState({ editMode: false });
         this.checkAndResetDraft();
       }
+    }
+
+    if (nextProps.me) {
+      this.saveAndUpdateDraft('author', this.props.me);
     }
   }
 
@@ -228,24 +234,35 @@ class PostForm extends Component {
     // TODO: FIXME: HACK:
     // value is one step behind because maybe the inputNumberRef doesn't set synchronously
     setTimeout(() => {
-      const { form } = this.props;
-      const beneficiaryIds = form.getFieldValue('beneficiaryIds');
+      const { form, me } = this.props;
+      const beneficiaryIds = form.getFieldValue('beneficiaryIds') || [];
 
       let weightSum = 0;
       let beneficiaries = [];
+      let invalidError = null;
       for (const i of beneficiaryIds) {
         const account = this.beneficiaryInput[i]['accountInput'].input.value;
-        const weight = this.beneficiaryInput[i]['weightInput'].inputNumberRef.getCurrentValidValue();
-        beneficiaries.push({ account: account, weight: weight * 100 });
-        weightSum += weight;
+        invalidError = validateAccountName(account);
+        console.log(me, account);
+        if (account === me) {
+          invalidError = 'You cannot set yourself as a beneficiary.';
+        }
+        if (invalidError) {
+          this.setState({ beneficiariesError: invalidError });
+        } else {
+          const weight = this.beneficiaryInput[i]['weightInput'].inputNumberRef.getCurrentValidValue();
+          beneficiaries.push({ account: account, weight: weight * 100 });
+          weightSum += weight;
+        }
       }
+
       this.saveAndUpdateDraft('beneficiaries', beneficiaries);
 
       if (weightSum > 85 || weightSum < 0) {
-        this.setState({ beneficiariesValid: false });
-      } else {
-        this.setState({ beneficiariesValid: true });
+        invalidError = 'Sum of reward values must be less than or equal to 85%';
       }
+
+      this.setState({ beneficiariesError: invalidError });
     }, 50);
 
     this.setState({ shouldRecalculateBeneficiary: false });
@@ -265,18 +282,20 @@ class PostForm extends Component {
   };
 
   addBeneficiary = () => {
-    currentBeneficiaryId++;
     const { form } = this.props;
     // can use data-binding to get
     const beneficiaryIds = form.getFieldValue('beneficiaryIds');
-    const nextIds = beneficiaryIds.concat(currentBeneficiaryId);
+    const nextIds = beneficiaryIds.concat(this.state.currentBeneficiaryId + 1);
     // can use data-binding to set
     // important! notify form to detect changes
     form.setFieldsValue({
       beneficiaryIds: nextIds,
     });
 
-    this.setState({ shouldRecalculateBeneficiary: true });
+    this.setState({
+      shouldRecalculateBeneficiary: true,
+      currentBeneficiaryId: this.state.currentBeneficiaryId + 1,
+    });
   };
 
   // MARK: - Custom Validators
@@ -469,7 +488,8 @@ class PostForm extends Component {
       },
     };
 
-    getFieldDecorator('beneficiaryIds', { initialValue: [] });
+    const { defaultBeneficiary } = this.state;
+    getFieldDecorator('beneficiaryIds', { initialValue: defaultBeneficiary ? [0] : [] });
     const beneficiaryIds = getFieldValue('beneficiaryIds');
     const beneficiaries = beneficiaryIds.map((k, index) => {
       this.beneficiaryInput[k] = { accountInput: null, weightInput: null };
@@ -497,6 +517,8 @@ class PostForm extends Component {
                 ref={node => this.beneficiaryInput[k]['accountInput'] = node}
                 onChange={this.onBeneficiariesChanged}
                 maxLength="16"
+                defaultValue={index === 0 ? defaultBeneficiary : null}
+                disabled={index === 0 && !!defaultBeneficiary}
               />
             </Col>
             <Col span={10}>
@@ -507,7 +529,8 @@ class PostForm extends Component {
                 parser={value => value.replace('%', '')}
                 onChange={this.onBeneficiariesChanged}
                 ref={el => { this.beneficiaryInput[k]['weightInput'] = el; }}
-                defaultValue={20}
+                defaultValue={index === 0 && !!defaultBeneficiary ? 2 : 20}
+                disabled={index === 0 && !!defaultBeneficiary}
               />
               <Icon
                 className="delete-button"
@@ -656,13 +679,12 @@ class PostForm extends Component {
 
         {!this.state.editMode &&
           <FormItem {...formItemLayoutWithOutLabel}>
-            {!this.state.beneficiariesValid && (
+            {this.state.beneficiariesError && (
               <div className="ant-form-item-control has-error">
-                <p className="ant-form-explain">Sum of reward values must be less than or equal to 85%</p>
+                <p className="ant-form-explain">{this.state.beneficiariesError}</p>
               </div>
-            )
-            }
-            {beneficiaryIds.length < 5 &&
+            )}
+            {beneficiaryIds.length < 5 && // Max 8 (3 is being used)
               <Button type="dashed" onClick={this.addBeneficiary}>
                 <Icon type="plus" /> Add makers or contributors
               </Button>

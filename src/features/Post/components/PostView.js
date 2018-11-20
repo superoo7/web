@@ -309,7 +309,7 @@ class PostView extends Component {
           <div className="timeline-container">
             <ul className="left">
               {post.author && <li>Hunter</li>}
-              {beneficiaries && beneficiaries.length > 0 && <li>Makers</li>}
+              {beneficiaries && beneficiaries.length > 0 && <li>Contributors</li>}
             </ul>
 
             <Timeline>

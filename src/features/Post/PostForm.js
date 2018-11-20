@@ -85,7 +85,7 @@ class PostForm extends Component {
       // if localStorage does not exist
       this.checkAndResetDraft();
 
-      // New post with draft
+    // New post with draft
     } else {
       // if there is saved localStorage
       let draft = JSON.parse(draftString);
@@ -102,6 +102,18 @@ class PostForm extends Component {
         this.handleImageChange({ fileList: draft.images });
         this.prepareForEdit(draft);
       }
+    }
+
+    // Steemplus integration
+    const params = new URLSearchParams(this.props.location.search);
+    if (params.get('url')) {
+      updateDraft('url', params.get('url'));
+    }
+    if (params.get('title')) {
+      updateDraft('title', params.get('title'));
+    }
+    if (params.get('tagline')) {
+      updateDraft('tagline', params.get('tagline'));
     }
 
     if (this.props.me) {

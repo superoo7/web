@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { Button, Slider, Popover, Popconfirm, notification } from 'antd';
-import { selectIsConnected, selectMyAccount } from 'features/User/selectors';
+import { selectMyAccount } from 'features/User/selectors';
 import { selectAppProps, selectAppRate, selectAppRewardFund } from 'features/App/selectors';
 import { voteBegin } from './actions/vote';
 import { hasVoted, calculateVotingValue } from 'utils/helpers/steemitHelpers';
@@ -17,7 +17,6 @@ class VoteButton extends PureComponent {
     layout: PropTypes.string.isRequired,
     appProps: PropTypes.object,
     myAccount: PropTypes.object.isRequired,
-    isConnected: PropTypes.bool.isRequired,
     vote: PropTypes.func.isRequired,
   };
 
@@ -27,6 +26,10 @@ class VoteButton extends PureComponent {
       voteWeight: 100,
       sliderOpened: false,
     }
+  }
+
+  isConnected = () => {
+    return !!this.props.myAccount.detailed_user_score;
   }
 
   openSignin = () => {
@@ -49,9 +52,9 @@ class VoteButton extends PureComponent {
   onChangeVotingWeight = value => this.setState({ voteWeight: value });
 
   doVote = weight => {
-    const { isConnected, post, vote, type } = this.props;
+    const { post, vote, type } = this.props;
 
-    if (isConnected) {
+    if (this.isConnected()) {
       vote(post, weight, type);
       this.setState({ sliderOpened: false });
     } else {
@@ -61,7 +64,7 @@ class VoteButton extends PureComponent {
 
   handleVisibleChange = (visible) => {
     if (visible) {
-      if (!this.props.isConnected) {
+      if (!this.isConnected()) {
         return this.openSignin();
       }
 
@@ -86,13 +89,13 @@ class VoteButton extends PureComponent {
   };
 
   render() {
-    const { myAccount, isConnected, post, layout } = this.props;
+    const { myAccount, post, layout } = this.props;
     const { voteWeight, sliderOpened } = this.state;
     const postUpvoted = hasVoted(post, myAccount.name);
     const deleteConfirmation = <div>Are you sure unvote this post?<br />Your voting power won&quot;t recharge even if you unvote.</div>
 
     let content = '';
-    if (isConnected) {
+    if (this.isConnected()) {
       const { score, role_boost } = myAccount.detailed_user_score;
       content = (
         <div className="vote-box">
@@ -243,7 +246,6 @@ class VoteButton extends PureComponent {
 
 const mapStateToProps = (state, props) => createStructuredSelector({
   myAccount: selectMyAccount(),
-  isConnected: selectIsConnected(),
   appProps: selectAppProps(),
   rate: selectAppRate(),
   rewardFund: selectAppRewardFund(),

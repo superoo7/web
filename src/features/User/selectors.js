@@ -53,11 +53,6 @@ export const selectMyFollowingsLoadStatus = () => createSelector(
   (me, state) => (state[me] && state[me].loadStatus) || {},
 );
 
-export const selectIsConnected = () => createSelector(
-  selectMe(),
-  me => !!me,
-);
-
 // FOLLOWERS
 const selectFollowers = () => createSelector(
   selectUserDomain(),

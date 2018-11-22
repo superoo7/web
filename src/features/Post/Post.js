@@ -15,7 +15,7 @@ import {
 } from 'features/Comment/selectors';
 import { getCachedImageHack } from 'features/Post/utils';
 import { getLoginURL } from 'utils/token';
-import { selectMe, selectIsConnected } from 'features/User/selectors';
+import { selectMe } from 'features/User/selectors';
 import { selectCurrentComments, selectCurrentPost, selectIsPostLoading } from './selectors';
 import { getPostBegin, setCurrentPostKey } from './actions/getPost';
 import PostView from './components/PostView';
@@ -31,7 +31,6 @@ class Post extends Component {
     getPost: PropTypes.func.isRequired,
     setCurrentPostKey: PropTypes.func.isRequired,
     getCommentsFromPost: PropTypes.func.isRequired,
-    isConnected: PropTypes.bool.isRequired,
     post: PropTypes.object,
     commentsData: PropTypes.object.isRequired,
     commentsChild: PropTypes.object.isRequired,
@@ -70,7 +69,7 @@ class Post extends Component {
   }
 
   render() {
-    const { me, post, currentComments, commentsData, commentsChild, commentsIsLoading, isConnected, isPostLoading } = this.props;
+    const { me, post, currentComments, commentsData, commentsChild, commentsIsLoading, isPostLoading } = this.props;
 
     if (isPostLoading) {
       return <CircularProgress />;
@@ -119,7 +118,7 @@ class Post extends Component {
             }
           </h3>
 
-          {!isConnected && (
+          {!me && (
             <div className="post-signup">
               <p>You need a Steem account to join the discussion</p>
               <Button
@@ -135,7 +134,7 @@ class Post extends Component {
             </div>
           )}
 
-          {isConnected && (
+          {me && (
             <CommentReplyForm content={post} closeForm={null} />
           )}
 
@@ -170,7 +169,6 @@ const mapStateToProps = () => createStructuredSelector({
   commentsChild: selectCommentsChild(),
   currentComments: selectCurrentComments(),
   commentsIsLoading: selectCommentsIsLoading(),
-  isConnected: selectIsConnected(),
   isPostLoading: selectIsPostLoading(),
 });
 

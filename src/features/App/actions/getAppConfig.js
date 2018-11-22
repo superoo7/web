@@ -58,7 +58,7 @@ function* getAppConfig() {
       steem.api.getStateAsync(`trending/steemhunt-state`),
       steem.api.getRewardFundAsync('post'),
     ]);
-    const rate = parseFloat(steemhunt.feed_price.base);
+    const rate = parseFloat(steemhunt.feed_price.base) / parseFloat(steemhunt.feed_price.quote);
 
     yield all([
       put(setAppProps(steemhunt.props, rewardFund)),

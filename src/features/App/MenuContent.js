@@ -3,32 +3,40 @@ import { Link } from 'react-router-dom';
 import { Menu, Icon, Progress } from 'antd';
 import { ShareButtonContent } from 'features/Post/components/ShareButton';
 import { getUserScore } from 'features/User/utils';
+import { isChrome, detectExtension } from 'utils/extension';
 
-function adjustRecharge(lastValue, lastUpdated) {
-  const secPassed = (Date.now() - (new Date(lastUpdated * 1000))) / 1000;
-  const currentValue = (lastValue + (secPassed / 3600) * (20 / 24)); // 20% recharge in a day
-  const result = currentValue > 100 ? 100 : currentValue;
-
-  return Math.round(result * 100) / 100;
-}
-
-function currentVP({ max_rc, voting_manabar }) {
-  return adjustRecharge(100 * voting_manabar.current_mana / max_rc, voting_manabar.last_update_time);
-}
-
-function currentRC({ max_rc, rc_manabar}) {
-  return adjustRecharge(100 * rc_manabar.current_mana / max_rc, rc_manabar.last_update_time);
-}
+const EXTENSION_ID = 'hbffamghdehohidgmlnohhgkmgemplhc';
 
 export default class MenuContent extends PureComponent {
   state = {
     shareVisible: false,
+    extensionVisible: false,
   };
 
-  toggleShare = () => {
-    this.setState({
-      shareVisible: !this.state.shareVisible,
+  componentDidMount() {
+    isChrome() && detectExtension(EXTENSION_ID, (result) => {
+      if (!result) {
+        this.setState({ extensionVisible: true });
+      }
     });
+  }
+
+  toggleShare = () => this.setState({ shareVisible: !this.state.shareVisible });
+
+  adjustRecharge(lastValue, lastUpdated) {
+    const secPassed = (Date.now() - (new Date(lastUpdated * 1000))) / 1000;
+    const currentValue = (lastValue + (secPassed / 3600) * (20 / 24)); // 20% recharge in a day
+    const result = currentValue > 100 ? 100 : currentValue;
+
+    return Math.round(result * 100) / 100;
+  }
+
+  currentVP({ max_rc, voting_manabar }) {
+    return this.adjustRecharge(100 * voting_manabar.current_mana / max_rc, voting_manabar.last_update_time);
+  }
+
+  currentRC({ max_rc, rc_manabar}) {
+    return this.adjustRecharge(100 * rc_manabar.current_mana / max_rc, rc_manabar.last_update_time);
   }
 
   render() {
@@ -82,13 +90,13 @@ export default class MenuContent extends PureComponent {
               <div className="label">
                 Voting Mana
               </div>
-              <Progress percent={Math.round(currentVP(myAccount))} status="active" />
+              <Progress percent={Math.round(this.currentVP(myAccount))} status="active" />
             </div>
             <div className="group">
               <div className="label">
                 Resource Credits
               </div>
-              <Progress percent={Math.round(currentRC(myAccount))} status="active" />
+              <Progress percent={Math.round(this.currentRC(myAccount))} status="active" />
             </div>
           </Menu.Item>
           <Menu.Item key="5">
@@ -104,7 +112,14 @@ export default class MenuContent extends PureComponent {
               <ShareButtonContent me={me} url="https://steemhunt.com" />
             </Menu.Item>
           }
-          <Menu.Item key="7">
+          {this.state.extensionVisible &&
+            <Menu.Item key="7">
+              <a href={`https://chrome.google.com/webstore/detail/steemhunt/${EXTENSION_ID}`} rel="noopener noreferrer" target="_blank">
+                <Icon type="chrome" /> CHROME EXTENSION
+              </a>
+            </Menu.Item>
+          }
+          <Menu.Item key="8">
             <span onClick={logout}>
               <Icon type="poweroff" /> LOGOUT
             </span>
@@ -139,6 +154,13 @@ export default class MenuContent extends PureComponent {
               <Icon type="message" /> CHAT ON DISCORD
             </a>
           </Menu.Item>
+          {this.state.extensionVisible &&
+            <Menu.Item key="4">
+              <a href={`https://chrome.google.com/webstore/detail/steemhunt/${EXTENSION_ID}`} rel="noopener noreferrer" target="_blank">
+                <Icon type="chrome" /> CHROME EXTENSION
+              </a>
+            </Menu.Item>
+          }
         </Menu>
       );
     }

@@ -56,7 +56,7 @@ class VoteButton extends PureComponent {
 
     if (this.isConnected()) {
       vote(post, weight, type);
-      this.setState({ sliderOpened: false });
+      this.handleVisibleChange(false);
     } else {
       console.log('Not logged in');
     }

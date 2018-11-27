@@ -79,7 +79,7 @@ function* getCommentsFromPost({ category, author, permlink }) {
         });
     }
 
-    const res = yield api.post('/comments/scores.json', { comments_votes: JSON.stringify(comments_votes) }, false);
+    const res = yield api.post('/comments/scores.json', { comments_votes: JSON.stringify(comments_votes) }, true);
     const { score_table } = res;
     // Update payout_value
     const commentsData = mapCommentsBasedOnId(state.content);

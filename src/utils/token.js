@@ -5,7 +5,13 @@ export function getToken() {
   return localStorage.getItem('access_token');
 }
 export function getEncryptedToken() {
-  return sha256(localStorage.getItem('access_token'));
+  const accessToken = localStorage.getItem('access_token');
+
+  if (accessToken) {
+    return sha256(accessToken);
+  } else {
+    return null;
+  }
 }
 export function setToken(token) {
   return localStorage.setItem('access_token', token);

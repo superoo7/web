@@ -55,7 +55,7 @@ export function isAdmin(username) {
 
 export function getRoleName(username) {
   if (isAdmin(username)) {
-    return 'Admin';
+    return 'Team';
   }
   if (isGuardian(username)) {
     return 'Guardian';

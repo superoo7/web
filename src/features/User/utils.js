@@ -34,7 +34,7 @@ export function isInfluencer(username) {
   const influencer = [
     'camzy', 'ikrahch', 'aamirijaz', 'azwarrangkuti', 'abasifreke', 'sanach', 'rodus', 'gentleshaid', 'tio',
     'xabi', 'giovaabbatichio', 'abdulmanan', 'sweetguy', 'mittymartz', 'wajahatsardar', 'faizan-ashraf',
-    'iqbaladan', 'yasayanoluler', 'shrazi', 'vinzie1'
+    'iqbaladan', 'shrazi', 'vinzie1'
   ];
   return influencer.indexOf(username) !== -1;
 }

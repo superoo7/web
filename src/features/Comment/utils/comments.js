@@ -3,7 +3,7 @@ import { isModerator } from 'features/User/utils';
 export const mapCommentsBasedOnId = (data) => {
   const commentsList = {};
   Object.keys(data).forEach((key) => {
-    commentsList[data[key].id] = data[key];
+    commentsList[data[key].post_id] = data[key];
   });
   return commentsList;
 };
@@ -11,8 +11,8 @@ export const mapCommentsBasedOnId = (data) => {
 export const getCommentsChildrenLists = (apiRes) => {
   let listsById = {};
   Object.keys(apiRes.content).forEach((commentKey) => {
-    listsById[apiRes.content[commentKey].id] = apiRes.content[commentKey].replies.map(
-      childKey => apiRes.content[childKey].id
+    listsById[apiRes.content[commentKey].post_id] = apiRes.content[commentKey].replies.map(
+      childKey => apiRes.content[childKey].post_id
     );
   });
 
@@ -22,7 +22,7 @@ export const getCommentsChildrenLists = (apiRes) => {
 export const getRootCommentsList = (apiRes) => {
   return Object.keys(apiRes.content).filter((commentKey) => {
     return apiRes.content[commentKey].depth === 1;
-  }).map(commentKey => apiRes.content[commentKey].id);
+  }).map(commentKey => apiRes.content[commentKey].post_id);
 };
 
 export const shouldCommentVisible = function(comment, postAuthor, me) {

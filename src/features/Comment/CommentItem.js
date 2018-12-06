@@ -68,18 +68,23 @@ class CommentItem extends PureComponent {
     const { comment } = this.props;
     this.setState({ loadingDislike: true }, async () => {
       const res = await api.post(`/comments/dislike.json`, {
-        key: comment.id,
+        key: comment.post_id,
         author: comment.author,
         permlink: comment.permlink
       }, true);
 
-      this.props.updateComment(comment.id, res);
+      this.props.updateComment(comment.post_id, res);
       this.setState({ loadingDislike: false });
     });
   }
 
-  renderDislike() {
-    const { comment } = this.props;
+  dislikeButton() {
+    const { me, myAccount, comment } = this.props;
+
+    if (getUserScore(myAccount) < 2 || me === comment.author) {
+      return;
+    }
+
     if(this.state.loadingDislike) {
       return <Icon className={"dislike-button loading"} type="loading" spin="true" />;
     }
@@ -90,7 +95,7 @@ class CommentItem extends PureComponent {
   }
 
   render() {
-    const { post, comment, commentsChild, commentsData, me, myAccount } = this.props;
+    const { post, comment, commentsChild, commentsData, me } = this.props;
     const { showReplyForm, showEditForm } = this.state;
 
     // Hide moderators' comments to normal users
@@ -106,7 +111,7 @@ class CommentItem extends PureComponent {
           avatar={<Avatar src={`${process.env.REACT_APP_STEEMCONNECT_IMG_HOST}/@${comment.author}?s=64`} />}
           title={
             <div className="comment-title">
-              {getUserScore(myAccount) >= 2 && this.renderDislike()}
+              {this.dislikeButton()}
               <Author name={comment.author} />
               {roleName !== 'User' && <span className={`badge ${roleName.toLowerCase()}`}>{roleName.toUpperCase()}</span>}
               <span className="separator">&middot;</span>
@@ -139,8 +144,8 @@ class CommentItem extends PureComponent {
                 <CommentReplyForm content={comment} closeForm={this.closeReplyForm} />
               )}
 
-              {commentsChild[comment.id] && sortCommentsFromSteem(
-                commentsChild[comment.id],
+              {commentsChild[comment.post_id] && sortCommentsFromSteem(
+                commentsChild[comment.post_id],
                 commentsData,
                 'score'
               ).map(commentId =>

@@ -71,7 +71,7 @@ export function replyReducer(state, action) {
           [tempId]: { $set: replyObj },
         },
         commentsChild: {
-          [parent.id]: { $autoArray: { $push: [tempId] } },
+          [parent.post_id]: { $autoArray: { $push: [tempId] } },
         },
         isPublishing: { $set: false },
         hasSucceeded: { $set: true },
@@ -118,7 +118,7 @@ function* reply({ parent, body, isModeratorComment }) {
     const cashoutTime = toCustomISOString(new Date(Date.now() + 604800));
 
     const replyObj = {
-      id: tempId,
+      post_id: tempId,
       author: myAccount.name,
       parent_author: parent.author,
       parent_permlink:  parent.permlink,
@@ -178,7 +178,7 @@ function* editReply({ comment, body }) {
       json_metadata,
     );
 
-    yield put(replyEditSuccess(comment.id, body));
+    yield put(replyEditSuccess(comment.post_id, body));
   } catch(e) {
     yield notification['error']({ message: extractErrorMessage(e) });
     yield put(replyFailure(e.message));

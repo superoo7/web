@@ -23,7 +23,7 @@ export function format(user, appProps) {
 
 export function isModerator(username) {
   const moderators = [
-    'tabris', 'project7', 'astrocket',
+    'tabris', 'project7',
     'teamhumble', 'urbangladiator', 'dayleeo', 'fknmayhem', 'jayplayco', 'bitrocker2020', 'joannewong',
     'geekgirl', 'playitforward', 'monajam', 'pialejoana'
   ];

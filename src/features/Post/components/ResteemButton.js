@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon, Popconfirm } from 'antd';
 import { resteemBegin } from '../actions/resteem';
-import steem from 'steem';
+// import steem from 'steem';
 
 class ResteemButton extends PureComponent {
   static propTypes = {
@@ -18,21 +18,23 @@ class ResteemButton extends PureComponent {
     }
   }
 
-  async getRebloogers() {
-    const { author, permlink } = this.props.post;
-    try {
-      const rebloggers = await steem.api.getRebloggedByAsync(author, permlink);
-      return rebloggers.includes(this.props.me);
-    } catch (e) {
-      console.error('getRebloggedByAsync failed.', e.message);
-      return false;
-    }
-  }
+  // DEPRECATED: https://steemit.com/steemit/@steemitdev/upcoming-changes-to-api-steemit-com
+  // async getRebloogers() {
+  //   const { author, permlink } = this.props.post;
+  //   try {
+  //     const rebloggers = await steem.api.getRebloggedByAsync(author, permlink);
+  //     return rebloggers.includes(this.props.me);
+  //   } catch (e) {
+  //     console.error('getRebloggedByAsync failed.', e.message);
+  //     return false;
+  //   }
+  // }
 
   componentDidMount() {
-    this.getRebloogers().then((reblogged) => {
-      this.setState({ alreadyResteemed: reblogged });
-    });
+    // DEPRECATED: https://steemit.com/steemit/@steemitdev/upcoming-changes-to-api-steemit-com
+    // this.getRebloogers().then((reblogged) => {
+    //   this.setState({ alreadyResteemed: reblogged });
+    // });
   }
 
   clickResteem = async (post) => {

@@ -37,6 +37,7 @@ export function getCommentsFromPostReducer(state, action) {
       });
     }
     case GET_COMMENTS_FROM_POST_SUCCESS: {
+      console.log(action.state);
       return update(state, {
         isLoading: { $set: false },
         commentsFromPost: {
@@ -65,11 +66,18 @@ function* getCommentsFromPost({ category, author, permlink }) {
 
     const comments_votes = {};
     for(let comment of Object.values(state.content)) {
+      // HACK: to rebind the API changes (id column renamed to post_id)
+      // REF: https://steemit.com/steemit/@steemitdev/upcoming-changes-to-api-steemit-com
+      // TODO: Remove the code after 2018-12-07 23:00:00 UTC
+      if (!comment.post_id) {
+        comment.post_id = comment.id;
+      }
+
       if (!comment.parent_author) { // Filter post
         continue;
       }
 
-      comments_votes[`${comment.id}`] = comment.active_votes
+      comments_votes[`${comment.post_id}`] = comment.active_votes
         .filter(vote => vote.voter !== comment.author) // exclude self-vote
         .map(vote => {
           return {
@@ -87,9 +95,9 @@ function* getCommentsFromPost({ category, author, permlink }) {
       content.payout_value = calculateContentPayout(content); // Sync with local format
 
       if (content.parent_author) {
-        content.scores = score_table[content.id].scores;
-        content.is_delisted = score_table[content.id].is_delisted;
-        content.is_disliked = score_table[content.id].is_disliked;
+        content.scores = score_table[content.post_id].scores;
+        content.is_delisted = score_table[content.post_id].is_delisted;
+        content.is_disliked = score_table[content.post_id].is_disliked;
       }
     }
 

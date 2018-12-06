@@ -37,7 +37,6 @@ export function getCommentsFromPostReducer(state, action) {
       });
     }
     case GET_COMMENTS_FROM_POST_SUCCESS: {
-      console.log(action.state);
       return update(state, {
         isLoading: { $set: false },
         commentsFromPost: {

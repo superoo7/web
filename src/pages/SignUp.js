@@ -42,13 +42,16 @@ class SignUp extends Component {
   checkAccount = (_, value, callback) => {
     const msg = validateAccountName(value);
     if (msg !== null) {
-      this.setState({ accountCheck: null, accountCheckMsg: msg });
+      this.setState({ accountCheck: 'error', accountCheckMsg: msg });
       return callback();
     }
 
     this.setState({ accountName: null, accountCheck: 'loading', accountCheckMsg: 'Checking the server ...' }, () => {
       try {
         steem.api.lookupAccountNames([value], (err, result) => {
+          if (this.state.accountCheck === 'error') { // Another validation has ran and validation has failed
+            return callback();
+          }
           if (err || !result) {
             console.error(err, result);
             return callback('Service is temporarily unavailable, Please try again later.');
@@ -59,6 +62,7 @@ class SignUp extends Component {
           } else {
             this.setState({ accountName: value, accountCheck: 'validated', accountCheckMsg: <div>The username <b>{value}</b> is available.</div> }, () => { return callback(); });
           }
+          return callback();
         });
       } catch (error) {
         return callback('Service is temporarily unavailable, Please try again later.');
@@ -76,7 +80,7 @@ class SignUp extends Component {
 
   submitAccount = (e) => {
     e.preventDefault();
-    if (this.state.accountCheck && this.state.accountName !== null) {
+    if (this.state.accountCheck === 'validated' && this.state.accountName !== null) {
       this.moveStage(1);
     }
   };

@@ -30,7 +30,7 @@ class VoteButton extends PureComponent {
 
   isConnected = () => {
     return !!this.props.myAccount.detailed_user_score;
-  }
+  };
 
   openSignin = () => {
     notification.open({

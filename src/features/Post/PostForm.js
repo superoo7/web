@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Input, InputNumber, Tooltip, Icon, Button, Modal, Spin, notification } from 'antd';
+import { Form, Input, Icon, Button, Modal, Spin, Switch, notification } from 'antd';
 import { selectDraft, selectIsPublishing } from './selectors';
-import { selectMe } from 'features/User/selectors';
+import { selectMe, selectMyAccount } from 'features/User/selectors';
 import { publishContentBegin } from './actions/publishContent';
 import { updateDraft, resetDraft } from './actions/updateDraft';
 import { initialState } from './actions';
@@ -16,19 +16,24 @@ import { sanitizeText, splitTags } from './utils';
 import { getCachedImage, stripCachedURL } from 'features/Post/utils';
 import CustomUploadDragger from 'components/CustomUploadDragger';
 import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers';
-import { validateAccountName } from 'utils/helpers/accountName';
+import { formatNumber } from 'utils/helpers/steemitHelpers';
 
 const FormItem = Form.Item;
 
 class PostForm extends Component {
   static propTypes = {
     me: PropTypes.string.isRequired,
+    myAccount: PropTypes.object.isRequired,
     draft: PropTypes.object.isRequired,
     updateDraft: PropTypes.func.isRequired,
     resetDraft: PropTypes.func.isRequired,
     publishContent: PropTypes.func.isRequired,
     isPublishing: PropTypes.bool.isRequired,
   };
+
+  shouldConvertHunt() {
+    return localStorage.getItem('shouldConvertHunt') === 'true'
+  }
 
   constructor(props) {
     super(props);
@@ -44,11 +49,8 @@ class PostForm extends Component {
       description: '',
       inlineUploading: false,
       defaultBeneficiary: null,
-      beneficiariesError: null,
-      shouldRecalculateBeneficiary: false,
-      currentBeneficiaryId: 0,
+      shouldConvertHunt: this.shouldConvertHunt(),
     };
-    this.beneficiaryInput = {};
   }
 
   componentDidMount() {
@@ -104,6 +106,7 @@ class PostForm extends Component {
         this.handleImageChange({ fileList: draft.images });
         this.prepareForEdit(draft);
       }
+      this.handleHuntConversion(this.shouldConvertHunt());
     }
 
     // Steemplus integration
@@ -118,8 +121,9 @@ class PostForm extends Component {
       updateDraft('tagline', params.get('tagline'));
     }
     if (params.get('by')) {
-      this.setState({ defaultBeneficiary: params.get('by') });
-      updateDraft('beneficiaries', [{ account: params.get('by'), weight: 200 }]);
+      this.setState({ defaultBeneficiary: params.get('by') }, () => {
+        this.handleHuntConversion(this.shouldConvertHunt());
+      });
     }
 
     window.addEventListener("paste", this.onPasteEvent);
@@ -171,12 +175,6 @@ class PostForm extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if (this.state.shouldRecalculateBeneficiary) {
-      this.onBeneficiariesChanged();
-    }
-  }
-
   onPasteEvent = (e) => {
     if (e.target.className === 'ant-input inline-uploader' && e.clipboardData && e.clipboardData.items) {
       const file = e.clipboardData.items[0].getAsFile();
@@ -225,77 +223,6 @@ class PostForm extends Component {
 
     this.props.form.validateFieldsAndScroll();
     this.props.publishContent(this.state.editMode);
-  };
-
-  // MARK: - Beneficiaries
-  // TODO: Refactor into a component
-
-  onBeneficiariesChanged = () => {
-    // TODO: FIXME: HACK:
-    // value is one step behind because maybe the inputNumberRef doesn't set synchronously
-    setTimeout(() => {
-      const { form, me } = this.props;
-      const beneficiaryIds = form.getFieldValue('beneficiaryIds') || [];
-
-      let weightSum = 0;
-      let beneficiaries = [];
-      let invalidError = null;
-      for (const i of beneficiaryIds) {
-        const account = this.beneficiaryInput[i]['accountInput'].input.value;
-        invalidError = validateAccountName(account);
-        console.log(me, account);
-        if (account === me) {
-          invalidError = 'You cannot set yourself as a beneficiary.';
-        }
-        if (invalidError) {
-          this.setState({ beneficiariesError: invalidError });
-        } else {
-          const weight = this.beneficiaryInput[i]['weightInput'].inputNumberRef.getCurrentValidValue();
-          beneficiaries.push({ account: account, weight: weight * 100 });
-          weightSum += weight;
-        }
-      }
-
-      this.saveAndUpdateDraft('beneficiaries', beneficiaries);
-
-      if (weightSum > 85 || weightSum < 0) {
-        invalidError = 'Sum of reward values must be less than or equal to 85%';
-      }
-
-      this.setState({ beneficiariesError: invalidError });
-    }, 50);
-
-    this.setState({ shouldRecalculateBeneficiary: false });
-  };
-
-  removeBeneficiary = (k) => {
-    const { form } = this.props;
-    // can use data-binding to get
-    const beneficiaryIds = form.getFieldValue('beneficiaryIds');
-
-    // can use data-binding to set
-    form.setFieldsValue({
-      beneficiaryIds: beneficiaryIds.filter(key => key !== k),
-    });
-
-    this.setState({ shouldRecalculateBeneficiary: true });
-  };
-
-  addBeneficiary = () => {
-    const { form } = this.props;
-    // can use data-binding to get
-    const beneficiaryIds = form.getFieldValue('beneficiaryIds');
-    const nextIds = beneficiaryIds.concat(this.state.currentBeneficiaryId + 1);
-    // can use data-binding to set
-    // important! notify form to detect changes
-    form.setFieldsValue({
-      beneficiaryIds: nextIds,
-    });
-
-    this.setState({
-      shouldRecalculateBeneficiary: true,
-      currentBeneficiaryId: this.state.currentBeneficiaryId + 1,
-    });
   };
 
   // MARK: - Custom Validators
@@ -388,6 +315,24 @@ class PostForm extends Component {
     this.saveAndUpdateDraft('images', images.filter(x => !!x));
   };
   handleTagsChange = (tags) => this.saveAndUpdateDraft('tags', tags);
+  handleHuntConversion = (checked) => {
+    const { defaultBeneficiary } = this.state;
+    let beneficiaries = [];
+    let availableWeight = 8500;
+    const defaultWeight = 200;
+
+    if (defaultBeneficiary) {
+      beneficiaries.push({ account: defaultBeneficiary, weight: defaultWeight });
+      availableWeight -= defaultWeight;
+    }
+
+    if (checked) {
+      beneficiaries.push({ account: 'steemhunt.fund', weight: availableWeight });
+    }
+
+    this.setState({ shouldConvertHunt: checked }, () => localStorage.setItem('shouldConvertHunt', checked));
+    this.props.updateDraft('beneficiaries', beneficiaries);
+  };
 
   initialValue = (field, defaultValue = null) => initialState.draft[field] === this.props.draft[field] ? defaultValue : this.props.draft[field];
 
@@ -401,7 +346,7 @@ class PostForm extends Component {
       status: 'done'
     };
     onSuccess(result, file);
-  }
+  };
 
   getErrorMessage(e) {
     if (e && e.response && e.response.data && e.response.data.error) {
@@ -415,11 +360,11 @@ class PostForm extends Component {
   onXhrUploadFail = (e, file) => {
     notification['error']({ message: this.getErrorMessage(e) });
     this.setState({ fileList: this.state.fileList.filter(f => f.name !== file.name) });
-  }
+  };
 
   onXhrUploadProgress = (onProgress, total, loaded, file) => {
     onProgress({ percent: parseFloat(Math.round(loaded / total * 100).toFixed(2)) }, file);
-  }
+  };
 
   xhrUpload = ({ file, onProgress, onSuccess}) => {
     // console.log(file, this.state.fileList, "=====xhrUpload=====");
@@ -431,7 +376,7 @@ class PostForm extends Component {
     )) {
       return false;
     }
-  }
+  };
 
   onInlineUploadSuccess = (res) => {
     const { response } = res.data;
@@ -440,11 +385,11 @@ class PostForm extends Component {
       + `![${response.name}](${getCachedImage(response.link)})`
       + innerHTML.slice(selectionStart + 1);
     this.handleDescriptionChange(null, text);
-  }
+  };
 
   onInlineUploadFail = (e) => {
     notification['error']({ message: this.getErrorMessage(e) });
-  }
+  };
 
   inputUpload = (e, uploadingFile = null) => {
     const file = uploadingFile || e.target.files[0];
@@ -452,14 +397,17 @@ class PostForm extends Component {
       uploadImage(file, this.onInlineUploadSuccess, this.onInlineUploadFail)
       .then(() => this.setState({ inlineUploading: false }));
     });
-  }
+  };
 
   render() {
-    if (!this.props.me) {
+    const { me, myAccount, post } = this.props;
+    const { shouldConvertHunt } = this.state;
+
+    if (!me) {
       return (<Spin className="center-loading" />);
     }
 
-    if (this.props.post && this.props.post.author !== this.props.me) {
+    if (post && post.author !== me) {
       return (
         <div className="heading left-padded">
           <h3>Forbidden</h3>
@@ -470,7 +418,7 @@ class PostForm extends Component {
       );
     }
 
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
         lg: { span: 24 },
@@ -487,62 +435,6 @@ class PostForm extends Component {
         xl: { span: 18, offset: 6 },
       },
     };
-
-    const { defaultBeneficiary } = this.state;
-    getFieldDecorator('beneficiaryIds', { initialValue: defaultBeneficiary ? [0] : [] });
-    const beneficiaryIds = getFieldValue('beneficiaryIds');
-    const beneficiaries = beneficiaryIds.map((k, index) => {
-      this.beneficiaryInput[k] = { accountInput: null, weightInput: null };
-
-      return (
-        <FormItem
-          {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-          label={index === 0 ? (
-            <span>
-              Contributors&nbsp;
-              <Tooltip title="You can add other beneficiaries from your post">
-                <Icon type="question-circle-o" />
-              </Tooltip>
-            </span>
-          ) : ''}
-          required={false}
-          key={k}
-        >
-          <Row gutter={8}>
-            <Col span={14}>
-              <Input
-                addonBefore="@"
-                placeholder="steemhunt"
-                className="beneficiaries"
-                ref={node => this.beneficiaryInput[k]['accountInput'] = node}
-                onChange={this.onBeneficiariesChanged}
-                maxLength="16"
-                defaultValue={index === 0 ? defaultBeneficiary : null}
-                disabled={index === 0 && !!defaultBeneficiary}
-              />
-            </Col>
-            <Col span={10}>
-              <InputNumber
-                min={1}
-                max={85}
-                formatter={value => `${value}%`}
-                parser={value => value.replace('%', '')}
-                onChange={this.onBeneficiariesChanged}
-                ref={el => { this.beneficiaryInput[k]['weightInput'] = el; }}
-                defaultValue={index === 0 && !!defaultBeneficiary ? 2 : 20}
-                disabled={index === 0 && !!defaultBeneficiary}
-              />
-              <Icon
-                className="delete-button"
-                type="minus-circle-o"
-                disabled={beneficiaryIds.length === 1}
-                onClick={() => this.removeBeneficiary(k)}
-              />
-            </Col>
-          </Row>
-        </FormItem>
-      );
-    });
 
     return (
       <Form onSubmit={this.handleSubmit} className="post-form">
@@ -675,20 +567,17 @@ class PostForm extends Component {
           )}
         </FormItem>
 
-        {!this.state.editMode && beneficiaries}
+        <FormItem
+          {...formItemLayout}
+          label="Boost HUNT"
+          help={`Current conversion rate: 1 STU = ${formatNumber(myAccount.stu_hunt_rate)} HUNT`}
+        >
+          <Switch onChange={this.handleHuntConversion} defaultChecked={shouldConvertHunt} />
+          &nbsp; Convert STEEM and SBD from this post into HUNT rewards
+        </FormItem>
 
         {!this.state.editMode &&
           <FormItem {...formItemLayoutWithOutLabel}>
-            {this.state.beneficiariesError && (
-              <div className="ant-form-item-control has-error">
-                <p className="ant-form-explain">{this.state.beneficiariesError}</p>
-              </div>
-            )}
-            {beneficiaryIds.length < 5 && // Max 8 (3 is being used)
-              <Button type="dashed" onClick={this.addBeneficiary}>
-                <Icon type="plus" /> Add makers or contributors
-              </Button>
-            }
             <p className="text-small top-margin">
               10% beneficiaries will be used for Steemhunt operation, and another 5% for sponsors who&nbsp;
               <a href="https://steemit.com/steemhunt/@steemhunt/introducing-incentives-for-steemhunt-sponsors" target="_blank" rel="noopener noreferrer">
@@ -719,6 +608,7 @@ const WrappedPostForm = Form.create()(PostForm);
 
 const mapStateToProps = () => createStructuredSelector({
   me: selectMe(),
+  myAccount: selectMyAccount(),
   draft: selectDraft(),
   post: selectCurrentPost(),
   isPublishing: selectIsPublishing(),

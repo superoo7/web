@@ -13,8 +13,7 @@ import { extractErrorMessage } from 'utils/errorMessage';
 /*--------- CONSTANTS ---------*/
 const MAIN_CATEGORY = 'steemhunt';
 const DEFAULT_BENEFICIARY = [
-  { account: 'steemhunt', weight: 900 },
-  { account: 'steemhunt.fund', weight: 100 },
+  { account: 'steemhunt', weight: 1000 },
   { account: 'steemhunt.pay', weight: 500 },
 ];
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Button, Carousel, Icon, Timeline, Tag, Modal, Input, Row, Col, Tooltip, Popconfirm } from 'antd';
+import { Button, Carousel, Icon, Tag, Modal, Input, Row, Col, Tooltip, Popconfirm } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
 import { getPostPath, getTagPath, isEditable, addReferral, getPostKey } from '../utils';
@@ -16,7 +16,7 @@ import { isModerator, isAdmin, isGuardian } from 'features/User/utils';
 import { setModeratorBegin, moderatePostBegin } from 'features/Post/actions/moderatePost';
 import { replyBegin } from 'features/Comment/actions/reply';
 import { selectIsCommentPublishing, selectHasCommentSucceeded } from 'features/Comment/selectors';
-import { getCachedImage } from 'features/Post/utils';
+import { getCachedImage, hasBoosted } from 'features/Post/utils';
 import ShareButton from './ShareButton';
 import { titleize } from 'utils/helpers/stringHelpers';
 
@@ -156,11 +156,6 @@ class PostView extends Component {
         <Tag key={index}><Link to={getTagPath(tag)}>{tag}</Link></Tag>
       );
     });
-    const beneficiaries = post.beneficiaries && post.beneficiaries.map((b, index) => {
-      return (
-        <Timeline.Item key={index}><Author name={b.account} /> ({b.weight / 100}%)</Timeline.Item>
-      );
-    })
 
     const shouldShowEdit = window.location.pathname !== '/post' && me === post.author && isEditable(post);
 
@@ -277,7 +272,13 @@ class PostView extends Component {
               </span>
             }
           </div>
-          <h1>{titleize(post.title)}</h1>
+
+          <div className="party-container">
+            {hasBoosted(post) && <div className="party big" title="I ♥ HUNT"><ul><li></li><li></li><li></li><li></li></ul></div>}
+          </div>
+          <h1>
+            {titleize(post.title)}
+          </h1>
           <h2>{post.tagline}</h2>
           <Button
             href={addReferral(post.url)}
@@ -306,17 +307,11 @@ class PostView extends Component {
             {post.description && getHtml(post.description)}
           </div>
 
-          <div className="timeline-container">
-            <ul className="left">
-              {post.author && <li>Hunter</li>}
-              {beneficiaries && beneficiaries.length > 0 && <li>Contributors</li>}
-            </ul>
-
-            <Timeline>
-              {post.author && <Timeline.Item><Author name={post.author} /></Timeline.Item>}
-              {beneficiaries}
-            </Timeline>
-          </div>
+          {post.author &&
+            <div className="hunter">
+              Hunted by <Author name={post.author} />
+            </div>
+          }
 
           <div className="vote-container">
             <VoteButton post={post} type="post" layout="detail-page" />

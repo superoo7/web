@@ -56,7 +56,7 @@ export default class Home extends Component {
             <div className="circle">
               <Icon type="search" />
             </div>
-            <h4>DISCOVER</h4>
+            <h4>DISCOVER AND COMPETE</h4>
             <p>
               There are millions of cool products like web, app, hardware or anything that people may not see yet.
               You can be a hunter who digs out and introduces them to the Steemhunt community.
@@ -65,21 +65,11 @@ export default class Home extends Component {
           <Icon type="down" className="splitter" />
           <div className="howto">
             <div className="circle">
-              <Icon type="edit" />
-            </div>
-            <h4>ACKNOWLEDGE MAKERS</h4>
-            <p>
-              You can assign makers of the product with shares of rewards that will be generated from the post you make.
-            </p>
-          </div>
-          <Icon type="down" className="splitter" />
-          <div className="howto">
-            <div className="circle">
               <img src={imgSteemLogo} alt="Steem Logo" className="steem-logo" />
             </div>
-            <h4>COMPETE AND EARN STEEM</h4>
+            <h4>EARN STEEM AND HUNT</h4>
             <p>
-              Whenever people make actions on your post such as upvotes and comments, the rewards will be accumulated by STEEM, and pay out in 7 days in the proportion of you assigned. More the post earn Steem value, the rank of the day will be arisen.
+              Whenever people make actions on your post such as upvotes and comments, the rewards will be accumulated by STEEM and HUNT tokens, and pay out in 7 days in the proportion of you assigned.
             </p>
           </div>
           <a href="https://steem.io" target="_blank" rel="noopener noreferrer" className="bottom-link">What is STEEM? <Icon type="right-circle-o" /></a>

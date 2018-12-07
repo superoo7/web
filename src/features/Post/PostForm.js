@@ -567,14 +567,16 @@ class PostForm extends Component {
           )}
         </FormItem>
 
-        <FormItem
-          {...formItemLayout}
-          label="Boost HUNT"
-          help={`Current conversion rate: 1 STU = ${formatNumber(myAccount.stu_hunt_rate)} HUNT`}
-        >
-          <Switch onChange={this.handleHuntConversion} defaultChecked={shouldConvertHunt} />
-          &nbsp; Convert STEEM and SBD from this post into HUNT rewards
-        </FormItem>
+        {!this.state.editMode &&
+          <FormItem
+            {...formItemLayout}
+            label="Boost HUNT"
+            help={`Current conversion rate: 1 STU = ${formatNumber(myAccount.stu_hunt_rate)} HUNT`}
+          >
+            <Switch onChange={this.handleHuntConversion} defaultChecked={shouldConvertHunt} />
+            &nbsp; Convert STEEM and SBD from this post into HUNT rewards
+          </FormItem>
+        }
 
         {!this.state.editMode &&
           <FormItem {...formItemLayoutWithOutLabel}>

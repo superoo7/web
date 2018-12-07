@@ -351,8 +351,12 @@ hr {
       font-size: 0.8rem;
     }
 
+    .featured-date {
+      display: inline-block;
+      margin-bottom: 48px;
+    }
+
     h1 {
-      margin-top: 1.4em;
       font-size: 3.125em;
       margin-bottom: 0;
       color: #fff;
@@ -481,5 +485,160 @@ hr {
 .level-help {
   ol {
     padding-left: 2em;
+  }
+}
+
+.party-container {
+  height: 34px;
+  margin-bottom: -12px;
+}
+
+.party {
+  font-size: 1em;
+  margin: 0 auto;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  margin-left: 0.3125em;
+
+  &.big {
+    font-size: 1.875em;
+    margin-left: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    color: inherit;
+    outline: none;
+    animation-duration: .5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+  &:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    border-right: 0.5em solid transparent;
+    border-bottom: 0.5em solid #B4B4F3;
+    border-left: 0.5em solid transparent;
+    width: 1em;
+    height: 1em;
+    animation: party-body .5s linear infinite;
+  }
+  ul {
+    width: 0.6666666667em;
+    height: 0.6666666667em;
+    border-radius: 50%;
+    background: #7272E9;
+    position: absolute;
+    top: 0;
+    left: 0.1666666667em;
+    animation-name: party-head;
+    li {
+      &:nth-child(3) {
+        border-left: 0.08333333333em solid transparent;
+        border-top: 0.3333333333em solid #F5D875;
+        border-right: 0.08333333333em solid transparent;
+        width: 0;
+        height: 0;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &:nth-child(2) {
+        background: #222;
+        border-radius: 50%;
+        width: 0.125em;
+        height: 0.125em;
+        position: absolute;
+        top: 0.1666666667em;
+        left: 0.1666666667em;
+      }
+      &:nth-child(1) {
+        background: #222;
+        border-radius: 50%;
+        width: 0.125em;
+        height: 0.125em;
+        position: absolute;
+        top: 0.1666666667em;
+        right: 0.08333333333em;
+      }
+      &:nth-child(4) {
+        border-top: 0.125em solid transparent;
+        border-left: 0.125em solid #3DF2C2;
+        border-bottom: 0.125em solid transparent;
+        width: 0;
+        height: 0;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateY(-50%);
+        animation-name: party-plume;
+      }
+    }
+  }
+}
+
+@keyframes party-body {
+  0%, 100% {
+    border-right-width: 0.5em;
+    border-left-width: 0.5em;
+    border-bottom-color: #B4B4F3;
+  }
+  25% {
+    border-right-width: 0.9166666667em;
+    border-left-width: 0.08333333333em;
+    border-bottom-color: #70EEFA;
+  }
+  50% {
+    border-right-width: 0.5em;
+    border-left-width: 0.5em;
+    border-bottom-color: #A7F9E3;
+  }
+  75% {
+    border-right-width: 0.25em;
+    border-left-width: 0.75em;
+    border-bottom-color: #FF6270;
+  }
+}
+
+@keyframes party-head {
+  0%, 100% {
+    transform: translate(0%, 0%) rotate(0deg);
+    background: #7272E9;
+  }
+  25% {
+    transform: translate(-37.5%, 12.5%) rotate(22.5deg);
+    background: #51CFDB;
+  }
+  50% {
+    transform: translate(0%, 25%);
+    background: #3AD4AC;
+  }
+  75% {
+    transform: translate(25%, 12.5%) rotate(-11.25deg);
+    background: #E04351;
+  }
+}
+
+@keyframes party-plume {
+  0%, 100% {
+    border-left-color: #3DF2C2;
+  }
+  25% {
+    border-left-color: #7272E9;
+  }
+  50% {
+    border-left-color: #FF479E;
+  }
+  75% {
+    border-left-color: #FF8C62;
   }
 }

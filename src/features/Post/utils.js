@@ -133,3 +133,7 @@ export const shuffle = function(array) {
 
   return array;
 }
+
+export const hasBoosted = (post) => {
+  return post.beneficiaries && post.beneficiaries.some(b => b.account === 'steemhunt.fund');
+};

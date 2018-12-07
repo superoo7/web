@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import LazyLoad from 'react-lazyload';
 import { selectMe } from 'features/User/selectors';
-import { getPostPath, getCachedImage } from '../utils';
+import { getPostPath, getCachedImage, hasBoosted } from 'features/Post/utils';
 import { isModerator } from 'features/User/utils';
 import VoteButton from 'features/Vote/VoteButton';
 import { formatAmount } from 'utils/helpers/steemitHelpers';
@@ -49,7 +49,10 @@ class PostItem extends Component {
         </Link>
         <div className="summary">
           <div className="title">
-            <Link to={getPostPath(post, pathPrefix)}>{titleize(post.title)}</Link>
+            <Link to={getPostPath(post, pathPrefix)}>
+              {titleize(post.title)}
+              {hasBoosted(post) && <div className="party" title="I ❤ HUNT"><ul><li></li><li></li><li></li><li></li></ul></div>}
+            </Link>
             {isModerator(me) &&
               (post.is_verified ?
                 <Icon type="check-circle" className="verified"/>

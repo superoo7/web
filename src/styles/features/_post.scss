@@ -652,6 +652,7 @@
           margin-right: 0.75em;
           vertical-align: bottom;
 
+
           .ant-btn-circle {
             width: 1.25rem;
             height: 1.25rem;
@@ -671,6 +672,18 @@
   .voting-list {
     color:  $text-grey;
     min-width: 200px;
+    position: relative;
+
+    .influencer-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #45c5c1;
+      border-radius: 100%;
+      display: block;
+      position: absolute;
+      top: 9px;
+      left: -10px;
+    }
 
     .value {
       float: right;

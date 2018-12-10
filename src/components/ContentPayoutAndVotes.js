@@ -5,8 +5,22 @@ import { sortVotes } from 'utils/helpers/voteHelpers';
 import VotePayout from 'features/Vote/VotePayout';
 import Author from 'components/Author';
 import { formatNumber, formatAmount } from 'utils/helpers/steemitHelpers';
+import { isInfluencer } from 'features/User/utils';
 
 const NB_SHOW_VOTES = 15;
+
+const scoreItem = function(vote) {
+  return (
+      <div className="voting-list" key={vote.voter}>
+        {isInfluencer(vote.voter) &&
+          <span className="influencer-dot"></span>
+        }
+        <Author name={vote.voter} />
+        <span className="weight">({vote.percent / 100}%)</span>
+        <span className="value">+{formatNumber(vote.score)}</span>
+      </div>
+    );
+};
 
 export default class ContentPayoutAndVotes extends PureComponent {
   static propTypes = {
@@ -50,13 +64,7 @@ export default class ContentPayoutAndVotes extends PureComponent {
     if (type === 'post') {
       validVotes = content.valid_votes || [];
       const lastValidVotes = sortVotes(validVotes, 'score').reverse().slice(0, NB_SHOW_VOTES);
-      lastValidVotesTooltipMsg = lastValidVotes.map(vote => (
-        <div className="voting-list" key={vote.voter}>
-          <Author name={vote.voter} />
-          <span className="weight">({vote.percent / 100}%)</span>
-          <span className="value">+{formatNumber(vote.score)}</span>
-        </div>
-      ));
+      lastValidVotesTooltipMsg = lastValidVotes.map(scoreItem);
       if (validVotes.length > NB_SHOW_VOTES) lastValidVotesTooltipMsg.push(
         <div key="...">
           ... and <strong>{validVotes.length - NB_SHOW_VOTES}</strong> more votes.
@@ -73,13 +81,8 @@ export default class ContentPayoutAndVotes extends PureComponent {
       userScoresTooltipMsg = lastActiveVotes
         .filter(vote => userScoreTable[vote.voter])
         .map(vote => {
-          return (
-            <div className="voting-list" key={vote.voter}>
-              <Author name={vote.voter} />
-              <span className="weight">({vote.percent / 100}%)</span>
-              <span className="value">+{formatNumber(userScoreTable[vote.voter])}</span>
-            </div>
-          );
+          vote.score = userScoreTable[vote.voter];
+          return scoreItem(vote);
         });
     }
 

@@ -11,6 +11,7 @@ import { isModerator } from 'features/User/utils';
 import VoteButton from 'features/Vote/VoteButton';
 import { formatAmount } from 'utils/helpers/steemitHelpers';
 import { titleize } from 'utils/helpers/stringHelpers';
+import parrot from 'assets/images/parrot.gif';
 
 class PostItem extends Component {
   static propTypes = {
@@ -51,7 +52,7 @@ class PostItem extends Component {
           <div className="title">
             <Link to={getPostPath(post, pathPrefix)}>
               {titleize(post.title)}
-              {hasBoosted(post) && <div className="party" title="I ❤ HUNT"><ul><li></li><li></li><li></li><li></li></ul></div>}
+              {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party" />}
             </Link>
             {isModerator(me) &&
               (post.is_verified ?

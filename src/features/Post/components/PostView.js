@@ -19,6 +19,7 @@ import { selectIsCommentPublishing, selectHasCommentSucceeded } from 'features/C
 import { getCachedImage, hasBoosted } from 'features/Post/utils';
 import ShareButton from './ShareButton';
 import { titleize } from 'utils/helpers/stringHelpers';
+import parrot from 'assets/images/parrot.gif';
 
 class PostView extends Component {
   static propTypes = {
@@ -274,8 +275,9 @@ class PostView extends Component {
           </div>
 
           <div className="party-container">
-            {hasBoosted(post) && <div className="party big" title="I ♥ HUNT"><ul><li></li><li></li><li></li><li></li></ul></div>}
+            {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party big" /> }
           </div>
+
           <h1>
             {titleize(post.title)}
           </h1>

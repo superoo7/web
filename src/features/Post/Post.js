@@ -25,6 +25,7 @@ import NotFound from 'components/NotFound';
 import CircularProgress from 'components/CircularProgress';
 import ResteemButton from './components/ResteemButton';
 import { isPrerenderer } from 'utils/userAgent';
+import { titleize } from 'utils/helpers/stringHelpers';
 
 class Post extends Component {
   static propTypes = {
@@ -80,21 +81,21 @@ class Post extends Component {
     return (
       <div className="post-container" id="post-container">
         <Helmet>
-          <title>{post.title} - Steemhunt</title>
+          <title>{titleize(post.title)} - Steemhunt</title>
 
           { /* Search Engine */ }
           <meta name="description" content={post.tagline} />
           <meta name="image" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           { /* Schema.org for Google */ }
-          <meta itemprop="name" content={`${post.title} - Steemhunt`} />
+          <meta itemprop="name" content={`${titleize(post.title)} - Steemhunt`} />
           <meta itemprop="description" content={post.tagline} />
           <meta itemprop="image" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           { /* Twitter */ }
-          <meta name="twitter:title" content={`${post.title} - Steemhunt`} />
+          <meta name="twitter:title" content={`${titleize(post.title)} - Steemhunt`} />
           <meta name="twitter:description" content={post.tagline} />
           <meta name="twitter:image:src" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           { /* Open Graph general (Facebook, Pinterest & Google+) */ }
-          <meta property="og:title" content={`${post.title} - Steemhunt`} />
+          <meta property="og:title" content={`${titleize(post.title)} - Steemhunt`} />
           <meta property="og:description" content={post.tagline} />
           <meta property="og:image" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           <meta property="og:url" content={`${process.env.PUBLIC_URL}/@${post.author}/${post.permlink}`} />

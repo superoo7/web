@@ -16,6 +16,10 @@ const DEFAULT_BENEFICIARY = [
   { account: 'steemhunt', weight: 1000 },
   { account: 'steemhunt.pay', weight: 500 },
 ];
+const PARTNERED_BENEFICIARY = [
+  { account: 'steemhunt', weight: 800 },
+  { account: 'steemhunt.pay', weight: 500 },
+];
 
 const PUBLISH_CONTENT_BEGIN = 'PUBLISH_CONTENT_BEGIN';
 const PUBLISH_CONTENT_SUCCESS = 'PUBLISH_CONTENT_SUCCESS';
@@ -98,11 +102,6 @@ function getBody(post) {
     }
   }
 
-  let contributors = '';
-  if (post.beneficiaries && post.beneficiaries.length > 0) {
-    contributors = 'Makers and Contributors:\n' +
-      post.beneficiaries.map(b => `- @${b.account} (${b.weight / 100}% beneficiary of this article)\n`).join('');
-  }
   return `# ${post.title}\n` +
     `${post.tagline}\n` +
     `\n---\n` +
@@ -116,10 +115,6 @@ function getBody(post) {
     `\n---\n` +
     `## Link\n` +
     `${post.url}\n` +
-    `\n---\n` +
-    `## Contributors\n` +
-    `Hunter: @${post.author}\n` +
-    `${contributors}` +
     `\n---\n` +
     `<center>` +
     `<br/>![Steemhunt.com](https://i.imgur.com/jB2axnW.png)<br/>\n` +
@@ -196,6 +191,15 @@ function* publishContent({ props, editMode }) {
     ];
 
     if (!editMode) { // only on create
+      let beneficiaries = newPost.beneficiaries || [];
+
+      // If our partner's beneficiary, take the cut from Steemhunt side, not users
+      if (beneficiaries.some(b => b.account === 'steemplus-pay')) {
+        beneficiaries = PARTNERED_BENEFICIARY.concat(beneficiaries);
+      } else {
+        beneficiaries = DEFAULT_BENEFICIARY.concat(beneficiaries);
+      }
+
       operations.push(['comment_options', {
         author: newPost.author,
         permlink: newPost.permlink,
@@ -205,7 +209,7 @@ function* publishContent({ props, editMode }) {
         allow_curation_rewards: true,
         extensions: [
           [0, {
-            beneficiaries: DEFAULT_BENEFICIARY.concat(newPost.beneficiaries || [])
+            beneficiaries: beneficiaries
           }]
         ]
       }]);

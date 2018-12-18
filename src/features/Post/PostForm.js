@@ -318,16 +318,13 @@ class PostForm extends Component {
   handleHuntConversion = (checked) => {
     const { defaultBeneficiary } = this.state;
     let beneficiaries = [];
-    let availableWeight = 8500;
-    const defaultWeight = 200;
 
     if (defaultBeneficiary) {
-      beneficiaries.push({ account: defaultBeneficiary, weight: defaultWeight });
-      availableWeight -= defaultWeight;
+      beneficiaries.push({ account: defaultBeneficiary, weight: 200 });
     }
 
     if (checked) {
-      beneficiaries.push({ account: 'steemhunt.fund', weight: availableWeight });
+      beneficiaries.push({ account: 'steemhunt.fund', weight: 8500 });
     }
 
     this.setState({ shouldConvertHunt: checked }, () => localStorage.setItem('shouldConvertHunt', checked));

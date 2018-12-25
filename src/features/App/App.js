@@ -48,6 +48,8 @@ class App extends Component {
           <meta name="twitter:title" content="Steemhunt - Dig Products, Earn STEEMs" />
           <meta name="twitter:description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
           <meta name="twitter:image:src" content={`${process.env.PUBLIC_URL}/og-image-1024.png`} />
+          <meta name="twitter:site" content="@steemhunt" />
+          <meta name="twitter:creator" content="@steemhunt" />
           { /* Open Graph general (Facebook, Pinterest & Google+) */ }
           <meta property="og:title" content="Steemhunt - Dig Products, Earn STEEMs" />
           <meta property="og:description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />

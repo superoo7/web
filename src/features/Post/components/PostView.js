@@ -12,7 +12,7 @@ import { selectMe } from 'features/User/selectors';
 import { getHtml } from 'components/Body';
 import { shortFormat } from 'utils/date';
 import moment from 'moment';
-import { isModerator, isAdmin, isGuardian } from 'features/User/utils';
+import { isModerator, isAdmin, isCommunityManager } from 'features/User/utils';
 import { setModeratorBegin, moderatePostBegin } from 'features/Post/actions/moderatePost';
 import { replyBegin } from 'features/Comment/actions/reply';
 import { selectIsCommentPublishing, selectHasCommentSucceeded } from 'features/Comment/selectors';
@@ -246,7 +246,7 @@ class PostView extends Component {
             }
             {isModerator(me) &&
               <span>
-                {(post.verified_by === me || post.verified_by === null || isAdmin(me) || isGuardian(me)) ?
+                {(post.verified_by === me || post.verified_by === null || isAdmin(me) || isCommunityManager(me)) ?
                     (post.author === me ?
                       <Button icon="check-circle" size="small" ghost disabled>
                         Own Content

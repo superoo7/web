@@ -584,8 +584,8 @@
         &.team {
           background-color: $primary;
         }
-        &.guardian {
-          background-color: #87d461;
+        &.community-manager, &.social-manager {
+          background-color: #50a7f9;
         }
         &.moderator {
           background-color: #87d461;

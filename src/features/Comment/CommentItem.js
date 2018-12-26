@@ -113,7 +113,7 @@ class CommentItem extends PureComponent {
             <div className="comment-title">
               {this.dislikeButton()}
               <Author name={comment.author} />
-              {roleName !== 'User' && <span className={`badge ${roleName.toLowerCase()}`}>{roleName.toUpperCase()}</span>}
+              {roleName !== 'User' && <span className={`badge ${roleName.toLowerCase().replace(' ', '-')}`}>{roleName.toUpperCase()}</span>}
               <span className="separator">&middot;</span>
               <span className="date">{toTimeAgo(comment.created)}</span>
             </div>

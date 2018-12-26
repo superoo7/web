@@ -39,11 +39,18 @@ export function isInfluencer(username) {
   return influencer.indexOf(username) !== -1;
 }
 
-export function isGuardian(username) {
-  const guardians = [
+export function isCommunityManager(username) {
+  const communityManagers = [
     'jayplayco'
   ];
-  return guardians.indexOf(username) !== -1;
+  return communityManagers.indexOf(username) !== -1;
+}
+
+export function isSocialManager(username) {
+  const socialManagers = [
+    'mtimetraveller'
+  ];
+  return socialManagers.indexOf(username) !== -1;
 }
 
 export function isAdmin(username) {
@@ -57,8 +64,11 @@ export function getRoleName(username) {
   if (isAdmin(username)) {
     return 'Team';
   }
-  if (isGuardian(username)) {
-    return 'Guardian';
+  if (isCommunityManager(username)) {
+    return 'Community Manager';
+  }
+  if (isSocialManager(username)) {
+    return 'Social Manager';
   }
   if (isModerator(username)) {
     return 'Moderator';

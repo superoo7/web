@@ -81,7 +81,7 @@ class Post extends Component {
     return (
       <div className="post-container" id="post-container">
         <Helmet>
-          <title>{titleize(post.title)} - Steemhunt</title>
+          <title>{titleize(post.title)} - {post.tagline} | Steemhunt</title>
 
           { /* Search Engine */ }
           <meta name="description" content={post.tagline} />

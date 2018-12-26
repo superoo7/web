@@ -38,6 +38,7 @@
     "redux": "^3.7.2",
     "redux-saga": "^0.15.6",
     "remarkable": "^1.7.1",
+    "remove-markdown-and-html": "^0.1.0",
     "reselect": "^3.0.1",
     "sanitize-html": "^1.19.1",
     "secure-random": "^1.1.1",

@@ -26,6 +26,7 @@ import CircularProgress from 'components/CircularProgress';
 import ResteemButton from './components/ResteemButton';
 import { isPrerenderer } from 'utils/userAgent';
 import { titleize } from 'utils/helpers/stringHelpers';
+import removeMd from 'remove-markdown-and-html';
 
 class Post extends Component {
   static propTypes = {
@@ -39,6 +40,10 @@ class Post extends Component {
     commentsIsLoading: PropTypes.bool.isRequired,
     isPostLoading: PropTypes.bool.isRequired,
   };
+
+  strip(string) {
+    return removeMd(string).replace('\n', '').substring(0, 300) + '...';
+  }
 
   componentDidMount() {
     const { match: { params : { author, permlink }} } = this.props;
@@ -84,19 +89,19 @@ class Post extends Component {
           <title>{titleize(post.title)} - {post.tagline} | Steemhunt</title>
 
           { /* Search Engine */ }
-          <meta name="description" content={post.tagline} />
+          <meta name="description" content={this.strip(post.description)} />
           <meta name="image" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           { /* Schema.org for Google */ }
-          <meta itemprop="name" content={`${titleize(post.title)} - Steemhunt`} />
-          <meta itemprop="description" content={post.tagline} />
+          <meta itemprop="name" content={`${titleize(post.title)} - ${post.tagline} | Steemhunt`} />
+          <meta itemprop="description" content={this.strip(post.description)} />
           <meta itemprop="image" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           { /* Twitter */ }
-          <meta name="twitter:title" content={`${titleize(post.title)} - Steemhunt`} />
-          <meta name="twitter:description" content={post.tagline} />
+          <meta name="twitter:title" content={`${titleize(post.title)} - ${post.tagline} | Steemhunt`} />
+          <meta name="twitter:description" content={this.strip(post.description)} />
           <meta name="twitter:image:src" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           { /* Open Graph general (Facebook, Pinterest & Google+) */ }
-          <meta property="og:title" content={`${titleize(post.title)} - Steemhunt`} />
-          <meta property="og:description" content={post.tagline} />
+          <meta property="og:title" content={`${titleize(post.title)} - ${post.tagline} | Steemhunt`} />
+          <meta property="og:description" content={this.strip(post.description)} />
           <meta property="og:image" content={getCachedImageHack(post.images[0]['link'], 1200, 630, true)} />
           <meta property="og:url" content={`${process.env.PUBLIC_URL}/@${post.author}/${post.permlink}`} />
         </Helmet>

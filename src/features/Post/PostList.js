@@ -48,8 +48,7 @@ class PostList extends Component {
 
   handleSortOption = (value) => {
     setSortOption(`daily-${this.props.daysAgo}`, value);
-    this.setState({ showAll: false });
-    this.props.getPosts(this.props.daysAgo, false, forceCheck);
+    this.props.getPosts(this.props.daysAgo, this.state.showAll, forceCheck);
   }
 
   render() {

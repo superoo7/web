@@ -7,7 +7,7 @@ import api from 'utils/api';
 const BarProgress = ({ data, label, disabled, max }) => {
   return (
     <div className={`bar-progress ${disabled && 'disabled'}`}>
-      <span className="progress-text">{label} : {formatNumber(data)}</span>
+      <span className="progress-text">{label}: {formatNumber(data)}</span>
       <Progress percent={formatFloat(data/max*100)} showInfo={false} />
     </div>
   )

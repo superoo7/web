@@ -15,6 +15,7 @@ import Post from 'features/Post/Post';
 import PostForm from 'features/Post/PostForm';
 import Draft from 'features/Post/Draft';
 import NotFound from 'components/NotFound';
+import { getLoginURL } from 'utils/token';
 
 const Home = asyncComponent(() => import('pages/Home'));
 const Terms = asyncComponent(() => import('pages/Terms'));
@@ -125,6 +126,7 @@ class Right extends Component {
     const TagRight =  isEmpty(this.props.searchTerm) ? TagList : Search;
 
     let redirectPath = null;
+    // SteemConnect redirect path
     if (this.props.location.search) {
       const parsedParams = queryString.parse(this.props.location.search);
       redirectPath = parsedParams.state || (parsedParams.access_token ? '/' : null);
@@ -134,6 +136,10 @@ class Right extends Component {
 
     if (this.props.location.pathname === '/sign-up' && me) {
       redirectPath = '/';
+    }
+
+    if (this.props.location.pathname === '/post' && !isLoading && !me) {
+      window.location = getLoginURL();
     }
 
     return (

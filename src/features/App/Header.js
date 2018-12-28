@@ -124,7 +124,7 @@ class Header extends Component {
 
         {!isLoading && !me &&
           <div className="pull-right">
-            <a href={getLoginURL()} className="right-margin header-button smaller mobile-hidden">
+            <a href={getLoginURL('/post')} className="right-margin header-button smaller mobile-hidden">
               <Button shape="circle" icon="plus" />
             </a>
             <Popover

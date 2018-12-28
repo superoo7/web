@@ -104,10 +104,14 @@ class Right extends Component {
     refreshMe: PropTypes.func.isRequired,
   };
 
-  componentDidMount() {
+  componentWillMount() {
     let accessToken = null;
     if (this.props.location.search) {
-      accessToken = queryString.parse(this.props.location.search).access_token;
+      try {
+        accessToken = queryString.parse(this.props.location.search).access_token;
+      } catch(e) {
+        console.error('URI Parse error', this.props.location.search);
+      }
     }
 
     this.props.getMe(accessToken); // with existing token
@@ -128,8 +132,12 @@ class Right extends Component {
     let redirectPath = null;
     // SteemConnect redirect path
     if (this.props.location.search) {
-      const parsedParams = queryString.parse(this.props.location.search);
-      redirectPath = parsedParams.state || (parsedParams.access_token ? '/' : null);
+      try {
+        const parsedParams = queryString.parse(this.props.location.search);
+        redirectPath = parsedParams.state || (parsedParams.access_token ? '/' : null);
+      } catch(e) {
+        console.error('URI Parse error', this.props.location.search);
+      }
     }
 
     const { me, isLoading } = this.props;

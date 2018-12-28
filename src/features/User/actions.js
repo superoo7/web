@@ -18,7 +18,7 @@ export const initialState = {
   accounts: {},
   followers: {},
   followings: {},
-  isLoading: false,
+  isLoading: true,
   profileDraft: {
     name: '',
     about: '',

@@ -38,7 +38,6 @@ export function isInfluencer(username) {
     'aamirijaz',
     'sanach',
     'calprut',
-    'steemjetrecords',
     'mrfringe',
     'acdevan',
     'karamyog',
@@ -47,11 +46,12 @@ export function isInfluencer(username) {
     'amar15',
     'abasifreke',
     'wiseeyes',
-    'fararizky',
     'pavonj',
     'xabi',
-    'bitshares101',
-    'krevasilis'
+    'krevasilis',
+    'bbomber',
+    'tornad',
+    'iqbaladan'
   ];
   return influencer.indexOf(username) !== -1;
 }

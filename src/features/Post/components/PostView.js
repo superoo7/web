@@ -20,6 +20,7 @@ import { getCachedImage, hasBoosted } from 'features/Post/utils';
 import ShareButton from './ShareButton';
 import { titleize } from 'utils/helpers/stringHelpers';
 import parrot from 'assets/images/parrot.gif';
+import ces from 'assets/images/ces.png';
 
 class PostView extends Component {
   static propTypes = {
@@ -59,8 +60,11 @@ class PostView extends Component {
       previewVisible: false,
       moderationVisible: false,
       moderationComment: "Your comment here\n\n---\n\n" +
-        "Please read our [posting guidelines](https://github.com/Steemhunt/web/blob/master/POSTING_GUIDELINES.md). " +
-        "If you have any questions, please join our [Discord Group](https://discord.gg/mWXpgks).",
+        "Please read our [posting guidelines](https://github.com/Steemhunt/web/blob/master/POSTING_GUIDELINES.md).\n" +
+        "Connect with Steemhunt\n" +
+        "* [Discord Group](https://discord.gg/mWXpgks)\n" +
+        "* [Telegram Chat](https://t.me/steemhunt)\n" +
+        "* [Twitter](https://twitter.com/steemhunt)\n",
     };
   }
 
@@ -276,6 +280,7 @@ class PostView extends Component {
 
           <div className="party-container">
             {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party big" /> }
+            {post.tags.indexOf('ces') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces big" />}
           </div>
 
           <h1>

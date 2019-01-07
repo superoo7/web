@@ -25,7 +25,7 @@ export class ShareButtonContent extends PureComponent {
           className="share-button"
           href={'https://twitter.com/intent/tweet?url=' + shareUrl +
             (post ? '&text=' + encodeURI(post.title) : '') +
-            '&hashtags=steemhunt,' + post.tags.join(',')}
+            '&hashtags=steemhunt,' + (post ? post.tags.join(',') : '')}
           target="_blank"
           rel="noopener noreferrer"
           alt="Share on Twitter"

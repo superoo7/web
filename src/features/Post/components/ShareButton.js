@@ -25,7 +25,7 @@ export class ShareButtonContent extends PureComponent {
           className="share-button"
           href={'https://twitter.com/intent/tweet?url=' + shareUrl +
             (post ? '&text=' + encodeURI(post.title) : '') +
-            '&hashtags=steemhunt'}
+            '&hashtags=steemhunt,' + post.tags.join(',')}
           target="_blank"
           rel="noopener noreferrer"
           alt="Share on Twitter"
@@ -36,7 +36,7 @@ export class ShareButtonContent extends PureComponent {
         <a
           className="share-button"
           href={'https://pinterest.com/pin/create/button/?url=' + shareUrl +
-            (post ? '&media=' + getCachedImageHack(post.images[0]['link'], 1200, 630, true) + '&description=' + encodeURI(post.title + ' : ' + post.tagline) : '')
+            (post ? '&media=' + getCachedImageHack(post.images[0]['link'], 1200, 630, true) + '&description=' + encodeURI(post.title + ': ' + post.tagline) : '')
           }
           target="_blank"
           rel="noopener noreferrer"

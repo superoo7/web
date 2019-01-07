@@ -3,12 +3,26 @@
 }
 
 .main-logo {
-  width: 80px;
-  height: 119px;
+  width: auto;
+  // height: 119px;
+  height: 146px;
+}
+
+.background-video {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
 }
 
 .home-page, .not-found-page {
   position: relative;
+
+  &.primary-gradient {
+    background-color: #fc6f6fdd; /* For browsers that do not support gradients */
+    background: linear-gradient(#fc6f6fdd, #fa7f92dd);
+  }
 
   .center-content {
     position: absolute;
@@ -22,6 +36,7 @@
 
     h1 {
       margin-top: 3rem;
+      margin-bottom: 0.5rem;
       color: #fff;
       font-size: 2.125rem;
       line-height: 1.125em;
@@ -41,6 +56,21 @@
       &:hover, &:focus, &:active, &.active {
         color: rgba(255, 255, 255, 0.8);
         border-color: rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    .sub-link {
+      margin-top: 1.2rem;
+      font-size: 0.8125rem;
+      font-weight: 200;
+
+      a {
+        color: #fff;
+
+        i {
+          display: inline-block;
+          margin-left: 3px;
+        }
       }
     }
   }

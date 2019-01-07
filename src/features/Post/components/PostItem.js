@@ -30,7 +30,7 @@ class PostItem extends Component {
     if (/\.mp4$/.test(post.images[0].link)) {
       image = (
         <div className="thumbnail">
-          <video alt={post.title} playsInline autoPlay="autoplay" muted loop>
+          <video alt={post.title} playsInline autoPlay muted loop>
             <source src={getCachedImage(post.images[0].link, 240, 240)} />
           </video>
         </div>

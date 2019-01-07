@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Icon, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import imgLogo from 'assets/images/logo-main-white@2x.png';
+// import imgLogo from 'assets/images/logo-main-white@2x.png';
+import imgLogo from 'assets/images/logo-main-ces@2x.png';
 import imgCat from 'assets/images/img-about-cat@2x.png';
 import imgSteemLogo from 'assets/images/logo-steem-white@2x.png';
 import imgProductHunt from 'assets/images/img-producthunt@2x.png';
 import imgBackground from 'assets/images/img-front-bg@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
+import cesVideo from 'assets/images/ces.mp4';
 
 export default class Home extends Component {
   componentDidMount() {
@@ -22,6 +24,9 @@ export default class Home extends Component {
   render() {
     return (
       <div>
+        <video autoPlay="autoplay" muted loop className="background-video">
+          <source src={cesVideo} type="video/mp4" />
+        </video>
         <div className="home-page full-page primary-gradient">
           <div className="center-content">
             <img src={imgLogo} alt="Steemhunt Logo" className="main-logo" />
@@ -29,6 +34,9 @@ export default class Home extends Component {
             <p>A Steem Fueled Product Hunt</p>
 
             <Button size="large" ghost={true} className="round-border padded-button" onClick={this.scrollNext}>Learn More</Button>
+            <div className="sub-link">
+              <Link to="/tag/ces">CHECK CES HUNTS <Icon type="right-circle-o" /></Link>
+            </div>
           </div>
         </div>
 

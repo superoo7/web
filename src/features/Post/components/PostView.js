@@ -280,7 +280,7 @@ class PostView extends Component {
 
           <div className="party-container">
             {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party big" /> }
-            {post.tags.indexOf('ces') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces big" />}
+            {post.tags.indexOf('ces2019') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces big" />}
           </div>
 
           <h1>

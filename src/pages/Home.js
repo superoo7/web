@@ -35,7 +35,7 @@ export default class Home extends Component {
 
             <Button size="large" ghost={true} className="round-border padded-button" onClick={this.scrollNext}>Learn More</Button>
             <div className="sub-link">
-              <Link to="/tag/ces">CHECK CES HUNTS <Icon type="right-circle-o" /></Link>
+              <Link to="/tag/ces2019">CHECK CES HUNTS <Icon type="right-circle-o" /></Link>
             </div>
           </div>
         </div>

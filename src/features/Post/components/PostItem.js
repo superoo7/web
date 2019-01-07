@@ -54,7 +54,7 @@ class PostItem extends Component {
             <Link to={getPostPath(post, pathPrefix)}>
               {titleize(post.title)}
               {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party" />}
-              {post.tags.indexOf('ces') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces" />}
+              {post.tags.indexOf('ces2019') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces" />}
             </Link>
             {isModerator(me) &&
               (post.is_verified ?

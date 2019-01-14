@@ -20,7 +20,6 @@ import { getCachedImage, hasBoosted } from 'features/Post/utils';
 import ShareButton from './ShareButton';
 import { titleize } from 'utils/helpers/stringHelpers';
 import parrot from 'assets/images/parrot.gif';
-import ces from 'assets/images/ces.png';
 
 class PostView extends Component {
   static propTypes = {
@@ -280,7 +279,6 @@ class PostView extends Component {
 
           <div className="party-container">
             {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party big" /> }
-            {post.tags.indexOf('ces2019') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces big" />}
           </div>
 
           <h1>

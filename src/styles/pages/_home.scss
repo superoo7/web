@@ -4,17 +4,7 @@
 
 .main-logo {
   width: auto;
-  // height: 119px;
-  height: 146px;
-}
-
-.background-video {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  min-width: 100%;
-  min-height: 100%;
-  z-index: -999;
+  height: 119px;
 }
 
 .home-page, .not-found-page {
@@ -57,21 +47,6 @@
       &:hover, &:focus, &:active, &.active {
         color: rgba(255, 255, 255, 0.8);
         border-color: rgba(255, 255, 255, 0.8);
-      }
-    }
-
-    .sub-link {
-      margin-top: 1.2rem;
-      font-size: 0.8125rem;
-      font-weight: 200;
-
-      a {
-        color: #fff;
-
-        i {
-          display: inline-block;
-          margin-left: 3px;
-        }
       }
     }
   }

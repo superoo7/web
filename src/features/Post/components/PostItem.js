@@ -12,7 +12,6 @@ import VoteButton from 'features/Vote/VoteButton';
 import { formatAmount } from 'utils/helpers/steemitHelpers';
 import { titleize } from 'utils/helpers/stringHelpers';
 import parrot from 'assets/images/parrot.gif';
-import ces from 'assets/images/ces.png';
 
 class PostItem extends Component {
   static propTypes = {
@@ -54,7 +53,6 @@ class PostItem extends Component {
             <Link to={getPostPath(post, pathPrefix)}>
               {titleize(post.title)}
               {hasBoosted(post) && <img src={parrot} alt="I ♥ HUNT" title="I ♥ HUNT" className="party" />}
-              {post.tags.indexOf('ces2019') !== -1 && <img src={ces} alt="Featured on CES" title="Featured on CES" className="ces" />}
             </Link>
             {isModerator(me) &&
               (post.is_verified ?

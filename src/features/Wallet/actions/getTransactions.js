@@ -41,10 +41,10 @@ export function getTransactionsReducer(state, action) {
         isLoading: { $set: false },
       });
     // Better leave this loading forever instead showing 0 balance
-    case GET_TRANSACTION_FAILURE:
-      return update(state, {
-        isLoading: { $set: false },
-      });
+    // case GET_TRANSACTION_FAILURE:
+    //   return update(state, {
+    //     isLoading: { $set: false },
+    //   });
     default:
       return state;
   }

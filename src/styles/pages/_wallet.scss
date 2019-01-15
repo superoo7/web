@@ -88,12 +88,6 @@
     }
   }
 
-  .warning {
-    margin-top: 20px;
-    margin-bottom: 30px;
-    font-size: 0.825rem;
-  }
-
   .eth-bar, .withdraw-bar {
     color: $text_dark;
     background-color: #efefef;
@@ -121,6 +115,7 @@
   }
 
   .ant-tabs-nav-wrap {
+    margin-top: 30px;
     padding-left: 80px;
 
     @include responsive(ipadpro) {
@@ -217,6 +212,9 @@
       color: $text_grey;
       font-size: 14px;
     }
+  }
+  .subtitle {
+    margin-bottom: 1em;
   }
   .agreement-text {
     max-height: 100px;

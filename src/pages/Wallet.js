@@ -201,37 +201,6 @@ class Wallet extends Component {
           modalToggle={this.toggleTransferModal}
           handleTransfer={this.handleTransfer}
         />
-        <div className="warning left-padded right-padded">
-          <span className="pink">Warning!</span>
-          &nbsp;Your airdropped HUNT tokens will be cancelled if you are listed on our blacklist.
-          &nbsp;<Icon type="question-circle-o" className="help-hunt-score fake-link" onClick={this.toggleModal} />
-          <Modal
-            title="Airdrops will be removed from Blacklisted users"
-            visible={this.state.modalVisible}
-            onOk={this.toggleModal}
-            onCancel={this.toggleModal}
-            footer={null}
-            bodyStyle={{
-              overflow: 'scroll',
-              maxHeight: '50vh',
-              WebkitOverflowScrolling: "touch",
-            }}
-          >
-            <p>Your airdropped HUNT tokens will be revoked if you are listed on our <a href="https://github.com/Steemhunt/whitelist/blob/master/steemhunt/blacklist.json" target="_blank" rel="noopener noreferrer">permanent blacklist</a> for abusing the system (this does not apply to those on the 30-day blacklist).</p>
-            <p>HUNT token airdrops are designed for hunters/sponsors who contribute by increasing the value of HUNT platform. To maintain this core value, Steemhunt DOES NOT allow single users to run alt accounts to abuse our system.</p>
-
-            <p>We blacklist users if the user attempts any of the following actions:</p>
-            <ol>
-              <li>Operates multiple alternative accounts to take an advantage for HUNT token airdrops</li>
-              <li>Creates spam posts or comments</li>
-              <li>Plagiarises</li>
-            </ol>
-            <p>
-              If your name is listed in the <a href="https://github.com/Steemhunt/whitelist/blob/master/steemhunt/blacklist.json" target="_blank" rel="noopener noreferrer">permanent blacklist</a>, your reserved HUNT tokens will be cancelled.<br />
-              You can appeal if you think that you&apos;re on the blacklist by a mistake, please leave a message on <a href="https://discord.gg/BSArSDc" target="_blank" rel="noopener noreferrer">#blacklist-appeal</a> channel for review before November 9th 2018.
-            </p>
-          </Modal>
-        </div>
 
         <Tabs activeKey={this.state.activeTabKey} onTabClick={(key) => this.setState({ activeTabKey: key })}>
           <Tabs.TabPane tab="Airdrop" key="1">

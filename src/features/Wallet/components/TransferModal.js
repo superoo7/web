@@ -2,17 +2,21 @@ import React, { Component } from "react";
 import { Modal, Popconfirm, Input, Button, Checkbox } from 'antd';
 import { formatNumber } from "utils/helpers/steemitHelpers";
 
+const MIN_WITHDRAW = 1000.00;
+const MAX_WITHDRAW = 10000.00;
+
 export default class TransferModal extends Component {
+
 
   state = {
     message: null,
-    transferAmount: 2000.00 < this.props.walletProps.balance ? 2000.00 : this.props.walletProps.balance,
+    transferAmount: MIN_WITHDRAW,
     agreement: false,
   }
 
   componentDidMount() {
-    if (this.props.walletProps.balance < 2000) {
-      this.setState({ message: "You have to have at leat 2,000 HUNT to transfer." })
+    if (this.props.walletProps.balance < MIN_WITHDRAW) {
+      this.setState({ message: `You have to have at leat ${formatNumber(MIN_WITHDRAW, '0,0')} HUNT to transfer.` })
     }
   }
 
@@ -20,15 +24,23 @@ export default class TransferModal extends Component {
     if (!/^\d*\.?\d*$/.test(amount)) {
       return false;
     }
-    let msg;
+    this.setState({ transferAmount: amount, message: this.getErrorMessage(amount) });
+  }
+
+  isValidAmount = (amount) => {
+    return this.getErrorMessage(amount) === null;
+  }
+
+  getErrorMessage = (amount) => {
     if (amount > parseFloat(this.props.walletProps.balance)) {
-      msg = "You typed more tokens than your balance.";
-    } else if (amount < 2000) {
-      msg = "You have to transfer at leat 2,000 HUNT.";
+      return "You typed more tokens than your balance.";
+    } else if (amount < MIN_WITHDRAW) {
+      return `You have to transfer at leat ${formatNumber(MIN_WITHDRAW, '0,0')} HUNT.`;
+    } else if (amount > MAX_WITHDRAW) {
+      return `You cannot transfer more than ${formatNumber(MAX_WITHDRAW, '0,0')} HUNT.`;
     } else {
-      msg = null;
+      return null;
     }
-    this.setState({ transferAmount: amount, message: msg });
   }
 
   render() {
@@ -41,10 +53,15 @@ export default class TransferModal extends Component {
         onCancel={this.props.modalToggle}
         className={"transfer-modal"}
         footer={[
-          <Popconfirm key="submit" placement="topRight" title={`Transfer ${formatNumber(this.state.transferAmount)}HUNT tokens to\n${(ethAddress || '').slice(0, 8)}.. ?`} onConfirm={() => this.props.handleTransfer(this.state.transferAmount)} okText="Yes" cancelText="No">
+          <Popconfirm key="submit" placement="topRight" title={
+            <div>
+              Are you sure you want to transfer {formatNumber(this.state.transferAmount)} HUNT tokens to your external ETH wallet below?<br/>
+              {(ethAddress || 'ERROR: You did not register your ETH address')}
+            </div>
+          } onConfirm={() => this.props.handleTransfer(this.state.transferAmount)} okText="Yes" cancelText="No">
             <Button type="primary"
               loading={isLoading}
-              disabled={this.state.transferAmount < 2000 || this.state.transferAmount > parseFloat(balance) || !this.state.agreement}>
+              disabled={!this.isValidAmount(this.state.transferAmount) || !this.state.agreement}>
               Submit
             </Button>
           </Popconfirm>,
@@ -52,19 +69,24 @@ export default class TransferModal extends Component {
       >
         <div className="sans small">Steemhunt Wallet Balance</div>
         <h1 className="sans pink hunt-balance">{formatNumber(balance)} <span className="hunt-text">HUNT</span></h1>
-        <div className="sans small subtitle">Important</div>
+        <div className="sans small subtitle">
+          Someone has to pay the ETH gas price for the transactions, and Steemhunt will cover that for the beta period.
+          To prevent too much cost, we had to make a transaction limits as follow:
+        </div>
         <ul>
-          <li>Minimum withdrawal: 2,000 HUNT</li>
-          <li>You can transfer it to only the one registered external wallet</li>
+          <li>You can transfer it to only your registered external wallet</li>
+          <li>Minimum withdrawal: {formatNumber(MIN_WITHDRAW, '0,0')} HUNT / day</li>
+          <li>Maximum withdrawal: {formatNumber(MAX_WITHDRAW, '0,0')} HUNT / day</li>
+          <li>You cana only transfer once a daya</li>
         </ul>
         <div className="sans small subtitle">Registered Wallet Address</div>
         <Input placeholder={ethAddress} disabled />
         <div className="sans small subtitle">Amount</div>
         <div className={this.state.message ? 'has-error' : ''}>
           <Input
-            placeholder="Min 2,000 HUNT"
+            placeholder={`Min ${formatNumber(MIN_WITHDRAW)} HUNT`}
             value={this.state.transferAmount}
-            suffix={<span onClick={() => this.handleWithdrawalAmountChanged(balance)}>Max</span>}
+            suffix={<span className="fake-link" onClick={() => this.handleWithdrawalAmountChanged(balance > MAX_WITHDRAW ? MAX_WITHDRAW : balance)}>Max</span>}
             onChange={(e) => this.handleWithdrawalAmountChanged(e.target.value)}
           />
           {this.state.message && <div className="ant-form-explain top-margin">{this.state.message}</div>}

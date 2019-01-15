@@ -144,7 +144,7 @@ class Wallet extends Component {
   render() {
     const { me, balance, externalBalance, isLoading, transactions, withdrawals, ethAddress, isUpdating } = this.props;
     const totalHuntBalance = parseFloat(balance) + parseFloat(externalBalance);
-    if (isLoading || isEmpty(me)) {
+    if (isLoading || isUpdating || isEmpty(me)) {
       return <CircularProgress />;
     }
 
@@ -307,7 +307,7 @@ class Wallet extends Component {
                           <div className="memo">
                             Status: {w.status}
                             {w.tx_hash &&
-                              <span> | TxHash - <a href={`https://ropsten.etherscan.io/tx/${w.tx_hash}`} target="_blank">{w.tx_hash.slice(0, 8)}.. <Icon type="link" /></a></span>
+                              <span> | TxHash - <a href={`https://ropsten.etherscan.io/tx/${w.tx_hash}`} target="_blank" rel="noopener noreferrer">{w.tx_hash.slice(0, 8)}.. <Icon type="link" /></a></span>
                             }
                           </div>
                           <div className="date">{shortFormat(w.created_at)}</div>

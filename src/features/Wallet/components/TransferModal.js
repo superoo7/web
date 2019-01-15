@@ -64,7 +64,7 @@ export default class TransferModal extends Component {
           <Input
             placeholder="Min 2,000 HUNT"
             value={this.state.transferAmount}
-            suffix={<a onClick={() => this.handleWithdrawalAmountChanged(balance)}>Max</a>}
+            suffix={<span onClick={() => this.handleWithdrawalAmountChanged(balance)}>Max</span>}
             onChange={(e) => this.handleWithdrawalAmountChanged(e.target.value)}
           />
           {this.state.message && <div className="ant-form-explain top-margin">{this.state.message}</div>}

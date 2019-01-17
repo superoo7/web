@@ -18,6 +18,10 @@ export const titleize = function(string) {
 
 export const urlRegExp = /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 export const isValidUrl = (string) => {
+  if(!string) {
+    return false;
+  }
+
   var res = string.match(urlRegExp);
   if(res) {
     return true;

@@ -97,10 +97,6 @@ export const getCachedImage = function(url, width = 0, height = 0, onlyImage = f
 
 // HACK: to avoid image server blocks on FB
 export const getCachedImageHack = function(url, width = 0, height = 0, onlyImage = false) {
-  if (url.includes('https://huntimages.s3.us-west-2.amazonaws.com/production/steemhunt/')) {
-    return getCachedImage(url.replace('https://huntimages.s3.us-west-2.amazonaws.com/production/steemhunt/', 'https://s3-us-west-2.amazonaws.com/huntimages/production/steemhunt/'), width, height);
-  }
-
   return getCachedImage(url, width, height, onlyImage);
 }
 

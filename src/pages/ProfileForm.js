@@ -9,6 +9,7 @@ import { Form, Input, Button, Spin, Icon, Upload, notification } from 'antd';
 import { getCachedImage } from 'features/Post/utils';
 import SteemConnect from 'utils/steemConnectAPI';
 import { uploadImage, validateImage } from 'utils/helpers/uploadHelpers';
+import { urlRegExp } from 'utils/helpers/stringHelpers';
 
 const FormItem = Form.Item;
 
@@ -45,8 +46,10 @@ class ProfileForm extends Component {
   onXhrUploadSuccess(res, onSuccess, file) {
     const { response } = res.data;
     const result = {
-      uid: response.uid, url: getCachedImage(response.link),
-      name: response.name, link: response.link,
+      uid: response.uid,
+      url: getCachedImage(response.link),
+      name: response.name,
+      link: response.link,
       status: 'done'
     }
     onSuccess(result, file);
@@ -86,6 +89,16 @@ class ProfileForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
+    this.props.form.validateFields((errors, values) => {
+      if (errors) {
+        return notification['error']({ message: errors[Object.keys(errors)[0]]['errors'][0]['message'] });
+      } else {
+        this.openSubmit();
+      }
+    });
+  }
+
+  openSubmit = () => {
     const { profileDraft, me, myAccount, history, refreshMe } = this.props;
     let profile = myAccount.json_metadata.profile;
     if (!profile) {
@@ -204,7 +217,10 @@ class ProfileForm extends Component {
         >
           {getFieldDecorator('website', {
             validateTrigger: ['onBlur'],
-            initialValue: profile.website
+            initialValue: profile.website,
+            rules: [
+              { pattern: urlRegExp, message: 'Website address is invalid.' },
+            ],
           })(
             <Input
               placeholder="https://steemit.com"

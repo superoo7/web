@@ -162,7 +162,7 @@ class Header extends Component {
               onChange={this.handleSearch}
               onKeyDown={this.handleKeyPress}
               onBlur={() => this.setSearchVisible(false)}
-              maxLength="40"
+              maxLength={40}
               className={`header-button smaller one-column-hidden right-margin${this.state.searchVisible ? ' active' : ''}`}
             />
           }

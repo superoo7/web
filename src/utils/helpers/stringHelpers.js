@@ -16,11 +16,11 @@ export const titleize = function(string) {
   return string_array.join(' ');
 }
 
+export const urlRegExp = /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 export const isValidUrl = (string) => {
-  try {
-    new URL(string);
+  var res = string.match(urlRegExp);
+  if(res) {
     return true;
-  } catch (_) {
-    return false;
   }
+  return false;
 }

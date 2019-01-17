@@ -151,6 +151,7 @@ class Post extends Component {
               loading={commentsIsLoading}
               itemLayout="horizontal"
               dataSource={currentComments  && currentComments.list}
+              locale={{ emptyText: "No comments yet" }}
               renderItem={commentId => (
                 <CommentItem
                   key={commentId}

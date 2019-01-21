@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import isEmpty from 'lodash/isEmpty';
-import { List, Avatar, Button, Modal, Icon, Tabs, notification } from 'antd';
+import { List, Avatar, Button, Modal, Icon, Tabs, Tooltip, notification } from 'antd';
 import { formatNumber } from "utils/helpers/steemitHelpers";
 import {
   selectBalance,
@@ -167,13 +167,13 @@ class Wallet extends Component {
                 <span className="token-amount">{`${formatNumber(balance)} (${formatNumber(balance / totalHuntBalance * 100)}%)`}</span>
               </div>
               <div className="token-button">
-                <Button
-                  type="primary"
-                  className="submit-button right"
-                  onClick={this.toggleTransferModal}
-                >
-                  TRANSFER
-                </Button>
+                {ethAddress ?
+                  <Button type="primary" className="submit-button right" onClick={this.toggleTransferModal}>TRANSFER</Button>
+                :
+                  <Tooltip title="Please connect your external wallet first using CONNECT button below">
+                    <Button type="primary" className="submit-button right" disabled>TRANSFER</Button>
+                  </Tooltip>
+                }
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ class Wallet extends Component {
                   type="primary"
                   className="submit-button right"
                   onClick={this.requestSignTransaction}>
-                  CHANGE ADDRESS
+                  {ethAddress ? 'CHANGE ADDRESS' : 'CONNECT'}
                 </Button>
               </div>
             </div>

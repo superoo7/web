@@ -144,7 +144,9 @@ class VoteButton extends PureComponent {
               trigger="click"
               placement="left"
               visible={sliderOpened}
-              onVisibleChange={(visible) => this.handleVisibleChange(visible)}
+              onVisibleChange={this.handleVisibleChange}
+              maskClosable={false}
+              hasPopupMouseDown={true}
             >
               <Button
                 type="primary"
@@ -185,7 +187,7 @@ class VoteButton extends PureComponent {
               trigger="click"
               placement="top"
               visible={sliderOpened}
-              onVisibleChange={(visible) => this.handleVisibleChange(visible)}
+              onVisibleChange={this.handleVisibleChange}
             >
               <Button
                 type="primary"
@@ -226,7 +228,7 @@ class VoteButton extends PureComponent {
               trigger="click"
               placement="top"
               visible={sliderOpened}
-              onVisibleChange={(visible) => this.handleVisibleChange(visible)}
+              onVisibleChange={this.handleVisibleChange}
             >
               <Button
                 type="primary"

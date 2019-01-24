@@ -100,9 +100,6 @@
 
   @include responsive(mobile) {
     max-width: 84%;
-    br {
-      display: none;
-    }
   }
 
   h2 {
@@ -285,8 +282,12 @@
 }
 
 .page-last {
-  height: 100vh;
+  height: 90vh;
   position: relative;
+
+  @include responsive(mobile) {
+    height: 100vh;
+  }
 
   .left-container {
     position: absolute;
@@ -331,12 +332,20 @@
     z-index: 101;
     height: 96vh;
     position: absolute;
-    left: 50%;
+    left: 76%;
     transform: translateX(-50%);
-    top: 170px;
+    bottom: 5%;
 
     @include responsive(ipadpro) {
       height: 90vh;
+    }
+
+    @include responsive(mobile) {
+      height: 82vh;
+    }
+
+    @include responsive(tiny) {
+      height: 65vh;
     }
   }
 

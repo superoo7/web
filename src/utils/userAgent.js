@@ -1,3 +1,3 @@
 export function isPrerenderer() {
-  return navigator.userAgent && !!navigator.userAgent.match(/Prerender/);
+  return navigator && navigator.userAgent && !!navigator.userAgent.match(/Prerender/);
 }

@@ -4,15 +4,19 @@
 
 .main-logo {
   width: auto;
-  height: 119px;
+  height: 81px;
+
+  @include responsive(mobile) {
+    height: 60px;
+  }
 }
 
 .home-page, .not-found-page {
   position: relative;
 
   &.primary-gradient {
-    background-color: #fc6f6fdd; /* For browsers that do not support gradients */
-    background: linear-gradient(#fc6f6fdd, #fa7f92dd);
+    background-color: #fc6f6f; /* For browsers that do not support gradients */
+    background: linear-gradient(#fc6f6f, #fa7f92);
   }
 
   .center-content {
@@ -26,18 +30,28 @@
     color: #fff;
 
     h1 {
-      margin-top: 3rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.375rem;
+      margin-top: 0.8rem;
+      margin-bottom: 0;
       color: #fff;
-      font-size: 2.125rem;
-      line-height: 1.125em;
-      letter-spacing: 0.07em;
-      font-weight: bolder;
+      letter-spacing: 1px;
+
+      @include responsive(mobile) {
+        font-size: 1.1rem;
+      }
     }
 
-    p {
-      margin-bottom: 5rem;
-      font-weight: lighter;
+    h2 {
+      margin-top: 7rem;
+      margin-bottom: 14rem;
+      font-size: 2.375rem;
+      font-weight: normal;
+
+      @include responsive(mobile) {
+        font-size: 1.5rem;
+        margin-top: 3rem;
+        margin-bottom: 6rem;
+      }
     }
 
     // override .ant-btn
@@ -65,8 +79,12 @@
   overflow: hidden;
   text-align: center;
 
+  @include responsive(mobile) {
+    padding: 80px 0;
+  }
+
   h2 {
-    font-size: 1.75em;
+    font-size: 1.5rem;
   }
 
   p, a {
@@ -75,10 +93,17 @@
 }
 
 .split-page {
-  max-width: 290px;
+  max-width: 310px;
   text-align: left;
   display: inline-block;
   font-size: 0.875rem;
+
+  @include responsive(mobile) {
+    max-width: 84%;
+    br {
+      display: none;
+    }
+  }
 
   h2 {
     color: $primary;
@@ -91,11 +116,107 @@
   a {
     text-decoration: none !important;
   }
+
+  .check-hall-of-fame {
+    @include responsive(mobile) {
+      margin-bottom: 2rem;
+      display: block;
+    }
+  }
 }
 
 .primary-gradient {
   h2 {
     color: #fff;
+  }
+}
+
+.grey-background {
+  background-color: #f6f6f6;
+
+  h2, h3 {
+    color: $primary;
+  }
+}
+
+.columned-page {
+  text-align: center;
+  padding: 3rem;
+  font-size: 0.8125rem;
+  color: #9b9b9b;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  img {
+    width: 27px;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  p {
+    padding: 0 2rem;
+  }
+}
+
+.card-page {
+  h2 {
+    margin-bottom: 4rem;
+  }
+  .card-container {
+    display: flex;
+    justify-content: space-evenly;
+
+    @include responsive(mobile) {
+      display: inherit;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      width: 37%;
+      text-align: left;
+      color: #9b9b9b;
+      font-size: 0.875rem;
+      padding: 1rem 2rem;
+      box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+
+      @include responsive(mobile) {
+        width: 80%;
+        margin: 0 auto;
+
+        &:first-child {
+          margin-bottom: 2rem;
+        }
+      }
+
+      h3 {
+        font-size: 1.5rem;
+      }
+
+      img {
+        vertical-align: baseline;
+        margin-left: 0.4rem;
+
+        &.steem-token {
+          height: 22px;
+        }
+
+        &.hunt-token {
+          height: 21px;
+        }
+      }
+
+      a {
+        display: block;
+        margin-top: 1rem;
+      }
+    }
   }
 }
 
@@ -119,9 +240,8 @@
       font-size: 1.875rem;
       box-shadow: 0 9px 12px 1px rgba(0,0,0,0.14), 0 3px 16px 2px rgba(0,0,0,0.12), 0 5px 6px 0 rgba(0,0,0,0.20);
 
-      .steem-logo {
-        width: 24px;
-        height: 29px;
+      .hunt-token-logo {
+        height: 38px;
       }
     }
 
@@ -138,13 +258,8 @@
 
   .splitter {
     font-size: 1.25rem;
-    margin: 1.875rem 0;
-    opacity: 0.6;
-  }
-
-  .bottom-link {
-    color: #fff;
-    text-decoration: none !important;
+    margin: 1.5rem 0;
+    opacity: 0.9;
   }
 }
 
@@ -152,6 +267,10 @@
   margin-left: 40px;
   display: inline-block;
   vertical-align: bottom;
+
+  @include responsive(mobile) {
+    margin-left: 0;
+  }
 
   &.cat {
     width: 201px;
@@ -187,8 +306,18 @@
     }
 
     h2 {
-      line-height: 1.2;
+      font-size: 2rem;
+      line-height: 1.4;
       margin: 2.5rem 0;
+      font-weight: normal;
+
+      @include responsive(mobile) {
+        font-size: 1.8rem;
+      }
+
+      @include responsive(tiny) {
+        font-size: 1.5rem;
+      }
     }
 
     .post-button {

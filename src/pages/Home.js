@@ -1,16 +1,32 @@
 import React, { Component } from 'react';
-import { Icon, Button } from 'antd';
+import { Icon, Button, Row, Col } from 'antd';
 import { Link } from 'react-router-dom';
-import imgLogo from 'assets/images/logo-main-white@2x.png';
+import axios from 'axios';
+import imgLogo from 'assets/images/sh-logo-circle@2x.png';
 import imgCat from 'assets/images/img-about-cat@2x.png';
-import imgSteemLogo from 'assets/images/logo-steem-white@2x.png';
-import imgProductHunt from 'assets/images/img-producthunt@2x.png';
 import imgBackground from 'assets/images/img-front-bg@2x.png';
+import imgStats1 from 'assets/images/icon-products@2x.png';
+import imgStats2 from 'assets/images/icon-fire@2x.png';
+import imgStats3 from 'assets/images/icon-money@2x.png';
+import imgHuntTokenWhite from 'assets/images/icon-hunt-token@2x.png';
+import imgSteemToken from 'assets/images/icon-steem-pink@2x.png';
+import imgHuntToken from 'assets/images/icon-hunt-pink@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
+import { formatNumber } from "utils/helpers/steemitHelpers";
 
 export default class Home extends Component {
+  state = {
+    count: 0,
+    average: 0,
+    max: 0,
+  }
+
   componentDidMount() {
     scrollTop();
+
+    axios.get(`${process.env.REACT_APP_API_ROOT}/posts/stats.json`).then((res) => {
+      this.setState(res.data);
+    }).catch(console.log);
   }
 
   scrollNext = (e) => {
@@ -25,8 +41,8 @@ export default class Home extends Component {
         <div className="home-page full-page primary-gradient">
           <div className="center-content">
             <img src={imgLogo} alt="Steemhunt Logo" className="main-logo" />
-            <h1>Steemhunt</h1>
-            <p>A Steem Fueled Product Hunt</p>
+            <h1>STEEMHUNT</h1>
+            <h2>Discover Cool Products<br/>Get Rewards</h2>
 
             <Button size="large" ghost={true} className="round-border padded-button" onClick={this.scrollNext}>Learn More</Button>
           </div>
@@ -35,19 +51,38 @@ export default class Home extends Component {
         <div className="padded-page">
           <div className="split-page">
             <h2>
-              Discover<br/>
-              Cool Products and<br/>
-              Get Rewards by<br/>
-              STEEM
+              Daily Rankings for<br/>
+              Effortlessly Cool Products<br/>
+              that Rewards Hunters
             </h2>
             <p>
-              You can surface new products, upvote and comment on them,
-              and most importantly, you will be rewarded with STEEM tokens for your contribution.
+              Steemhunt is a community for product enthusiasts who love to dig out new products and talk about them with others.
+              We call them &quot;Product Hunters.&quot; Hunters can get crypto rewards for sharing the coolest/newest products and competing on a daily basis.
             </p>
-            <a href="https://steem.io" target="_blank" rel="noopener noreferrer">What is STEEM? <Icon type="right-circle-o" /></a>
+            <Link to="/hall-of-fame" className="check-hall-of-fame">Check out Hall of Fame <Icon type="right-circle-o" /></Link>
           </div>
           <img src={imgCat} alt="Steemhunt" className="side-image cat" />
         </div>
+
+        <Row className="columned-page grey-background">
+          <h2>Stats for Hunts</h2>
+
+          <Col sm={15} md={8}>
+            <img src={imgStats1} alt="Products" />
+            <h3>{formatNumber(this.state.count, '0,0')}</h3>
+            <p>Number of products shared since Mar 2018</p>
+          </Col>
+          <Col sm={15} md={8}>
+            <img src={imgStats2} alt="Fire" />
+            <h3>${formatNumber(this.state.max)}</h3>
+            <p>The highest amount earned for a single hunt post</p>
+          </Col>
+          <Col sm={15} md={8}>
+            <img src={imgStats3} alt="Money" />
+            <h3>${formatNumber(this.state.average)}</h3>
+            <p>The average reward for each hunt post</p>
+          </Col>
+        </Row>
 
         <div className="padded-page primary-gradient page-3">
           <h2>Dig More, Earn More<br/>How?</h2>
@@ -56,39 +91,57 @@ export default class Home extends Component {
             <div className="circle">
               <Icon type="search" />
             </div>
-            <h4>DISCOVER AND COMPETE</h4>
+            <h4>DISCOVER COOL PRODUCTS</h4>
             <p>
-              There are millions of cool products like web, app, hardware or anything that people may not see yet.
-              You can be a hunter who digs out and introduces them to the Steemhunt community.
+              There are millions of cool tech products like apps, software and gadgets that you may not have seen before.
+              You can be a hunter who digs out and introduces cool new products to the Steemhunt community.
             </p>
           </div>
           <Icon type="down" className="splitter" />
           <div className="howto">
             <div className="circle">
-              <img src={imgSteemLogo} alt="Steem Logo" className="steem-logo" />
+              <Icon type="message" />
             </div>
-            <h4>EARN STEEM AND HUNT</h4>
+            <h4>UPVOTE AND DISCUSS</h4>
             <p>
-              Whenever people make actions on your post such as upvotes and comments, the rewards will be accumulated by STEEM and HUNT tokens, and pay out in 7 days in the proportion of you assigned.
+              This is a playground for product enthusiasts.
+              You can upvote any hunt that you think it seems so cool, and discuss about the products with other hunters.
             </p>
           </div>
-          <a href="https://steem.io" target="_blank" rel="noopener noreferrer" className="bottom-link">What is STEEM? <Icon type="right-circle-o" /></a>
+          <Icon type="down" className="splitter" />
+          <div className="howto">
+            <div className="circle">
+              <img src={imgHuntTokenWhite} alt="Hunt Token Logo" className="hunt-token-logo" />
+            </div>
+            <h4>COMPETE AND EARN REWARDS</h4>
+            <p>
+              Whenever people upvote or comment on your post, and when you make a contribution to this community, you will earn crypto rewards via STEEM and HUNT tokens.
+            </p>
+          </div>
         </div>
 
-        <div className="padded-page">
-          <div className="split-page">
-            <h2>
-              Product Hunt<br/>
-              is Great, But…
-            </h2>
-            <p>
-              Millions of dedicated users make Product Hunt a great place where you can discover new ideas everyday.
-              However, similar to other communities such as Reddit or Facebook,
-              all the rewards go to the platform itself instead of the dedicated community members.
-            </p>
-            <a href="https://www.producthunt.com/team/product-hunt" target="_blank" rel="noopener noreferrer">What is Product Hunt? <Icon type="right-circle-o" /></a>
+        <div className="padded-page card-page grey-background">
+          <h2>Currencies of Steemhunt</h2>
+
+          <div className="card-container">
+            <div className="card">
+              <h3>STEEM <img src={imgSteemToken} alt="Steem Token" className="steem-token" /></h3>
+              <p>
+                Steemhunt is built on Steem blockchain. Your content-generation actions
+                (i.e. posts, comments) are rewarded by STEEM tokens.
+              </p>
+              <a href="https://steem.io" target="_blank" rel="noopener noreferrer">What is STEEM? <Icon type="right-circle-o" /></a>
+            </div>
+
+            <div className="card">
+              <h3>HUNT <img src={imgHuntToken} alt="HUNT Token" className="hunt-token" /></h3>
+              <p>
+                The hunter’s user score is used for measuring their overall contributions in our community,
+                and they are rewarded with HUNT tokens.
+              </p>
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer">What is HUNT? <Icon type="right-circle-o" /></a>
+            </div>
           </div>
-          <img src={imgProductHunt} alt="Steemhunt" className="side-image producthunt" />
         </div>
 
         <div className="padded-page primary-gradient page-last">
@@ -96,11 +149,11 @@ export default class Home extends Component {
             <img src={imgLogo} alt="Steemhunt Logo" className="main-logo" />
             <h2>
               Destination for<br/>
-              Product-Enthusiasts
+              Product Enthusiasts
             </h2>
 
             <Link to="/post" className="post-button round-border padded-button pink-filled">
-              MAKE NEW POST
+              LET&apos;S HUNT NOW
             </Link>
           </div>
 

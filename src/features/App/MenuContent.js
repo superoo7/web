@@ -104,6 +104,11 @@ export default class MenuContent extends PureComponent {
               <Icon type="message" /> CHAT ON DISCORD
             </a>
           </Menu.Item>
+          <Menu.Item key="5-1">
+            <a href="https://t.me/steemhunt" rel="noopener noreferrer" target="_blank">
+              <Icon type="notification" /> SUBSCRIBE TO TELEGRAM
+            </a>
+          </Menu.Item>
           <Menu.Item key="6" onClick={this.toggleShare}>
             <Icon type="share-alt" /> SPREAD STEEMHUNT
           </Menu.Item>
@@ -152,6 +157,11 @@ export default class MenuContent extends PureComponent {
           <Menu.Item key="3">
             <a href="https://discord.gg/mWXpgks" rel="noopener noreferrer" target="_blank">
               <Icon type="message" /> CHAT ON DISCORD
+            </a>
+          </Menu.Item>
+          <Menu.Item key="3-1">
+            <a href="https://t.me/steemhunt" rel="noopener noreferrer" target="_blank">
+              <Icon type="notification" /> SUBSCRIBE TO TELEGRAM
             </a>
           </Menu.Item>
           {this.state.extensionVisible &&

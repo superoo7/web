@@ -26,6 +26,9 @@ import TransferModal from 'features/Wallet/components/TransferModal';
 import metaMaskImage from 'assets/images/wallet/img-no-metamask@3x.png';
 import initializeWeb3 from 'web3.js';
 
+const NETWORK = 'https://ropsten.etherscan.io';
+const CONTRACT = '0xc8efe6f0004de333af97c39f050bebdbb84d25c2';
+
 class Wallet extends Component {
   static propTypes = {
     me: PropTypes.string.isRequired,
@@ -133,13 +136,17 @@ class Wallet extends Component {
         this.props.setEthAddress(this.eth_accounts[0], message, signature);
       }
     })
-  }
+  };
 
   handleTransfer = (transferAmount) => {
     this.props.withdraw(transferAmount);
     this.setState({ activeTabKey: '2', transferModalVisible: false });
-  }
+  };
   toggleTransferModal = () => this.setState({ transferModalVisible: !this.state.transferModalVisible });
+
+  etherscanLink(walletAddress) {
+    return `${NETWORK}/token/${CONTRACT}?a=${walletAddress}`
+  }
 
   render() {
     const { me, balance, externalBalance, isLoading, transactions, withdrawals, ethAddress, isUpdating } = this.props;
@@ -178,7 +185,10 @@ class Wallet extends Component {
             </div>
           </div>
           <div className="balance-row">
-            <div className="sans small">External Wallet - {ethAddress}</div>
+            <div className="sans small">
+              External Wallet -&nbsp;
+              <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
+            </div>
             <div className="token-bar-container">
               <div className="token-bar">
                 <span className="token-bar-white" style={{ width: `${externalBalance / totalHuntBalance * 100}%` }}></span>
@@ -276,7 +286,7 @@ class Wallet extends Component {
                           <div className="memo">
                             Status: {w.status}
                             {w.tx_hash &&
-                              <span> | TxHash - <a href={`https://ropsten.etherscan.io/tx/${w.tx_hash}`} target="_blank" rel="noopener noreferrer">{w.tx_hash.slice(0, 8)}.. <Icon type="link" /></a></span>
+                              <span> | TxHash - <a href={`${NETWORK}/tx/${w.tx_hash}`} target="_blank" rel="noopener noreferrer">{w.tx_hash.slice(0, 8)}.. <Icon type="link" /></a></span>
                             }
                           </div>
                           <div className="date">{shortFormat(w.created_at)}</div>

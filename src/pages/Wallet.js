@@ -15,6 +15,7 @@ import {
   selectIsLoading,
   selectIsUpdating,
 } from 'features/Wallet/selectors';
+import { isAdmin } from 'features/User/utils';
 import { getTransactionsBegin } from 'features/Wallet/actions/getTransactions';
 import { withdrawBegin } from 'features/Wallet/actions/withdraw';
 import { setEthAddressBegin } from 'features/Wallet/actions/setEthAddress';
@@ -62,10 +63,6 @@ class Wallet extends Component {
   async componentDidMount() {
     this.props.getTransactions();
     this.web3 = initializeWeb3();
-    if (this.web3) {
-      this.eth_accounts = await this.web3.eth.getAccounts();
-      this.eth_network = await this.web3.eth.net.getNetworkType();
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -94,24 +91,33 @@ class Wallet extends Component {
       return false;
     }
 
-    if (this.eth_accounts.length === 0) {
-      notification['error']({ message: "You need to login on metamask." });
+    const ethAccounts = await this.web3.eth.getAccounts();
+    const ethNetwork = await this.web3.eth.net.getNetworkType();
+
+    if (ethAccounts.length === 0) {
+      notification['error']({ message: "You need to login on Metamask." });
       return false;
     }
 
-    if (this.eth_network !== 'ropsten') {
+    if (ethNetwork !== 'ropsten') {
       Modal.error({
         title: 'Incorrect Network',
-        content: `You are currently in ${this.eth_network} network. Please change your network to Ropsten network.`,
+        content: `You are currently in ${ethNetwork} network. Please change your network to Ropsten network.`,
       });
+
+      return false;
     }
-    return this.eth_network === 'ropsten';
+
+    return true;
   }
 
   requestSignTransaction = async () => {
     if (!(await this.validEthereumNetwork())) {
       return false;
     }
+
+    const ethAccounts = await this.web3.eth.getAccounts();
+
     Modal.success({
       title: "Register External Wallet",
       className: "metamask-install-modal",
@@ -132,8 +138,8 @@ class Wallet extends Component {
       okText: "Connect to Metamask",
       onOk: async () => {
         const message = `Register this Ethereum address to your Steemhunt account, ${this.props.me}. (Timestamp: ${new Date().getTime()})`;
-        const signature = await this.web3.eth.personal.sign(message, this.eth_accounts[0]);
-        this.props.setEthAddress(this.eth_accounts[0], message, signature);
+        const signature = await this.web3.eth.personal.sign(message, ethAccounts[0]);
+        this.props.setEthAddress(ethAccounts[0], message, signature);
       }
     })
   };
@@ -170,40 +176,46 @@ class Wallet extends Component {
             <div className="sans small">Steemhunt Wallet</div>
             <div className="token-bar-container">
               <div className="token-bar">
-                <span className="token-bar-white" style={{ width: `${balance / totalHuntBalance * 100}%` }}></span>
-                <span className="token-amount">{`${formatNumber(balance)} (${formatNumber(balance / totalHuntBalance * 100)}%)`}</span>
+                <span className="token-amount">{formatNumber(balance)} HUNT</span>
               </div>
               <div className="token-button">
-                {ethAddress ?
-                  <Button type="primary" className="submit-button right" onClick={this.toggleTransferModal}>TRANSFER</Button>
+                {isAdmin(me) ?
+                  (ethAddress ?
+                    <Button type="primary" className="submit-button right" onClick={this.toggleTransferModal}>TRANSFER</Button>
+                  :
+                    <Tooltip title="Please connect your external wallet first using CONNECT button below">
+                      <Button type="primary" className="submit-button right" disabled>TRANSFER</Button>
+                    </Tooltip>
+                  )
                 :
-                  <Tooltip title="Please connect your external wallet first using CONNECT button below">
+                  <Tooltip title="ERC-20 token withdraw feature is currently under development. We will announce it once we're ready.">
                     <Button type="primary" className="submit-button right" disabled>TRANSFER</Button>
                   </Tooltip>
                 }
               </div>
             </div>
           </div>
-          <div className="balance-row">
-            <div className="sans small">
-              External Wallet -&nbsp;
-              <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
-            </div>
-            <div className="token-bar-container">
-              <div className="token-bar">
-                <span className="token-bar-white" style={{ width: `${externalBalance / totalHuntBalance * 100}%` }}></span>
-                <span className="token-amount">{`${formatNumber(externalBalance)} (${formatNumber(externalBalance / totalHuntBalance * 100)}%)`}</span>
+          {isAdmin(me) &&
+            <div className="balance-row">
+              <div className="sans small">
+                External Wallet -&nbsp;
+                <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
               </div>
-              <div className="token-button">
-                <Button
-                  type="primary"
-                  className="submit-button right"
-                  onClick={this.requestSignTransaction}>
-                  {ethAddress ? 'CHANGE ADDRESS' : 'CONNECT'}
-                </Button>
+              <div className="token-bar-container">
+                <div className="token-bar">
+                  <span className="token-amount">{formatNumber(externalBalance)} HUNT</span>
+                </div>
+                <div className="token-button">
+                  <Button
+                    type="primary"
+                    className="submit-button right"
+                    onClick={this.requestSignTransaction}>
+                    {ethAddress ? 'CHANGE ADDRESS' : 'CONNECT'}
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          }
         </div>
         <TransferModal
           walletProps={this.props}
@@ -213,7 +225,7 @@ class Wallet extends Component {
         />
 
         <Tabs activeKey={this.state.activeTabKey} onTabClick={(key) => this.setState({ activeTabKey: key })}>
-          <Tabs.TabPane tab="Airdrop" key="1">
+          <Tabs.TabPane tab="Bounties" key="1">
             {transactions.length === 0 ?
               <div className="placeholder">
                 <img src={tokenPlaceholder} alt="No transactions" />

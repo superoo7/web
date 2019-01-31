@@ -170,7 +170,10 @@ class Wallet extends Component {
         <div className="balance-bar left-padded right-padded">
           <div className="balance-row">
             <div className="sans small">Total HUNT Token Balance</div>
-            <div className="sans balance">{formatNumber(totalHuntBalance)} HUNT</div>
+            <div className="sans balance">
+              {formatNumber(totalHuntBalance)} HUNT
+              <Button shape="circle" size="small" icon="reload" onClick={() => this.props.getTransactions()}/>
+            </div>
           </div>
           <div className="balance-row">
             <div className="sans small">Steemhunt Wallet</div>
@@ -199,7 +202,11 @@ class Wallet extends Component {
             <div className="balance-row">
               <div className="sans small">
                 External Wallet -&nbsp;
-                <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
+                {ethAddress ?
+                  <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
+                :
+                  'Not connected'
+                }
               </div>
               <div className="token-bar-container">
                 <div className="token-bar">
@@ -296,9 +303,9 @@ class Wallet extends Component {
                       description={
                         <div>
                           <div className="memo">
-                            Status: {w.status}
+                            Status: {w.status && w.status.replace(/_/g, ' ')}
                             {w.tx_hash &&
-                              <span> | TxHash - <a href={`${NETWORK}/tx/${w.tx_hash}`} target="_blank" rel="noopener noreferrer">{w.tx_hash.slice(0, 8)}.. <Icon type="link" /></a></span>
+                              <span> | TxHash - <a href={`${NETWORK}/tx/${w.tx_hash}`} className="tx-hash" target="_blank" rel="noopener noreferrer">{w.tx_hash} <Icon type="link" /></a></span>
                             }
                           </div>
                           <div className="date">{shortFormat(w.created_at)}</div>

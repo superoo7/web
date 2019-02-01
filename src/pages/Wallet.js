@@ -99,7 +99,7 @@ class Wallet extends Component {
       return false;
     }
 
-    if (ethNetwork !== 'mainnet') {
+    if (ethNetwork !== 'main') {
       Modal.error({
         title: 'Incorrect Network',
         content: `You are currently in ${ethNetwork} network. Please change your network to Main Ethereum Network.`,

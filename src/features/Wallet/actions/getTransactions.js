@@ -34,6 +34,7 @@ export function getTransactionsReducer(state, action) {
 
       return update(state, {
         balance: { $set: result.balance },
+        externalBalance: { $set: result.external_balance },
         ethAddress: { $set: result.eth_address },
         transactions: { $set: result.transactions },
         withdrawals: { $set: result.withdrawals },
@@ -41,9 +42,9 @@ export function getTransactionsReducer(state, action) {
       });
     // Better leave this loading forever instead showing 0 balance
     // case GET_TRANSACTION_FAILURE:
-      // return update(state, {
-      //   isLoading: { $set: true },
-      // });
+    //   return update(state, {
+    //     isLoading: { $set: false },
+    //   });
     default:
       return state;
   }
@@ -53,7 +54,6 @@ export function getTransactionsReducer(state, action) {
 function* getTransactions() {
   try {
     const result = yield api.get(`/hunt_transactions.json`, null, true);
-
     yield put(getTransactionsSuccess(result));
   } catch(e) {
     yield notification['error']({ message: extractErrorMessage(e) });

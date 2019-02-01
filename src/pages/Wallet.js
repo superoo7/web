@@ -27,8 +27,8 @@ import TransferModal from 'features/Wallet/components/TransferModal';
 import metaMaskImage from 'assets/images/wallet/img-no-metamask@3x.png';
 import initializeWeb3 from 'web3.js';
 
-const NETWORK = 'https://ropsten.etherscan.io';
-const CONTRACT = '0xc8efe6f0004de333af97c39f050bebdbb84d25c2';
+const NETWORK = 'https://etherscan.io';
+const CONTRACT = '0x9aab071b4129b083b01cb5a0cb513ce7eca26fa5';
 
 class Wallet extends Component {
   static propTypes = {
@@ -99,10 +99,10 @@ class Wallet extends Component {
       return false;
     }
 
-    if (ethNetwork !== 'ropsten') {
+    if (ethNetwork !== 'mainnet') {
       Modal.error({
         title: 'Incorrect Network',
-        content: `You are currently in ${ethNetwork} network. Please change your network to Ropsten network.`,
+        content: `You are currently in ${ethNetwork} network. Please change your network to Main Ethereum Network.`,
       });
 
       return false;

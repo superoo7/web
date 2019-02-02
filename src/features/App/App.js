@@ -35,24 +35,24 @@ class App extends Component {
     return (
       <div id="app-container" className="app-container">
         <Helmet>
-          <title>Steemhunt - Dig Products, Earn STEEMs</title>
+          <title>Steemhunt - Discover Cool Products, Get Rewards</title>
           { /* Search Engine */ }
-          <meta name="description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
+          <meta name="description" content="Daily ranking of effortlessly cool products that rewards hunters" />
           <meta name="image" content={`${process.env.PUBLIC_URL}/og-image-1200.png`} />
           { /* Schema.org for Google */ }
-          <meta itemprop="name" content="Steemhunt - Dig Products, Earn STEEMs" />
-          <meta itemprop="description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
+          <meta itemprop="name" content="Steemhunt - Discover Cool Products, Get Rewards" />
+          <meta itemprop="description" content="Daily ranking of effortlessly cool products that rewards hunters" />
           <meta itemprop="image" content={`${process.env.PUBLIC_URL}/og-image-1200.png`} />
           { /* Twitter */ }
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Steemhunt - Dig Products, Earn STEEMs" />
-          <meta name="twitter:description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
+          <meta name="twitter:title" content="Steemhunt - Discover Cool Products, Get Rewards" />
+          <meta name="twitter:description" content="Daily ranking of effortlessly cool products that rewards hunters" />
           <meta name="twitter:image:src" content={`${process.env.PUBLIC_URL}/og-image-1024.png`} />
           <meta name="twitter:site" content="@steemhunt" />
           <meta name="twitter:creator" content="@steemhunt" />
           { /* Open Graph general (Facebook, Pinterest & Google+) */ }
-          <meta property="og:title" content="Steemhunt - Dig Products, Earn STEEMs" />
-          <meta property="og:description" content="Daily ranking of effortlessly cool products fueled by STEEM blockchain" />
+          <meta property="og:title" content="Steemhunt - Discover Cool Products, Get Rewards" />
+          <meta property="og:description" content="Daily ranking of effortlessly cool products that rewards hunters" />
           <meta property="og:image" content={`${process.env.PUBLIC_URL}/og-image-1200.png`} />
           <meta property="og:url" content={process.env.PUBLIC_URL} />
           <meta property="og:site_name" content="Steemhunt" />

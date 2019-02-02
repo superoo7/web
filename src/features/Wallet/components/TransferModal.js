@@ -70,14 +70,14 @@ export default class TransferModal extends Component {
         <div className="sans small">Steemhunt Wallet Balance</div>
         <h1 className="sans pink hunt-balance">{formatNumber(balance)} <span className="hunt-text">HUNT</span></h1>
         <div className="sans small subtitle">
-          Someone has to pay the ETH gas price for the transactions, and Steemhunt will cover that for the beta period.
-          To prevent too much cost, we had to make a transaction limits as follow:
+          Steemhunt is paying the gas price for the Ethereum transactions. To prevent too much cost, we set the transaction limits as follows:
         </div>
         <ul>
-          <li>You can transfer it to only your registered external wallet</li>
+          <li>You can only transfer once a day</li>
+          <li>You can only transfer to your registered external wallet</li>
           <li>Minimum withdrawal: {formatNumber(MIN_WITHDRAW, '0,0')} HUNT / day</li>
           <li>Maximum withdrawal: {formatNumber(MAX_WITHDRAW, '0,0')} HUNT / day</li>
-          <li>You cana only transfer once a daya</li>
+          
         </ul>
         <div className="sans small subtitle">Registered Wallet Address</div>
         <Input placeholder={ethAddress} disabled />
@@ -93,11 +93,11 @@ export default class TransferModal extends Component {
         </div>
         <div className="top-margin">
           <p className="agreement-text subtitle">
-            Please check the address carefully before requesting transfer.
-            Transfer request cannot be canceled once it is completed.
-            Steemhunt holds no liability over the losses incurred as a result of the wrong information.
-            Also, we may suspend transfers related to suspicious transactions, such as identity theft, fraud, abusing, or hacking.
-            Steemhunt is not responsible for damages caused by illegal transactions of its users.
+            Please check the address carefully before requesting a transfer.
+            Transfer requests cannot be canceled.
+            Steemhunt is not liable for any losses incurred as a result of the wrong information.
+            We will suspend suspicious transactions such as identity theft, fraud, abuse, or hacking.
+            Steemhunt is not responsible for damage caused by illegal transactions of its users.
           </p>
           <Checkbox onChange={(e) => this.setState({ agreement: e.target.checked })}>I have read and consent to the following agreement.</Checkbox>
         </div>

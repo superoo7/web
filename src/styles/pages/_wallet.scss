@@ -247,6 +247,8 @@
 .transfer-modal {
   .hunt-balance {
     font-size: 2rem;
+    font-weight: 500;
+
     @include responsive(tablet) {
       font-size: 1.4rem;
     }

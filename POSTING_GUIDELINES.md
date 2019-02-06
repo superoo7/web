@@ -51,6 +51,8 @@ Steemhunt does not allow the same product to be posted twice. The website automa
 ## 7. Games
 There are countless games worldwide, and many of them have narrow target customers. If we accept all new games in Steemhunt, our ranking board may be dominated by games. So, **Steemhunt will ONLY accept games that have their own website**. Please note if you use any app store or game platform (e.g. Steam) URL on the game product link, your hunt will be delisted.
 
+We don't accept games that have not been launched unless 1) the game has announced an actual demo or gameplay and 2) people can purchase it as a pre-order.
+
 
 <hr>
 

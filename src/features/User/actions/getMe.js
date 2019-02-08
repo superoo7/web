@@ -96,6 +96,19 @@ function* getMe({ token }) {
     // Make sure tokens must be filtered from all the logs and should not be saved in a raw format
     const info = yield api.post('/users.json', { user: { username: me.account.name, token: token } });
 
+    // For transaction tracking
+    // REF: https://steemit.com/steemapps/@therealwolf/steem-apps-update-4-more-data
+    steemConnectAPI.broadcast([['custom_json', { // async
+      required_auths: [],
+      required_posting_auths: [me.account.name],
+      id: 'active_user',
+      json: JSON.stringify({
+        account: me.account.name,
+        user_score: info.detailed_user_score,
+        app: 'steemhunt'
+      })
+    }]]);
+
     yield put(getMeSuccess({
       ...me,
       account: Object.assign({}, format(me.account, appProps), info, rcInfo),

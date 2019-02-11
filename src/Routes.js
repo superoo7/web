@@ -53,7 +53,7 @@ export class RoutesLeft extends Component {
   shouldLeftBeActive() {
     const path = window.location.pathname;
     return (/^\/@.+/.test(path) && !/.+\/edit$/.test(path)) ||
-      /^\/(about|terms|privacy|cookies|airdrop)/.test(path) ||
+      /^\/(about|terms|privacy|cookies|airdrop|bounties)/.test(path) ||
       (/^\/(hall-of-fame|author)\/@.+/.test(path) && !/^\/(author)\/@.+\/edit$/.test(path)) ||
       /^\/(tag)\/.*\/@.+/.test(path);
   }
@@ -77,6 +77,7 @@ export class RoutesLeft extends Component {
           <Route path="/hall-of-fame" exact component={Home} />
           <Route path="/hall-of-fame/@:author/:permlink" exact component={Post} />
           <Route path="/wallet" exact component={Airdrop} />
+          <Route path="/bounties" exact component={Airdrop} />
           <Route path="/airdrop" exact component={Airdrop} />
           <Route path="/@:author/:permlink" exact component={Post} />
           <Route path="/steemhunt/@:author/:permlink" exact render={(p) => (<Redirect to={`/@${p.match.params.author}/${p.match.params.permlink}`}/>)}/>
@@ -165,6 +166,7 @@ class Right extends Component {
           <Route path="/author/@:author" component={AuthorList} />
           <Route path="/tag/:tag" component={TagRight} />
           <Route path="/wallet" exact component={Wallet} />
+          <Route path="/bounties" exact component={me || isLoading ? Wallet : List} />
           <Route path="/airdrop" exact component={me || isLoading ? Wallet : List} />
           <Route path="/sign-up" exact component={SignUp} />
           <Route path='*' component={List} />

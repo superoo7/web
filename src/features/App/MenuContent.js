@@ -60,8 +60,8 @@ export default class MenuContent extends PureComponent {
             </a>
           </Menu.Item>
           <Menu.Item key="1-5" className="mobile-only">
-            <Link to="/airdrop" onClick={() => changeVisibility(false)}>
-              <Icon type="gift" /> ABOUT AIRDROPS
+            <Link to="/bounties" onClick={() => changeVisibility(false)}>
+              <Icon type="gift" /> ABOUT BOUNTIES
             </Link>
           </Menu.Item>
           <Menu.Item key="2">
@@ -145,8 +145,8 @@ export default class MenuContent extends PureComponent {
             </a>
           </Menu.Item>
           <Menu.Item key="1-5">
-            <Link to="/airdrop" onClick={() => changeVisibility(false)}>
-              <Icon type="gift" /> ABOUT AIRDROPS
+            <Link to="/bounties" onClick={() => changeVisibility(false)}>
+              <Icon type="gift" /> ABOUT BOUNTIES
             </Link>
           </Menu.Item>
           <Menu.Item key="2">

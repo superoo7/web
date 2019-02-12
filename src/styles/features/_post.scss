@@ -943,9 +943,11 @@
 
 .preview-modal {
   width: 60% !important;
+  max-width: 60% !important; // override
 
   @include responsive(mobile) {
     width: 100% !important;
+    max-width: 100% !important; // override
   }
 
   .ant-modal-content {
@@ -954,6 +956,10 @@
 
     .ant-modal-body {
       padding-top: 60px;
+
+      @include responsive(mobile) {
+        padding: 8px;
+      }
     }
 
     img, video {
@@ -977,6 +983,10 @@
       height: 100%;
       line-height: 100%;
 
+      @include responsive(mobile) {
+        top: 71px;
+      }
+
       i {
         position: absolute;
         top: 50%;
@@ -994,7 +1004,8 @@
       i {
         left: 16px;
         @include responsive(mobile) {
-          left: 0;
+          top: auto;
+          bottom: 0;
         }
       }
     }
@@ -1004,16 +1015,16 @@
       i {
         right: 16px;
         @include responsive(mobile) {
-          right: 0;
+          top: auto;
+          bottom: 0;
         }
       }
     }
 
     .ant-modal-close {
       @include responsive(mobile) {
-        position: absolute;
         top: auto;
-        bottom: -5vh;
+        bottom: -90px;
         left: 50%;
         right: auto;
         transform: translateX(-50%);

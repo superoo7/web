@@ -335,12 +335,16 @@ class PostView extends Component {
             </video> :
             <img key={this.state.previewImage} alt="Preview" src={this.state.previewImage} />
           }
-          <div className="prev" onClick={() => this.changePreview(-1)}>
-            <Icon type="left" />
-          </div>
-          <div className="next" onClick={() => this.changePreview(1)}>
-            <Icon type="right" />
-          </div>
+          {post.images.length > 1 &&
+            <div className="prev" onClick={() => this.changePreview(-1)}>
+              <Icon type="left" />
+            </div>
+          }
+          {post.images.length > 1 &&
+            <div className="next" onClick={() => this.changePreview(1)}>
+              <Icon type="right" />
+            </div>
+          }
         </Modal>
         {isModerator(me) &&
           <Modal className="moderation-modal" visible={this.state.moderationVisible} footer={null} onCancel={this.hideModeration}>

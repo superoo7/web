@@ -942,6 +942,12 @@
 }
 
 .preview-modal {
+  width: 60% !important;
+
+  @include responsive(mobile) {
+    width: 100% !important;
+  }
+
   .ant-modal-content {
     background-color: transparent;
     box-shadow: none;
@@ -966,6 +972,7 @@
 
     .prev, .next {
       position: absolute;
+      top: 21px;
       width: 50%;
       height: 100%;
       line-height: 100%;
@@ -983,8 +990,7 @@
     }
 
     .prev {
-      top: 0;
-      left: 0;
+      left: 1px;
       i {
         left: 16px;
         @include responsive(mobile) {
@@ -994,8 +1000,7 @@
     }
 
     .next {
-      top: 0;
-      right: 0;
+      right: 1px;
       i {
         right: 16px;
         @include responsive(mobile) {
@@ -1004,12 +1009,19 @@
       }
     }
 
-    .ant-modal-close-x {
-      color: #ddd;
-      font-size: 1.5rem;
+    .ant-modal-close {
       @include responsive(mobile) {
-        font-size: 1.2rem;
-        margin-right: -18px;
+        position: absolute;
+        top: auto;
+        bottom: -5vh;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+      }
+
+      .ant-modal-close-x {
+        color: #ddd;
+        font-size: 1.5rem;
       }
     }
   }

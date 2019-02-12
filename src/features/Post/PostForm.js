@@ -518,13 +518,13 @@ class PostForm extends Component {
               <div className="error">{this.state.uploadError}</div>
             }
           </div>
-          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} width="50%" className="preview-modal">
+          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleImagePreviewCancel} className="preview-modal" centered>
             {
               /\.mp4$/.test(this.state.previewImage) ?
                 <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>
                   <source src={this.state.previewImage} />
                 </video> :
-                <img key={this.state.previewImage} alt="Preview" style={{ width: '100%' }} src={this.state.previewImage} />
+                <img key={this.state.previewImage} alt="Preview" src={this.state.previewImage} />
             }
           </Modal>
         </FormItem>

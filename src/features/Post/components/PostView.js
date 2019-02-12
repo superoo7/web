@@ -327,7 +327,7 @@ class PostView extends Component {
             {tags}
           </div>
         </div>
-        <Modal visible={this.state.previewVisible} footer={null} onCancel={this.hideModal} width="60%" className="preview-modal">
+        <Modal visible={this.state.previewVisible} footer={null} onCancel={this.hideModal} className="preview-modal" centered>
           {
             /\.mp4$/.test(this.state.previewImage) ?
             <video key={this.state.previewImage} alt="Preview" playsInline autoPlay="autoplay" muted loop>

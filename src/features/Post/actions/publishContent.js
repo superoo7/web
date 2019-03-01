@@ -200,6 +200,16 @@ function* publishContent({ props, editMode }) {
         beneficiaries = DEFAULT_BENEFICIARY.concat(beneficiaries);
       }
 
+      beneficiaries = beneficiaries.sort(function(a, b) {
+        if (a.account < b.account) {
+          return -1;
+        } else if (a.account > b.account) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+
       operations.push(['comment_options', {
         author: newPost.author,
         permlink: newPost.permlink,

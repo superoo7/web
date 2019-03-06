@@ -56,22 +56,22 @@ export default class Home extends Component {
             </div>
 
             <div className="exchange-deals">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange live">
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="exchange live">
                 <img src={imgExchange1} alt="IEO Exchange 1" />
                 <div className="date">March 14 - 18, 2019</div>
                 <div className="status">LIVE NOW</div>
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange">
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="exchange">
                 <img src={imgExchange2} alt="IEO Exchange 2" />
                 <div className="date">March 19 - 22, 2019</div>
                 <div className="status">IN 13 DAYS</div>
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange">
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="exchange">
                 <img src={imgExchange3} alt="IEO Exchange 3" />
                 <div className="date">March 25 - 26, 2019</div>
                 <div className="status">IN 19 DAYS</div>
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange">
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="exchange">
                 <img src={imgExchange4} alt="IEO Exchange 4" />
                 <div className="date">March 27 - 31, 2019</div>
                 <div className="status">IN 21 DAYS</div>

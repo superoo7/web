@@ -42,6 +42,10 @@
       font-size: 2.375rem;
       font-weight: normal;
 
+      @include responsive(ipadpro) {
+        font-size: 2rem;
+      }
+
       @include responsive(mobile) {
         font-size: 1.5rem;
         margin-top: 3rem;
@@ -64,6 +68,14 @@
         border-top: 1px solid #fff;
         display: inline-block;
         vertical-align: middle;
+
+        @include responsive(mobile) {
+          width: 22.5vw;
+        }
+
+        @include responsive(tiny) {
+          width: 19vw;
+        }
       }
     }
 
@@ -80,6 +92,10 @@
         transition: all 0.3s ease;
         text-decoration: none;
 
+        @include responsive(mobile) {
+          width: 100%;
+        }
+
         &:hover, &:focus, &:active, &.active {
           background-color: rgba(255, 255, 255, 0.15);
         }
@@ -88,6 +104,14 @@
       .exchange {
         text-align: left;
         padding: 0.8rem 3.5rem;
+
+        @include responsive(mobile) {
+          padding: 0.8rem 2.2rem;
+        }
+
+        @include responsive(tiny) {
+          padding: 0.8rem 1.6rem;
+        }
 
         &.done {
           opacity: 0.65;
@@ -137,6 +161,10 @@
       width: 450px;
       margin: 0 auto;
       text-align: left;
+
+      @include responsive(mobile) {
+        width: 100%;
+      }
 
       a {
         color: #fff;

@@ -14,6 +14,11 @@ import imgHuntToken from 'assets/images/icon-hunt-pink@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
 import { formatNumber } from "utils/helpers/steemitHelpers";
 
+import imgExchange1 from 'assets/images/ieo/exchange-1@2x.png';
+import imgExchange2 from 'assets/images/ieo/exchange-2@2x.png';
+import imgExchange3 from 'assets/images/ieo/exchange-3@2x.png';
+import imgExchange4 from 'assets/images/ieo/exchange-4@2x.png';
+
 export default class Home extends Component {
   state = {
     count: 0,
@@ -32,7 +37,7 @@ export default class Home extends Component {
   scrollNext = (e) => {
     e.stopPropagation();
     const vh = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    scrollTo(document.getElementById('panel-left'), vh + 2, 800);
+    scrollTo(document.getElementById('panel-left'), vh + 135, 800);
   };
 
   render() {
@@ -44,7 +49,46 @@ export default class Home extends Component {
             <h1>STEEMHUNT</h1>
             <h2>Discover Cool Products<br/>Get Rewards</h2>
 
-            <Button size="large" ghost={true} className="round-border padded-button" onClick={this.scrollNext}>Learn More</Button>
+            <div className="bar-title">
+              <hr className="left"/>
+              <span>HUNT TOKEN IEO</span>
+              <hr className="right"/>
+            </div>
+
+            <div className="exchange-deals">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange live">
+                <img src={imgExchange1} alt="IEO Exchange 1" />
+                <div className="date">March 14 - 18, 2019</div>
+                <div className="status">LIVE NOW</div>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange">
+                <img src={imgExchange2} alt="IEO Exchange 2" />
+                <div className="date">March 19 - 22, 2019</div>
+                <div className="status">IN 13 DAYS</div>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange">
+                <img src={imgExchange3} alt="IEO Exchange 3" />
+                <div className="date">March 25 - 26, 2019</div>
+                <div className="status">IN 19 DAYS</div>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="exchange">
+                <img src={imgExchange4} alt="IEO Exchange 4" />
+                <div className="date">March 27 - 31, 2019</div>
+                <div className="status">IN 21 DAYS</div>
+              </a>
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">
+                What is HUNT Platform? <Icon type="right-circle" />
+              </a>
+            </div>
+
+            <div className="notice">
+              [NOTICE]<br/>
+              <a href="https://steemit.com/steemhunt/@steemhunt/hunt-token-ieo-and-listing-via-exchanges-will-begin-10-bonus-chance-for-steemians" target="_blank"  rel="noopener noreferrer">
+                HUNT Token IEO and Listing via Exchanges Will Begin (10% Bonus Chance for Steemians)
+              </a>
+            </div>
+
+            <Button shape="circle" size="large" ghost={true} icon="down" onClick={this.scrollNext} />
           </div>
         </div>
 

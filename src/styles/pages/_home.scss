@@ -149,6 +149,10 @@
         }
       } // .exchange
 
+      p {
+        margin: 1rem 0;
+      }
+
       .token-site {
         padding: 0.5rem;
       }
@@ -174,8 +178,8 @@
 
     // override .ant-btn
     .ant-btn {
-      margin-top: 4rem;
-      margin-bottom: 4rem;
+      margin-top: 3.5rem;
+      margin-bottom: 3.5rem;
       transition: all 0.3s ease;
 
       &:hover, &:focus, &:active, &.active {

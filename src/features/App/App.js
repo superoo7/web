@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
 import { Helmet } from 'react-helmet';
 import { selectAppProps } from './selectors';
@@ -9,6 +9,7 @@ import { getAppConfigBegin } from './actions/getAppConfig';
 import { RoutesLeft, RoutesRight } from 'Routes';
 import Referral from './Referral';
 import { isPrerenderer } from 'utils/userAgent';
+import { Icon } from 'antd';
 import 'url-search-params-polyfill';
 
 import 'custom.css';
@@ -19,7 +20,8 @@ class App extends Component {
     super(props);
     this.params = new URLSearchParams(this.props.location.search);
     this.state = {
-      showBanner: this.params.get('ref') !== null
+      showBanner: this.params.get('ref') !== null,
+      showIEOBanner: true
     }
   }
 
@@ -29,9 +31,12 @@ class App extends Component {
     }
   }
 
-  setBannerState = async (showBanner) => await this.setState({ showBanner })
+  setBannerState = async (showBanner) => await this.setState({ showBanner });
+  setIEOBannerState = async (showIEOBanner) => await this.setState({ showIEOBanner });
 
   render() {
+    const { showBanner, showIEOBanner } = this.state;
+
     return (
       <div id="app-container" className="app-container">
         <Helmet>
@@ -58,8 +63,20 @@ class App extends Component {
           <meta property="og:site_name" content="Steemhunt" />
           <meta property="og:type" content="website" />
         </Helmet>
-        {this.params.get('ref') && this.state.showBanner && <Referral params={this.params} pathname={this.props.location.pathname} setBannerState={this.setBannerState} />}
-        <div className={`split-container${this.params.get('ref') && this.state.showBanner ? ' with-banner' : ''}`}>
+        {this.params.get('ref') && showBanner && <Referral params={this.params} pathname={this.props.location.pathname} setBannerState={this.setBannerState} />}
+
+        {showIEOBanner &&
+          <div className="top-banner-bar">
+            <Link to="/about">
+              Steemhunt IEO is live now! <Icon type="right-circle-o" />
+            </Link>
+            <span onClick={() => this.setIEOBannerState(false)} alt="Close banner">
+              <Icon type="close-circle-o" />
+            </span>
+          </div>
+        }
+
+        <div className={`split-container${(this.params.get('ref') && showBanner) || showIEOBanner ? ' with-banner' : ''}`}>
           <RoutesLeft />
           <RoutesRight />
         </div>

@@ -97,13 +97,13 @@
         }
 
         &:hover, &:focus, &:active, &.active {
-          background-color: rgba(255, 255, 255, 0.15);
+          background-color: rgba(255, 255, 255, 0.4);
         }
       }
 
       .exchange {
         text-align: left;
-        padding: 0.8rem 3.5rem;
+        padding: 0.8rem 3.2rem;
 
         @include responsive(mobile) {
           padding: 0.8rem 2.2rem;
@@ -117,17 +117,28 @@
           opacity: 0.65;
         }
 
+        &:hover, &.live {
+          .img {
+            &.exchange-1 {
+              background-image: url("assets/images/ieo/idcm-active@2x.png");
+            }
+
+            &.exchange-2 {
+              background-image: url("assets/images/ieo/probit-active@2x.png");
+            }
+          }
+        }
+
         &.live {
           background-color: #fff;
 
           &:hover, &:focus, &:active, &.active {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.6);
           }
 
           .date {
             color: #707070;
           }
-
           .status {
             padding: 0 0.3rem;
             color: #f5222d;
@@ -136,8 +147,18 @@
           }
         }
 
-        img {
+        .img {
+          display: block;
           height: 20px;
+          background-repeat: no-repeat;
+          background-size: auto 20px;
+
+          &.exchange-1 {
+            background-image: url("assets/images/ieo/idcm-inactive@2x.png");
+          }
+          &.exchange-2 {
+            background-image: url("assets/images/ieo/probit-inactive@2x.png");
+          }
         }
         .date {
           margin-top: 0.2rem;

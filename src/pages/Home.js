@@ -14,11 +14,6 @@ import imgHuntToken from 'assets/images/icon-hunt-pink@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
 import { formatNumber } from "utils/helpers/steemitHelpers";
 
-import imgExchange1 from 'assets/images/ieo/exchange-1@2x.png';
-import imgExchange2 from 'assets/images/ieo/exchange-2@2x.png';
-import imgExchange3 from 'assets/images/ieo/exchange-3@2x.png';
-import imgExchange4 from 'assets/images/ieo/exchange-4@2x.png';
-
 export default class Home extends Component {
   state = {
     count: 0,
@@ -36,8 +31,8 @@ export default class Home extends Component {
 
   scrollNext = (e) => {
     e.stopPropagation();
-    const vh = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    scrollTo(document.getElementById('panel-left'), vh + 135, 800);
+    const vh = document.getElementById('page-2').offsetTop;
+    scrollTo(document.getElementById('panel-left'), vh, 800);
   };
 
   render() {
@@ -56,13 +51,13 @@ export default class Home extends Component {
             </div>
 
             <div className="exchange-deals">
-              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="exchange live">
-                <img src={imgExchange1} alt="IEO Exchange 1" />
+              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
+                <div className="img exchange-1"></div>
                 <div className="date">March 14 - 18, 2019</div>
-                <div className="status">LIVE NOW</div>
+                <div className="status">IN 5 DAYS</div>
               </a>
-              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="exchange">
-                <img src={imgExchange2} alt="IEO Exchange 2" />
+              <a href="https://www.probit.com/ko-kr/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
+                <div className="img exchange-2"></div>
                 <div className="date">March 19 - 22, 2019</div>
                 <div className="status">IN 13 DAYS</div>
               </a>
@@ -74,8 +69,8 @@ export default class Home extends Component {
 
             <div className="notice">
               [NOTICE]<br/>
-              <a href="https://steemit.com/steemhunt/@steemhunt/hunt-token-ieo-and-listing-via-exchanges-will-begin-10-bonus-chance-for-steemians" target="_blank"  rel="noopener noreferrer">
-                HUNT Token IEO and Listing via Exchanges Will Begin (10% Bonus Chance for Steemians)
+              <a href="https://steemit.com/steemhunt/@steemhunt/hunt-token-ieo-live-on-idcm-and-probit-exchange" target="_blank"  rel="noopener noreferrer">
+                HUNT Token IEO Live on IDCM and Probit Exchange
               </a>
             </div>
 
@@ -83,7 +78,7 @@ export default class Home extends Component {
           </div>
         </div>
 
-        <div className="padded-page">
+        <div className="padded-page" id="page-2">
           <div className="split-page">
             <h2>
               Daily Rankings for<br/>

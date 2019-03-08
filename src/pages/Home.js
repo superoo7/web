@@ -59,7 +59,7 @@ export default class Home extends Component {
               <a href="https://www.probit.com/ko-kr/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
                 <div className="date">March 19 - 22, 2019</div>
-                <div className="status">IN 13 DAYS</div>
+                <div className="status">IN 10 DAYS</div>
               </a>
               <p>2 more will be announced soon..</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">

@@ -61,7 +61,7 @@ export default class Home extends Component {
                 <div className="date">March 19 - 22, 2019</div>
                 <div className="status">IN 10 DAYS</div>
               </a>
-              <p>2 more will be announced soon..</p>
+              <p>Two more IEOs will be disclosed soon..</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">
                 What is HUNT Platform? <Icon type="right-circle" />
               </a>

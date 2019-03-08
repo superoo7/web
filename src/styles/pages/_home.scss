@@ -1,5 +1,5 @@
 .full-page {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .main-logo {
@@ -20,12 +20,7 @@
   }
 
   .center-content {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    transform: translateY(-50%);
+    padding: 4rem 1rem 0 1rem;
     text-align: center;
     color: #fff;
 
@@ -42,10 +37,14 @@
     }
 
     h2 {
-      margin-top: 7rem;
-      margin-bottom: 14rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
       font-size: 2.375rem;
       font-weight: normal;
+
+      @include responsive(ipadpro) {
+        font-size: 2rem;
+      }
 
       @include responsive(mobile) {
         font-size: 1.5rem;
@@ -54,13 +53,161 @@
       }
     }
 
-    // override .ant-btn
-    .ant-btn {
+    .bar-title {
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+
+      span {
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 1.5rem;
+      }
+      hr {
+        border: 0;
+        width: 144px;
+        border-top: 1px solid #fff;
+        display: inline-block;
+        vertical-align: middle;
+
+        @include responsive(mobile) {
+          width: 22.5vw;
+        }
+
+        @include responsive(tiny) {
+          width: 19vw;
+        }
+      }
+    }
+
+    .exchange-deals {
       font-size: 0.875rem;
 
+      .exchange, .token-site {
+        color: #fff;
+        display: block;
+        width: 450px;
+        border: 1px solid #fff;
+        border-radius: 10px;
+        margin: 10px auto;
+        transition: all 0.3s ease;
+        text-decoration: none;
+
+        @include responsive(mobile) {
+          width: 100%;
+        }
+
+        &:hover, &:focus, &:active, &.active {
+          background-color: rgba(255, 255, 255, 0.4);
+        }
+      }
+
+      .exchange {
+        text-align: left;
+        padding: 0.8rem 3.2rem;
+
+        @include responsive(mobile) {
+          padding: 0.8rem 2.2rem;
+        }
+
+        @include responsive(tiny) {
+          padding: 0.8rem 1.6rem;
+        }
+
+        &.done {
+          opacity: 0.65;
+        }
+
+        &:hover, &.live {
+          .img {
+            &.exchange-1 {
+              background-image: url("assets/images/ieo/idcm-active@2x.png");
+            }
+
+            &.exchange-2 {
+              background-image: url("assets/images/ieo/probit-active@2x.png");
+            }
+          }
+        }
+
+        &.live {
+          background-color: #fff;
+
+          &:hover, &:focus, &:active, &.active {
+            background-color: rgba(255, 255, 255, 0.6);
+          }
+
+          .date {
+            color: #707070;
+          }
+          .status {
+            padding: 0 0.3rem;
+            color: #f5222d;
+            border-radius: 5px;
+            border: solid 1px #f5222d;
+          }
+        }
+
+        .img {
+          display: block;
+          height: 20px;
+          background-repeat: no-repeat;
+          background-size: auto 20px;
+
+          &.exchange-1 {
+            background-image: url("assets/images/ieo/idcm-inactive@2x.png");
+          }
+          &.exchange-2 {
+            background-image: url("assets/images/ieo/probit-inactive@2x.png");
+          }
+        }
+        .date {
+          margin-top: 0.2rem;
+          color: rgba(255, 255, 255, 0.65);
+        }
+        .status {
+          float: right;
+          margin-top: -34px;
+        }
+      } // .exchange
+
+      p {
+        margin: 1rem 0;
+      }
+
+      .token-site {
+        padding: 0.5rem;
+      }
+    } // .exchange-deals
+
+    .notice {
+      font-size: 0.75rem;
+      padding: 0.8rem 0 1.2rem 0;
+      border-bottom: 1px solid #fff;
+      width: 450px;
+      margin: 0 auto;
+      text-align: left;
+
+      @include responsive(mobile) {
+        width: 100%;
+      }
+
+      a {
+        color: #fff;
+        text-decoration: underline;
+      }
+    }
+
+    // override .ant-btn
+    .ant-btn {
+      margin-top: 3.5rem;
+      margin-bottom: 3.5rem;
+      transition: all 0.3s ease;
+
       &:hover, &:focus, &:active, &.active {
-        color: rgba(255, 255, 255, 0.8);
-        border-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border-color: #fff;
+        color: #fff;
+        text-decoration: none;
       }
     }
   }

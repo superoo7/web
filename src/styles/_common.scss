@@ -159,6 +159,8 @@ hr {
 
 .top-banner-bar {
   display: none;
+  color: #fff;
+
   @include responsive(tablet) {
     position: absolute;
     height: 50px;

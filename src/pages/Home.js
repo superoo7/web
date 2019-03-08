@@ -31,8 +31,8 @@ export default class Home extends Component {
 
   scrollNext = (e) => {
     e.stopPropagation();
-    const vh = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    scrollTo(document.getElementById('panel-left'), vh + 2, 800);
+    const vh = document.getElementById('page-2').offsetTop;
+    scrollTo(document.getElementById('panel-left'), vh, 800);
   };
 
   render() {
@@ -44,11 +44,41 @@ export default class Home extends Component {
             <h1>STEEMHUNT</h1>
             <h2>Discover Cool Products<br/>Get Rewards</h2>
 
-            <Button size="large" ghost={true} className="round-border padded-button" onClick={this.scrollNext}>Learn More</Button>
+            <div className="bar-title">
+              <hr className="left"/>
+              <span>HUNT TOKEN IEO</span>
+              <hr className="right"/>
+            </div>
+
+            <div className="exchange-deals">
+              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
+                <div className="img exchange-1"></div>
+                <div className="date">March 14 - 18, 2019</div>
+                <div className="status">IN 5 DAYS</div>
+              </a>
+              <a href="https://www.probit.com/ko-kr/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
+                <div className="img exchange-2"></div>
+                <div className="date">March 19 - 22, 2019</div>
+                <div className="status">IN 13 DAYS</div>
+              </a>
+              <p>2 more will be announced soon..</p>
+              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">
+                What is HUNT Platform? <Icon type="right-circle" />
+              </a>
+            </div>
+
+            <div className="notice">
+              [NOTICE]<br/>
+              <a href="https://steemit.com/steemhunt/@steemhunt/hunt-token-ieo-live-on-idcm-and-probit-exchange" target="_blank"  rel="noopener noreferrer">
+                HUNT Token IEO Live on IDCM and Probit Exchange
+              </a>
+            </div>
+
+            <Button shape="circle" size="large" ghost={true} icon="down" onClick={this.scrollNext} />
           </div>
         </div>
 
-        <div className="padded-page">
+        <div className="padded-page" id="page-2">
           <div className="split-page">
             <h2>
               Daily Rankings for<br/>

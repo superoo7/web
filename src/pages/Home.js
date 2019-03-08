@@ -56,7 +56,7 @@ export default class Home extends Component {
                 <div className="date">March 14 - 18, 2019</div>
                 <div className="status">IN 5 DAYS</div>
               </a>
-              <a href="https://www.probit.com/ko-kr/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
+              <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
                 <div className="date">March 19 - 22, 2019</div>
                 <div className="status">IN 10 DAYS</div>

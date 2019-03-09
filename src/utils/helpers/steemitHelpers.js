@@ -85,8 +85,18 @@ export const hasVoted = (content, name) => {
     (content.active_votes && !!content.active_votes.find(vote => vote && vote.voter === name && vote.percent > 0))
   );
 }
-export const formatAmount = amount => numeral(amount).format('$0,0.00');
-export const formatNumber = (amount, format = '0,0.00') => numeral(amount).format(format);
+
+// FIX: numeral(1e-7).format('0,0.00000') => NaN issue
+function getProperAmount(amount) {
+  const num = numeral(amount);
+  if (num.value() < 1e-7) {
+    return numeral(0);
+  }
+
+  return num;
+}
+export const formatAmount = amount => getProperAmount(amount).format('$0,0.00');
+export const formatNumber = (amount, format = '0,0.00') => getProperAmount(amount).format(format);
 export const formatFloat = (float) => Math.round(float*100)/100;
 
 export const createCommentPermlink = (parentAuthor, parentPermlink) => {

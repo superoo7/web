@@ -89,7 +89,7 @@ export const hasVoted = (content, name) => {
 // FIX: numeral(1e-7).format('0,0.00000') => NaN issue
 function getProperAmount(amount) {
   const num = numeral(amount);
-  if (num.value() < 1e-7) {
+  if (num.value() < 1e-6) {
     return numeral(0);
   }
 
@@ -98,6 +98,7 @@ function getProperAmount(amount) {
 export const formatAmount = amount => getProperAmount(amount).format('$0,0.00');
 export const formatNumber = (amount, format = '0,0.00') => getProperAmount(amount).format(format);
 export const formatFloat = (float) => Math.round(float*100)/100;
+window.formatAmount = formatAmount;
 
 export const createCommentPermlink = (parentAuthor, parentPermlink) => {
   let permlink;

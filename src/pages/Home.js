@@ -54,12 +54,12 @@ export default class Home extends Component {
               <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-1"></div>
                 <div className="date">March 14 - 18, 2019</div>
-                <div className="status">IN 2 DAYS</div>
+                <div className="status">TOMORROW</div>
               </a>
               <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
                 <div className="date">March 19 - 22, 2019</div>
-                <div className="status">IN 7 DAYS</div>
+                <div className="status">IN 6 DAYS</div>
               </a>
               <p>Two more IEOs will be disclosed soon..</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">

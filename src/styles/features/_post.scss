@@ -116,9 +116,12 @@
     h3 {
       display: block;
       height: 2.1rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+
+      &.search-heading {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
       @include responsive(tiny) {
         font-size: 1.2rem;

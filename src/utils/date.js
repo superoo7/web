@@ -39,10 +39,10 @@ const prependZero = function(num) {
   return `${num}`;
 }
 
-export const timeUntilMidnightSeoul = function(shortFormat = false) {
+export const timeUntilMidnightSeoul = function(shortFormat = false, toHour = 24) {
   const now = new Date();
   const midnight = new Date();
-  midnight.setHours(24);
+  midnight.setHours(toHour);
   midnight.setMinutes(0);
   midnight.setSeconds(0);
   midnight.setMilliseconds(0);

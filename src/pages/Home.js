@@ -13,13 +13,15 @@ import imgSteemToken from 'assets/images/icon-steem-pink@2x.png';
 import imgHuntToken from 'assets/images/icon-hunt-pink@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
 import { formatNumber } from "utils/helpers/steemitHelpers";
+import { timeUntilMidnightSeoul } from 'utils/date';
 
 export default class Home extends Component {
   state = {
+    timer: null,
     count: 0,
     average: 0,
     max: 0,
-  }
+  };
 
   componentDidMount() {
     scrollTop();
@@ -27,13 +29,31 @@ export default class Home extends Component {
     axios.get(`${process.env.REACT_APP_API_ROOT}/posts/stats.json`).then((res) => {
       this.setState(res.data);
     }).catch(console.log);
+
+    this.interval = setInterval(this.tick, 1000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  tick = () => {
+    const timeLeft = timeUntilMidnightSeoul(true, 36);
+
+    if (timeLeft === '00:00:00') {
+      this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
+      clearInterval(this.interval);
+    } else {
+      this.setState({ timer: (<div className="status">{timeLeft} LEFT</div>) });
+    }
+  };
 
   scrollNext = (e) => {
     e.stopPropagation();
     const vh = document.getElementById('page-2').offsetTop;
     scrollTo(document.getElementById('panel-left'), vh, 800);
   };
+
 
   render() {
     return (
@@ -51,15 +71,15 @@ export default class Home extends Component {
             </div>
 
             <div className="exchange-deals">
-              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
+              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange live">
                 <div className="img exchange-1"></div>
                 <div className="date">March 14 - 18, 2019</div>
-                <div className="status">TOMORROW</div>
+                {this.state.timer}
               </a>
               <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
                 <div className="date">March 19 - 22, 2019</div>
-                <div className="status">IN 6 DAYS</div>
+                <div className="status">IN 5 DAYS</div>
               </a>
               <p>Two more IEOs will be disclosed soon..</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">

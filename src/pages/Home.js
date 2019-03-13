@@ -30,6 +30,7 @@ export default class Home extends Component {
       this.setState(res.data);
     }).catch(console.log);
 
+    this.tick();
     this.interval = setInterval(this.tick, 1000);
   }
 

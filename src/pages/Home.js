@@ -39,7 +39,7 @@ export default class Home extends Component {
   }
 
   tick = () => {
-    const timeLeft = timeUntilMidnightSeoul(true, 36);
+    const timeLeft = timeUntilMidnightSeoul(true, 12);
 
     if (timeLeft === '00:00:00') {
       this.setState({ timer: (<div className="status live">LIVE NOW</div>) });

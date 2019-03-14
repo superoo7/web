@@ -39,10 +39,28 @@ const prependZero = function(num) {
   return `${num}`;
 }
 
-export const timeUntilMidnightSeoul = function(shortFormat = false, toHour = 24) {
+export const timeUntil = function(toDateString) {
+  const now = new Date();
+  const toDate = new Date(toDateString);
+  const secondsTillMidnight = Math.floor((toDate.getTime() - now.getTime()) / 1000);
+
+  const timeGapFromSeoul = now.getTimezoneOffset() + 540; // GMT + 9:00
+  let seoulTillMidnight = secondsTillMidnight - timeGapFromSeoul * 60;
+  if (seoulTillMidnight < 0) {
+    return `LIVE NOW`;
+  }
+
+  const hours   = Math.floor(seoulTillMidnight / 3600);
+  const minutes = Math.floor((seoulTillMidnight - (hours * 3600)) / 60);
+  const seconds = Math.floor(seoulTillMidnight - (hours * 3600) - (minutes * 60));
+
+  return `${prependZero(hours)}:${prependZero(minutes)}:${prependZero(seconds)}`;
+}
+
+export const timeUntilMidnightSeoul = function(shortFormat = false) {
   const now = new Date();
   const midnight = new Date();
-  midnight.setHours(toHour);
+  midnight.setHours(0);
   midnight.setMinutes(0);
   midnight.setSeconds(0);
   midnight.setMilliseconds(0);

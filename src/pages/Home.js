@@ -13,7 +13,7 @@ import imgSteemToken from 'assets/images/icon-steem-pink@2x.png';
 import imgHuntToken from 'assets/images/icon-hunt-pink@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
 import { formatNumber } from "utils/helpers/steemitHelpers";
-import { timeUntilMidnightSeoul } from 'utils/date';
+import { timeUntil } from 'utils/date';
 
 export default class Home extends Component {
   state = {
@@ -39,14 +39,14 @@ export default class Home extends Component {
   }
 
   tick = () => {
-    const timeLeft = timeUntilMidnightSeoul(true, 12);
+    const timeLeft = timeUntil('2019-03-19T12:00:00.000+09:00');
 
-    // if (timeLeft === '00:00:00') {
+    if (timeLeft === 'LIVE NOW') {
       this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
       clearInterval(this.interval);
-    // } else {
-    //   this.setState({ timer: (<div className="status">{timeLeft} LEFT</div>) });
-    // }
+    } else {
+      this.setState({ timer: (<div className="status">{timeLeft} LEFT</div>) });
+    }
   };
 
   scrollNext = (e) => {
@@ -75,12 +75,12 @@ export default class Home extends Component {
               <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange live">
                 <div className="img exchange-1"></div>
                 <div className="date">March 14 - 18, 2019</div>
-                {this.state.timer}
+                <div className="status live">LIVE NOW</div>
               </a>
               <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
                 <div className="date">March 19 - 22, 2019</div>
-                <div className="status">IN 5 DAYS</div>
+                {this.state.timer}
               </a>
               <p>Two more IEOs will be disclosed soon..</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">

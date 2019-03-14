@@ -41,12 +41,12 @@ export default class Home extends Component {
   tick = () => {
     const timeLeft = timeUntilMidnightSeoul(true, 12);
 
-    if (timeLeft === '00:00:00') {
+    // if (timeLeft === '00:00:00') {
       this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
       clearInterval(this.interval);
-    } else {
-      this.setState({ timer: (<div className="status">{timeLeft} LEFT</div>) });
-    }
+    // } else {
+    //   this.setState({ timer: (<div className="status">{timeLeft} LEFT</div>) });
+    // }
   };
 
   scrollNext = (e) => {

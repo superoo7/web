@@ -921,6 +921,11 @@ export function validateAccountName(value) {
     if (!value) {
         return "Account name should not be empty.";
     }
+
+    if (value !== value.toLowerCase()) {
+        return "Account name should be lower case letters.";
+    }
+
     length = value.length;
     if (length < 3) {
         return "Account name should be longer.";

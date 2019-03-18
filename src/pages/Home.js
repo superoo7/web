@@ -39,7 +39,7 @@ export default class Home extends Component {
   }
 
   tick = () => {
-    const timeLeft = timeUntil('2019-03-19T12:00:00.000+09:00');
+    const timeLeft = timeUntil('2019-03-22T12:00:00.000+09:00');
 
     if (timeLeft === 'LIVE NOW') {
       this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
@@ -79,7 +79,7 @@ export default class Home extends Component {
               </a>
               <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
-                <div className="date">March 19 - 22, 2019</div>
+                <div className="date">March 22 - 26, 2019</div>
                 {this.state.timer}
               </a>
               <p>Two more IEOs will be disclosed soon..</p>

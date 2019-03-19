@@ -72,12 +72,12 @@ export default class Home extends Component {
             </div>
 
             <div className="exchange-deals">
-              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange live">
+              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-1"></div>
                 <div className="date">March 14 - 18, 2019</div>
-                <div className="status live">LIVE NOW</div>
+                <div className="status">SALES END</div>
               </a>
-              <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange">
+              <a href="https://www.probit.com/en-us/ieo" target="_blank" rel="noopener noreferrer" className="exchange live">
                 <div className="img exchange-2"></div>
                 <div className="date">March 22 - 26, 2019</div>
                 {this.state.timer}

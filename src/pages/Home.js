@@ -45,7 +45,7 @@ export default class Home extends Component {
       this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
       clearInterval(this.interval);
     } else {
-      this.setState({ timer: (<div className="status">{timeLeft} LEFT</div>) });
+      this.setState({ timer: (<div className="status">STARTS IN {timeLeft}</div>) });
     }
   };
 
@@ -75,14 +75,14 @@ export default class Home extends Component {
               <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-1"></div>
                 <div className="date">March 14 - 18, 2019</div>
-                <div className="status">SALES END</div>
+                <div className="status">COMPLETED</div>
               </a>
               <a href="https://www.probit.com/en-us/ieo/hunt-round1/0" target="_blank" rel="noopener noreferrer" className="exchange live">
                 <div className="img exchange-2"></div>
                 <div className="date">March 22 - 26, 2019</div>
                 {this.state.timer}
               </a>
-              <p>More IEOs will be disclosed soon..</p>
+              <p>More IEOs will be disclosed soon.</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">
                 What is HUNT Platform? <Icon type="right-circle" />
               </a>

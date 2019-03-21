@@ -44,15 +44,13 @@ export const timeUntil = function(toDateString) {
   const toDate = new Date(toDateString);
   const secondsTillMidnight = Math.floor((toDate.getTime() - now.getTime()) / 1000);
 
-  const timeGapFromSeoul = now.getTimezoneOffset() + 540; // GMT + 9:00
-  let seoulTillMidnight = secondsTillMidnight - timeGapFromSeoul * 60;
-  if (seoulTillMidnight < 0) {
+  if (secondsTillMidnight < 0) {
     return `LIVE NOW`;
   }
 
-  const hours   = Math.floor(seoulTillMidnight / 3600);
-  const minutes = Math.floor((seoulTillMidnight - (hours * 3600)) / 60);
-  const seconds = Math.floor(seoulTillMidnight - (hours * 3600) - (minutes * 60));
+  const hours   = Math.floor(secondsTillMidnight / 3600);
+  const minutes = Math.floor((secondsTillMidnight - (hours * 3600)) / 60);
+  const seconds = Math.floor(secondsTillMidnight - (hours * 3600) - (minutes * 60));
 
   return `${prependZero(hours)}:${prependZero(minutes)}:${prependZero(seconds)}`;
 }

@@ -58,7 +58,7 @@ export const timeUntil = function(toDateString) {
 export const timeUntilMidnightSeoul = function(shortFormat = false) {
   const now = new Date();
   const midnight = new Date();
-  midnight.setHours(0);
+  midnight.setHours(24);
   midnight.setMinutes(0);
   midnight.setSeconds(0);
   midnight.setMilliseconds(0);

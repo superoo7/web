@@ -92,7 +92,7 @@ class VoteButton extends PureComponent {
     const { myAccount, post, layout } = this.props;
     const { voteWeight, sliderOpened } = this.state;
     const postUpvoted = hasVoted(post, myAccount.name);
-    const deleteConfirmation = <div>Are you sure unvote this post?<br />Your voting power won&quot;t recharge even if you unvote.</div>
+    const deleteConfirmation = <div>Are you sure you want to unvote this post?<br />Your voting power will not recharge even if you unvote.</div>
 
     let content = '';
     if (this.isConnected()) {

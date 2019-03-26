@@ -31,11 +31,11 @@ export default class Home extends Component {
     }).catch(console.log);
 
     this.tick();
-    this.interval = setInterval(this.tick, 1000);
+    // this.interval = setInterval(this.tick, 1000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    // clearInterval(this.interval);
   }
 
   tick = () => {
@@ -77,10 +77,10 @@ export default class Home extends Component {
                 <div className="date">March 14 - 18, 2019</div>
                 <div className="status">COMPLETED</div>
               </a>
-              <a href="https://www.probit.com/en-us/ieo/hunt-round1/0" target="_blank" rel="noopener noreferrer" className="exchange live">
+              <a href="https://www.probit.com/en-us/ieo/hunt-round1/0" target="_blank" rel="noopener noreferrer" className="exchange">
                 <div className="img exchange-2"></div>
                 <div className="date">March 22 - 26, 2019</div>
-                {this.state.timer}
+                <div className="status">COMPLETED</div>
               </a>
               <p>More IEOs will be disclosed soon.</p>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">

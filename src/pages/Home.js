@@ -94,8 +94,8 @@ export default class Home extends Component {
 
             <div className="notice">
               [NOTICE]<br/>
-              <a href="https://steemit.com/steemhunt/@steemhunt/hunt-token-ieo-live-on-idcm-and-probit-exchange" target="_blank"  rel="noopener noreferrer">
-                HUNT Token IEO Live on IDCM and Probit Exchange
+              <a href="https://steemit.com/steemit/@steemhunt/steemhunt-ieo-3rd-round-and-finally-listing-confirmed-at-daybit-exchange" target="_blank"  rel="noopener noreferrer">
+                Steemhunt IEO 3rd Round, and Finally Listing Confirmed at Daybit Exchange
               </a>
             </div>
 

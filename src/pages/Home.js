@@ -31,15 +31,15 @@ export default class Home extends Component {
     }).catch(console.log);
 
     this.tick();
-    // this.interval = setInterval(this.tick, 1000);
+    this.interval = setInterval(this.tick, 1000);
   }
 
   componentWillUnmount() {
-    // clearInterval(this.interval);
+    clearInterval(this.interval);
   }
 
   tick = () => {
-    const timeLeft = timeUntil('2019-03-23T13:00:00.000+09:00');
+    const timeLeft = timeUntil('2019-04-01T13:00:00.000+09:00');
 
     if (timeLeft === 'LIVE NOW') {
       this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
@@ -82,7 +82,11 @@ export default class Home extends Component {
                 <div className="date">March 22 - 26, 2019</div>
                 <div className="status">COMPLETED</div>
               </a>
-              <p>More IEOs will be disclosed soon.</p>
+              <a href="https://daybit.com/" target="_blank" rel="noopener noreferrer" className="exchange live">
+                <div className="img exchange-3"></div>
+                <div className="date">April 1 - 12, 2019</div>
+                {this.state.timer}
+              </a>
               <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">
                 What is HUNT Platform? <Icon type="right-circle" />
               </a>

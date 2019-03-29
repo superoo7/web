@@ -22,7 +22,7 @@ class ShuffleButton extends PureComponent {
   }
 
   componentDidMount() {
-    this.array = [ 1, 7, 5, 2, 4, 8, 10 ];
+    this.array = [ 1, 7, 5, 2, 4, 8, 9 ];
     this.index = 0;
   }
 

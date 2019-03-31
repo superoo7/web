@@ -27,6 +27,6 @@ git push && npm run build && cd ../api && git push && bundle exec cap production
 
 ## Get in touch
 * Web - https://steemhunt.com
-* Email - steemhunt@gmail.com
+* Email - admin@hunt.town
 * Blog - https://steemit.com/@steemhunt
 * Discord - https://discord.gg/mWXpgks

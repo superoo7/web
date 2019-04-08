@@ -9,7 +9,6 @@ import { getAppConfigBegin } from './actions/getAppConfig';
 import { RoutesLeft, RoutesRight } from 'Routes';
 import Referral from './Referral';
 import { isPrerenderer } from 'utils/userAgent';
-import { Icon } from 'antd';
 import 'url-search-params-polyfill';
 
 import 'custom.css';

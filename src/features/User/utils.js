@@ -34,24 +34,24 @@ export function isInfluencer(username) {
   const influencer = [
     'sanach',
     'vinzie1',
-    'mobi72',
+    'anayakhan',
+    'kamchore',
     'xawi',
-    'afrinsultana',
-    'faizazohaib',
-    'rabeel',
-    'pearlumie',
-    'arslan.saleem',
-    'cryptoewp',
-    'eurogee',
-    'venzam',
     'adnan556644',
-    'abdulmanan',
-    'amar15',
-    'yameen',
+    'cryptoewp',
+    'afrinsultana',
+    'pearlumie',
     'xabi',
+    'dwiitavita',
+    'faraz33',
+    'mawahab',
+    'rabeel',
     'zohaib336',
-    'azwarrangkuti',
-    'muskan-haider'
+    'amar15',
+    'richgang',
+    'venzam',
+    'yameen',
+    'cheema1'
   ];
   return influencer.indexOf(username) !== -1;
 }

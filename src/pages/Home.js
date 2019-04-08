@@ -13,11 +13,9 @@ import imgSteemToken from 'assets/images/icon-steem-pink@2x.png';
 import imgHuntToken from 'assets/images/icon-hunt-pink@2x.png';
 import { scrollTo, scrollTop } from 'utils/scroller';
 import { formatNumber } from "utils/helpers/steemitHelpers";
-import { timeUntil } from 'utils/date';
 
 export default class Home extends Component {
   state = {
-    timer: null,
     count: 0,
     average: 0,
     max: 0,
@@ -29,25 +27,7 @@ export default class Home extends Component {
     axios.get(`${process.env.REACT_APP_API_ROOT}/posts/stats.json`).then((res) => {
       this.setState(res.data);
     }).catch(console.log);
-
-    this.tick();
-    this.interval = setInterval(this.tick, 1000);
   }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  tick = () => {
-    const timeLeft = timeUntil('2019-04-08T12:00:00.000+09:00');
-
-    if (timeLeft === 'LIVE NOW') {
-      this.setState({ timer: (<div className="status live">LIVE NOW</div>) });
-      clearInterval(this.interval);
-    } else {
-      this.setState({ timer: (<div className="status">STARTS IN {timeLeft}</div>) });
-    }
-  };
 
   scrollNext = (e) => {
     e.stopPropagation();
@@ -65,41 +45,7 @@ export default class Home extends Component {
             <h1>STEEMHUNT</h1>
             <h2>Discover Cool Products<br/>Get Rewards</h2>
 
-            <div className="bar-title">
-              <hr className="left"/>
-              <span>HUNT TOKEN IEO</span>
-              <hr className="right"/>
-            </div>
-
-            <div className="exchange-deals">
-              <a href="https://www.idcmkorea.io/coinsale/home" target="_blank" rel="noopener noreferrer" className="exchange">
-                <div className="img exchange-1"></div>
-                <div className="date">March 14 - 18, 2019</div>
-                <div className="status">COMPLETED</div>
-              </a>
-              <a href="https://www.probit.com/en-us/ieo/hunt-round1/0" target="_blank" rel="noopener noreferrer" className="exchange">
-                <div className="img exchange-2"></div>
-                <div className="date">March 22 - 26, 2019</div>
-                <div className="status">COMPLETED</div>
-              </a>
-              <a href="https://daybit.com/" target="_blank" rel="noopener noreferrer" className="exchange live">
-                <div className="img exchange-3"></div>
-                <div className="date">April 1 - 12, 2019</div>
-                {this.state.timer}
-              </a>
-              <a href="https://token.steemhunt.com" target="_blank" rel="noopener noreferrer" className="token-site">
-                What is HUNT Platform? <Icon type="right-circle" />
-              </a>
-            </div>
-
-            <div className="notice">
-              [NOTICE]<br/>
-              <a href="https://steemit.com/steemit/@steemhunt/steemhunt-ieo-3rd-round-and-finally-listing-confirmed-at-daybit-exchange" target="_blank"  rel="noopener noreferrer">
-                Steemhunt IEO 3rd Round, and Finally Listing Confirmed at Daybit Exchange
-              </a>
-            </div>
-
-            <Button shape="circle" size="large" ghost={true} icon="down" onClick={this.scrollNext} />
+            <Button size="large" ghost={true} className="round-border padded-button" onClick={this.scrollNext}>Learn More</Button>
           </div>
         </div>
 

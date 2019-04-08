@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
 import { Helmet } from 'react-helmet';
 import { selectAppProps } from './selectors';
@@ -20,8 +20,7 @@ class App extends Component {
     super(props);
     this.params = new URLSearchParams(this.props.location.search);
     this.state = {
-      showBanner: this.params.get('ref') !== null,
-      showIEOBanner: true
+      showBanner: this.params.get('ref') !== null
     }
   }
 
@@ -32,10 +31,9 @@ class App extends Component {
   }
 
   setBannerState = async (showBanner) => await this.setState({ showBanner });
-  setIEOBannerState = async (showIEOBanner) => await this.setState({ showIEOBanner });
 
   render() {
-    const { showBanner, showIEOBanner } = this.state;
+    const { showBanner } = this.state;
 
     return (
       <div id="app-container" className="app-container">
@@ -65,18 +63,7 @@ class App extends Component {
         </Helmet>
         {this.params.get('ref') && showBanner && <Referral params={this.params} pathname={this.props.location.pathname} setBannerState={this.setBannerState} />}
 
-        {showIEOBanner &&
-          <div className="top-banner-bar">
-            <Link to="/about">
-              Steemhunt IEO is live now! <Icon type="right-circle-o" />
-            </Link>
-            <span onClick={() => this.setIEOBannerState(false)} alt="Close banner">
-              <Icon type="close-circle-o" />
-            </span>
-          </div>
-        }
-
-        <div className={`split-container${(this.params.get('ref') && showBanner) || showIEOBanner ? ' with-banner' : ''}`}>
+        <div className={`split-container${this.params.get('ref') && this.state.showBanner ? ' with-banner' : ''}`}>
           <RoutesLeft />
           <RoutesRight />
         </div>

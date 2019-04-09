@@ -180,7 +180,7 @@ class Wallet extends Component {
               <div className="token-bar">
                 <span className="token-amount">
                   {formatNumber(balances.hunt_balance)} HUNT
-                  {balances.locked_hunt > 0 &&
+                  {isAdmin(me) && balances.locked_hunt > 0 &&
                     <span>&nbsp;(<Icon type="lock" /> {formatNumber(balances.locked_hunt)})</span>
                   }
                 </span>
@@ -201,7 +201,7 @@ class Wallet extends Component {
                 }
               </div>
             </div>
-            {balances.locked_hunt > 0 &&
+            {isAdmin(me) && balances.locked_hunt > 0 &&
               <ul className="sans small">
                 <li>- Ready for transfer: {formatNumber(balances.hunt_balance - balances.locked_hunt)} HUNT</li>
                 <li>- Unlocking tokens tomorrow: {formatNumber(balances.daily_unlock)} HUNT</li>

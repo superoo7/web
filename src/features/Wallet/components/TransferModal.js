@@ -6,16 +6,19 @@ const MIN_WITHDRAW = 1000.00;
 const MAX_WITHDRAW = 10000.00;
 
 export default class TransferModal extends Component {
-
-
   state = {
+    availableBalance: 0,
     message: null,
     transferAmount: MIN_WITHDRAW,
     agreement: false,
-  }
+  };
 
   componentDidMount() {
-    if (this.props.walletProps.balance < MIN_WITHDRAW) {
+    const { balances } = this.props.walletProps;
+    const availableBalance = parseFloat(balances.hunt_balance) - parseFloat(balances.locked_hunt);
+    this.setState({ availableBalance });
+
+    if (availableBalance < MIN_WITHDRAW) {
       this.setState({ message: `You have to have at leat ${formatNumber(MIN_WITHDRAW, '0,0')} HUNT to transfer.` })
     }
   }
@@ -25,15 +28,15 @@ export default class TransferModal extends Component {
       return false;
     }
     this.setState({ transferAmount: amount, message: this.getErrorMessage(amount) });
-  }
+  };
 
   isValidAmount = (amount) => {
     return this.getErrorMessage(amount) === null;
-  }
+  };
 
   getErrorMessage = (amount) => {
-    if (amount > parseFloat(this.props.walletProps.balance)) {
-      return "You typed more tokens than your balance.";
+    if (amount > this.state.availableBalance) {
+      return "You typed more tokens than your available balance.";
     } else if (amount < MIN_WITHDRAW) {
       return `You have to transfer at leat ${formatNumber(MIN_WITHDRAW, '0,0')} HUNT.`;
     } else if (amount > MAX_WITHDRAW) {
@@ -41,10 +44,11 @@ export default class TransferModal extends Component {
     } else {
       return null;
     }
-  }
+  };
 
   render() {
-    const { balance, isLoading, ethAddress } = this.props.walletProps;
+    const { isLoading, ethAddress } = this.props.walletProps;
+    const { availableBalance, transferAmount, agreement, message } = this.state;
 
     return (
       <Modal
@@ -55,41 +59,40 @@ export default class TransferModal extends Component {
         footer={[
           <Popconfirm key="submit" placement="topRight" title={
             <div>
-              Are you sure you want to transfer {formatNumber(this.state.transferAmount)} HUNT tokens to your external ETH wallet below?<br/>
+              Are you sure you want to transfer {formatNumber(transferAmount)} HUNT tokens to your external ETH wallet below?<br/>
               {(ethAddress || 'ERROR: You did not register your ETH address')}
             </div>
-          } onConfirm={() => this.props.handleTransfer(this.state.transferAmount)} okText="Yes" cancelText="No">
+          } onConfirm={() => this.props.handleTransfer(transferAmount)} okText="Yes" cancelText="No">
             <Button type="primary"
               loading={isLoading}
-              disabled={!this.isValidAmount(this.state.transferAmount) || !this.state.agreement}>
+              disabled={!this.isValidAmount(transferAmount) || !agreement}>
               Submit
             </Button>
           </Popconfirm>,
         ]}
       >
-        <div className="sans small">Steemhunt Wallet Balance</div>
-        <h1 className="sans pink hunt-balance">{formatNumber(balance)} <span className="hunt-text">HUNT</span></h1>
+        <div className="sans small">Available Balance</div>
+        <h1 className="sans pink hunt-balance">{formatNumber(availableBalance)} <span className="hunt-text">HUNT</span></h1>
         <div className="sans small subtitle">
           Steemhunt is paying the gas price for the Ethereum transactions. To prevent too much cost, we set the transaction limits as follows:
         </div>
         <ul>
-          <li>You can only transfer once a day</li>
           <li>You can only transfer to your registered external wallet</li>
           <li>Minimum withdrawal: {formatNumber(MIN_WITHDRAW, '0,0')} HUNT / day</li>
           <li>Maximum withdrawal: {formatNumber(MAX_WITHDRAW, '0,0')} HUNT / day</li>
-          
+
         </ul>
         <div className="sans small subtitle">Registered Wallet Address</div>
         <Input placeholder={ethAddress} disabled />
         <div className="sans small subtitle">Amount</div>
-        <div className={this.state.message ? 'has-error' : ''}>
+        <div className={message ? 'has-error' : ''}>
           <Input
             placeholder={`Min ${formatNumber(MIN_WITHDRAW)} HUNT`}
-            value={this.state.transferAmount}
-            suffix={<span className="fake-link" onClick={() => this.handleWithdrawalAmountChanged(balance > MAX_WITHDRAW ? MAX_WITHDRAW : balance)}>Max</span>}
+            value={transferAmount}
+            suffix={<span className="fake-link" onClick={() => this.handleWithdrawalAmountChanged(availableBalance > MAX_WITHDRAW ? MAX_WITHDRAW : availableBalance)}>Max</span>}
             onChange={(e) => this.handleWithdrawalAmountChanged(e.target.value)}
           />
-          {this.state.message && <div className="ant-form-explain top-margin">{this.state.message}</div>}
+          {message && <div className="ant-form-explain top-margin">{message}</div>}
         </div>
         <div className="top-margin">
           <p className="agreement-text subtitle">

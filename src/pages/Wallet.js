@@ -7,8 +7,7 @@ import isEmpty from 'lodash/isEmpty';
 import { List, Avatar, Button, Modal, Icon, Tabs, Tooltip, notification } from 'antd';
 import { formatNumber } from "utils/helpers/steemitHelpers";
 import {
-  selectBalance,
-  selectExternalBalance,
+  selectBalances,
   selectEthAddress,
   selectTransactions,
   selectWithdrawals,
@@ -33,8 +32,7 @@ const CONTRACT = '0x9aab071b4129b083b01cb5a0cb513ce7eca26fa5';
 class Wallet extends Component {
   static propTypes = {
     me: PropTypes.string.isRequired,
-    balance: PropTypes.string.isRequired,
-    externalBalance: PropTypes.string.isRequired,
+    balances: PropTypes.object.isRequired,
     withdrawals: PropTypes.array.isRequired,
     transactions: PropTypes.array.isRequired,
     isLoading: PropTypes.bool.isRequired,
@@ -60,7 +58,7 @@ class Wallet extends Component {
     });
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     this.props.getTransactions();
     this.web3 = initializeWeb3();
   }
@@ -155,11 +153,12 @@ class Wallet extends Component {
   }
 
   render() {
-    const { me, balance, externalBalance, isLoading, transactions, withdrawals, ethAddress, isUpdating } = this.props;
-    const totalHuntBalance = parseFloat(balance) + parseFloat(externalBalance);
+    const { me, balances, isLoading, transactions, withdrawals, ethAddress, isUpdating } = this.props;
     if (isLoading || isUpdating || isEmpty(me)) {
       return <CircularProgress />;
     }
+
+    const totalHuntBalance = parseFloat(balances.hunt_balance) + parseFloat(balances.external_hunt_balance);
 
     return (
       <div className="wallet">
@@ -179,7 +178,12 @@ class Wallet extends Component {
             <div className="sans small">Steemhunt Wallet</div>
             <div className="token-bar-container">
               <div className="token-bar">
-                <span className="token-amount">{formatNumber(balance)} HUNT</span>
+                <span className="token-amount">
+                  {formatNumber(balances.hunt_balance)} HUNT
+                  {balances.locked_hunt > 0 &&
+                    <span>&nbsp;(<Icon type="lock" /> {formatNumber(balances.locked_hunt)})</span>
+                  }
+                </span>
               </div>
               <div className="token-button">
                 {isAdmin(me) ?
@@ -197,6 +201,12 @@ class Wallet extends Component {
                 }
               </div>
             </div>
+            {balances.locked_hunt > 0 &&
+              <ul className="sans small">
+                <li>- Ready for transfer: {formatNumber(balances.hunt_balance - balances.locked_hunt)} HUNT</li>
+                <li>- Unlocking tokens tomorrow: {formatNumber(balances.daily_unlock)} HUNT</li>
+              </ul>
+            }
           </div>
           {isAdmin(me) &&
             <div className="balance-row">
@@ -210,7 +220,7 @@ class Wallet extends Component {
               </div>
               <div className="token-bar-container">
                 <div className="token-bar">
-                  <span className="token-amount">{formatNumber(externalBalance)} HUNT</span>
+                  <span className="token-amount">{formatNumber(balances.external_hunt_balance)} HUNT</span>
                 </div>
                 <div className="token-button">
                   <Button
@@ -325,8 +335,7 @@ class Wallet extends Component {
 
 const mapStateToProps = (state, props) => createStructuredSelector({
   me: selectMe(),
-  balance: selectBalance(),
-  externalBalance: selectExternalBalance(),
+  balances: selectBalances(),
   transactions: selectTransactions(),
   withdrawals: selectWithdrawals(),
   isLoading: selectIsLoading(),

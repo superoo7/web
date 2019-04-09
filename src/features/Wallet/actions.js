@@ -4,8 +4,7 @@ import setEthAddress, { setEthAddressReducer } from './actions/setEthAddress';
 import withdraw, { withdrawReducer } from './actions/withdraw';
 
 export const initialState = {
-  balance: '',
-  externalBalance: '',
+  balances: {},
   totalClaimed: 0.0,
   ethAddress: null,
   transactions: [],

@@ -33,8 +33,7 @@ export function getTransactionsReducer(state, action) {
       const { result } = action;
 
       return update(state, {
-        balance: { $set: result.balance },
-        externalBalance: { $set: result.external_balance },
+        balances: { $set: result.balances },
         ethAddress: { $set: result.eth_address },
         transactions: { $set: result.transactions },
         withdrawals: { $set: result.withdrawals },

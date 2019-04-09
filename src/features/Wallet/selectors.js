@@ -2,14 +2,9 @@ import { createSelector } from 'reselect';
 
 const selectWalletDomain = () => state => state.wallet;
 
-export const selectBalance = () => createSelector(
+export const selectBalances = () => createSelector(
   selectWalletDomain(),
-  state => state.balance,
-);
-
-export const selectExternalBalance = () => createSelector(
-  selectWalletDomain(),
-  state => state.externalBalance,
+  state => state.balances,
 );
 
 export const selectEthAddress = () => createSelector(

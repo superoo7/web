@@ -36,7 +36,7 @@
           justify-content: flex-start;
           align-items: center;
           padding-left: 10px;
-          font-size: 0.7rem;
+          font-size: 0.75rem;
         }
       }
 
@@ -97,6 +97,14 @@
       a {
         color: #fff !important;
       }
+    }
+
+    ul.small {
+      list-style: none;
+      padding: 0;
+      opacity: 0.8;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
     }
 
     .balance {

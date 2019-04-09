@@ -34,7 +34,6 @@
       margin-top: 0.8rem;
       margin-bottom: 0;
       color: #fff;
-      letter-spacing: 1px;
 
       @include responsive(mobile) {
         font-size: 1.1rem;
@@ -43,7 +42,7 @@
 
     h2 {
       margin-top: 7rem;
-      margin-bottom: 14rem;
+      margin-bottom: 12rem;
       font-size: 2.375rem;
       font-weight: normal;
 

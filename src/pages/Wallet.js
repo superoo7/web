@@ -14,7 +14,7 @@ import {
   selectIsLoading,
   selectIsUpdating,
 } from 'features/Wallet/selectors';
-import { isAdmin } from 'features/User/utils';
+import { isTeam } from 'features/User/utils';
 import { getTransactionsBegin } from 'features/Wallet/actions/getTransactions';
 import { withdrawBegin } from 'features/Wallet/actions/withdraw';
 import { setEthAddressBegin } from 'features/Wallet/actions/setEthAddress';
@@ -180,13 +180,13 @@ class Wallet extends Component {
               <div className="token-bar">
                 <span className="token-amount">
                   {formatNumber(balances.hunt_balance)} HUNT
-                  {isAdmin(me) && balances.locked_hunt > 0 &&
+                  {isTeam(me) && balances.locked_hunt > 0 &&
                     <span>&nbsp;(<Icon type="lock" /> {formatNumber(balances.locked_hunt)})</span>
                   }
                 </span>
               </div>
               <div className="token-button">
-                {isAdmin(me) ?
+                {isTeam(me) ?
                   (ethAddress ?
                     <Button type="primary" className="submit-button right" onClick={this.toggleTransferModal}>TRANSFER</Button>
                   :
@@ -201,14 +201,14 @@ class Wallet extends Component {
                 }
               </div>
             </div>
-            {isAdmin(me) && balances.locked_hunt > 0 &&
+            {isTeam(me) && balances.locked_hunt > 0 &&
               <ul className="sans small">
                 <li>- Ready for transfer: {formatNumber(balances.hunt_balance - balances.locked_hunt)} HUNT</li>
                 <li>- Unlocking tokens tomorrow: {formatNumber(balances.daily_unlock)} HUNT</li>
               </ul>
             }
           </div>
-          {isAdmin(me) &&
+          {isTeam(me) &&
             <div className="balance-row">
               <div className="sans small">
                 External Wallet -&nbsp;

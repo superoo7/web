@@ -77,6 +77,10 @@ export function isAdmin(username) {
   return admins.indexOf(username) !== -1;
 }
 
+export function isTeam(username) {
+  return isAdmin(username) || isCommunityManager(username) || isSocialManager(username) || isModerator(username);
+}
+
 export function getRoleName(username) {
   if (isAdmin(username)) {
     return 'Team';

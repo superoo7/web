@@ -131,7 +131,7 @@ class Wallet extends Component {
           <img src={metaMaskImage} alt="Metamask" className="fox" />
           <p>Please notice that</p>
           <ul>
-            <li>You can only transfer to your registered external wallet once per 24 hours.</li>
+            <li>You can only connect one Ether wallet at a time, and you can only transfer HUNT tokens to the wallet you're currently connected to.</li>
             <li>Exchange’s wallet is not able to be registered (MetaMask is required to register).</li>
             <li>The HUNT balance from the wallet address above is automatically added to your total HUNT token balance, which will be counted for your user score.</li>
           </ul>

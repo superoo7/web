@@ -78,7 +78,7 @@ export default class TransferModal extends Component {
           Steemhunt is paying the gas price for the Ethereum transactions. To prevent too much cost, we set the transaction limits as follows:
         </div>
         <ul>
-          <li>You can only transfer to your registered external wallet</li>
+          <li>You can only transfer to your registered external wallet once per 24 hours</li>
           <li>Minimum withdrawal: {formatNumber(MIN_WITHDRAW, '0,0')} HUNT / day</li>
           <li>Maximum withdrawal: {formatNumber(MAX_WITHDRAW, '0,0')} HUNT / day</li>
 

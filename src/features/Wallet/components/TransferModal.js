@@ -15,7 +15,8 @@ export default class TransferModal extends Component {
 
   componentDidMount() {
     const { balances } = this.props.walletProps;
-    const availableBalance = parseFloat(balances.hunt_balance) - parseFloat(balances.locked_hunt);
+    let availableBalance = parseFloat(balances.hunt_balance) - parseFloat(balances.locked_hunt);
+    availableBalance = Math.floor(availableBalance * 100) / 100;
     this.setState({ availableBalance });
 
     if (availableBalance < MIN_WITHDRAW) {

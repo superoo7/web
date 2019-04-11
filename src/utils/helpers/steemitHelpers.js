@@ -88,13 +88,13 @@ export const hasVoted = (content, name) => {
 
 // Floor the decimal points instead of rounding
 function getProperAmount(amount, format) {
+  const num = numeral(amount);
+  if (num.value() < 1e-6) { // numeral(1e-7).format('0,0.00000') => NaN issue
+    return numeral(0);
+  }
+
   let digits = format.split('.');
   if (digits.length < 2) {
-    const num = numeral(amount);
-    if (num.value() < 1e-6) { // numeral(1e-7).format('0,0.00000') => NaN issue
-      return numeral(0);
-    }
-
     return num;
   }
 

@@ -1,9 +1,9 @@
 /* eslint-disable camelcase,no-param-reassign,consistent-return,no-console,new-cap */
 import { call } from 'redux-saga/effects';
-import numeral from 'numeral';
 import base58 from 'bs58';
 import steem from 'steem';
 import getSlug from 'speakingurl';
+import numeral from 'numeral';
 import secureRandom from 'secure-random';
 
 /**
@@ -86,17 +86,23 @@ export const hasVoted = (content, name) => {
   );
 }
 
-// FIX: numeral(1e-7).format('0,0.00000') => NaN issue
-function getProperAmount(amount) {
-  const num = numeral(amount);
-  if (num.value() < 1e-6) {
-    return numeral(0);
+// Floor the decimal points instead of rounding
+function getProperAmount(amount, format) {
+  let digits = format.split('.');
+  if (digits.length < 2) {
+    const num = numeral(amount);
+    if (num.value() < 1e-6) { // numeral(1e-7).format('0,0.00000') => NaN issue
+      return numeral(0);
+    }
+
+    return num;
   }
 
-  return num;
+  digits = digits[digits.length - 1].length;
+  return numeral(Math.floor(amount * 10**digits) / 10**digits);
 }
 export const formatAmount = amount => getProperAmount(amount).format('$0,0.00');
-export const formatNumber = (amount, format = '0,0.00') => getProperAmount(amount).format(format);
+export const formatNumber = (amount, format = '0,0.00') => getProperAmount(amount, format).format(format);
 export const formatFloat = (float) => Math.round(float*100)/100;
 window.formatAmount = formatAmount;
 

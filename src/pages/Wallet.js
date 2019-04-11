@@ -88,14 +88,19 @@ class Wallet extends Component {
       return false;
     }
 
-    const ethAccounts = await this.web3.eth.getAccounts();
-    const ethNetwork = await this.web3.eth.net.getNetworkType();
-
+    let ethAccounts = await this.web3.eth.getAccounts();
     if (ethAccounts.length === 0) {
-      notification['error']({ message: "You need to login on Metamask." });
-      return false;
+      if (window.ethereum) {
+        ethAccounts = await window.ethereum.enable();
+      }
+
+      if (ethAccounts.length === 0) {
+        notification['error']({ message: "You need to login on Metamask." });
+        return false;
+      }
     }
 
+    const ethNetwork = await this.web3.eth.net.getNetworkType();
     if (ethNetwork !== 'main') {
       Modal.error({
         title: 'Incorrect Network',

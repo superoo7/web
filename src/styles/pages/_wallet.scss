@@ -280,6 +280,22 @@
 
   .subtitle {
     margin-top: 20px;
+    margin-bottom: 0.5em;
+  }
+
+  .transaction-fee {
+    margin-top: 0.5em;
+    color: $text_dark;
+    font-size: 0.875em;
+    overflow: hidden;
+
+    .left {
+      float: left;
+    }
+
+    .right {
+      float: right;
+    }
   }
 }
 

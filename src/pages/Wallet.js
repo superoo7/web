@@ -303,7 +303,7 @@ class Wallet extends Component {
                       avatar={w.status === 'sent' ?
                         <Avatar icon="arrow-right" className="icon sent" />
                         :
-                        (w.status === 'error' ?
+                        (w.status === 'error' || w.status === 'failed' ?
                           <Avatar icon="exclamation" className="icon error" />
                           :
                           <Avatar icon="loading" className="icon pending" />

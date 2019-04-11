@@ -87,24 +87,17 @@ export const hasVoted = (content, name) => {
 }
 
 // Floor the decimal points instead of rounding
-function getProperAmount(amount, format = '0,0.00') {
+function getProperAmount(amount) {
   const num = numeral(amount);
-  if (num.value() < 1e-6) { // numeral(1e-7).format('0,0.00000') => NaN issue
+  if (num.value() > -1e-6 && num.value() < 1e-6) { // numeral(1e-7).format('0,0.00000') => NaN issue
     return numeral(0);
   }
 
-  let digits = format.split('.');
-  if (digits.length < 2) {
-    return num;
-  }
-
-  digits = digits[digits.length - 1].length;
-  return numeral(Math.floor(amount * 10**digits) / 10**digits);
+  return num;
 }
 export const formatAmount = amount => getProperAmount(amount).format('$0,0.00');
-export const formatNumber = (amount, format = '0,0.00') => getProperAmount(amount, format).format(format);
-export const formatFloat = (float) => Math.round(float*100)/100;
-window.formatAmount = formatAmount;
+export const formatNumber = (amount, format = '0,0.00') => getProperAmount(amount).format(format, Math.floor);
+export const formatFloat = (float) => Math.round(float * 100) / 100;
 
 export const createCommentPermlink = (parentAuthor, parentPermlink) => {
   let permlink;

@@ -34,6 +34,7 @@ export function setEthAddressReducer(state, action) {
 
       return update(state, {
         ethAddress: { $set: result.eth_address },
+        balances: { $merge: { external_hunt_balance: result.external_hunt_balance }},
         isUpdating: { $set: false },
       });
     case SET_ETH_ADDRESS_FAILURE:

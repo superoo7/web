@@ -70,7 +70,6 @@ class Wallet extends Component {
   }
 
   async validEthereumNetwork() {
-    // TODO => Fix phrases to mainnet after lauching.
     if (this.web3 === null) {
       Modal.error({
         title: "Please install Metamask",
@@ -127,7 +126,7 @@ class Wallet extends Component {
           <img src={metaMaskImage} alt="Metamask" className="fox" />
           <p>Please notice that</p>
           <ul>
-            <li>You can transfer HUNT tokens from Steemhunt wallet only to the one registered Ether wallet.</li>
+            <li>You can only transfer to your registered external wallet once per 24 hours.</li>
             <li>Exchange’s wallet is not able to be registered (MetaMask is required to register).</li>
             <li>The HUNT balance from the wallet address above is automatically added to your total HUNT token balance, which will be counted for your user score.</li>
           </ul>
@@ -136,7 +135,7 @@ class Wallet extends Component {
       okText: "Connect to Metamask",
       onOk: async () => {
         const message = `Register this Ethereum address to your Steemhunt account, ${this.props.me}. (Timestamp: ${new Date().getTime()})`;
-        const signature = await this.web3.eth.personal.sign(message, ethAccounts[0]);
+        const signature = await this.web3.eth.personal.sign(message, ethAccounts[0], null);
         this.props.setEthAddress(ethAccounts[0], message, signature);
       }
     })

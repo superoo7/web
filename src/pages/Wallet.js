@@ -14,7 +14,6 @@ import {
   selectIsLoading,
   selectIsUpdating,
 } from 'features/Wallet/selectors';
-import { isTeam } from 'features/User/utils';
 import { getTransactionsBegin } from 'features/Wallet/actions/getTransactions';
 import { withdrawBegin } from 'features/Wallet/actions/withdraw';
 import { setEthAddressBegin } from 'features/Wallet/actions/setEthAddress';
@@ -184,59 +183,51 @@ class Wallet extends Component {
               <div className="token-bar">
                 <span className="token-amount">
                   {formatNumber(balances.hunt_balance)} HUNT
-                  {isTeam(me) && balances.locked_hunt > 0 &&
+                  {balances.locked_hunt > 0 &&
                     <span>&nbsp;(<Icon type="lock" /> {formatNumber(balances.locked_hunt)})</span>
                   }
                 </span>
               </div>
               <div className="token-button">
-                {isTeam(me) ?
-                  (ethAddress ?
-                    <Button type="primary" className="submit-button right" onClick={this.toggleTransferModal}>TRANSFER</Button>
-                  :
-                    <Tooltip title="Please connect your external wallet first using CONNECT button below">
-                      <Button type="primary" className="submit-button right" disabled>TRANSFER</Button>
-                    </Tooltip>
-                  )
+                {ethAddress ?
+                  <Button type="primary" className="submit-button right" onClick={this.toggleTransferModal}>TRANSFER</Button>
                 :
-                  <Tooltip title="ERC-20 token withdraw feature is currently under development. We will announce it once we're ready.">
+                  <Tooltip title="Please connect your external wallet first using CONNECT button below">
                     <Button type="primary" className="submit-button right" disabled>TRANSFER</Button>
                   </Tooltip>
                 }
               </div>
             </div>
-            {isTeam(me) && balances.locked_hunt > 0 &&
+            {balances.locked_hunt > 0 &&
               <ul className="sans small">
                 <li>- Ready for transfer: {formatNumber(balances.hunt_balance - balances.locked_hunt)} HUNT</li>
                 <li>- Unlocking tokens tomorrow: {formatNumber(balances.daily_unlock)} HUNT</li>
               </ul>
             }
           </div>
-          {isTeam(me) &&
-            <div className="balance-row">
-              <div className="sans small">
-                External Wallet -&nbsp;
-                {ethAddress ?
-                  <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
-                :
-                  'Not connected'
-                }
+          <div className="balance-row">
+            <div className="sans small">
+              External Wallet -&nbsp;
+              {ethAddress ?
+                <a href={this.etherscanLink(ethAddress)} target="_blank" rel="noopener noreferrer">{ethAddress}</a>
+              :
+                'Not connected'
+              }
+            </div>
+            <div className="token-bar-container">
+              <div className="token-bar">
+                <span className="token-amount">{formatNumber(balances.external_hunt_balance)} HUNT</span>
               </div>
-              <div className="token-bar-container">
-                <div className="token-bar">
-                  <span className="token-amount">{formatNumber(balances.external_hunt_balance)} HUNT</span>
-                </div>
-                <div className="token-button">
-                  <Button
-                    type="primary"
-                    className="submit-button right"
-                    onClick={this.requestSignTransaction}>
-                    {ethAddress ? 'CHANGE ADDRESS' : 'CONNECT'}
-                  </Button>
-                </div>
+              <div className="token-button">
+                <Button
+                  type="primary"
+                  className="submit-button right"
+                  onClick={this.requestSignTransaction}>
+                  {ethAddress ? 'CHANGE ADDRESS' : 'CONNECT'}
+                </Button>
               </div>
             </div>
-          }
+          </div>
         </div>
         <TransferModal
           walletProps={this.props}

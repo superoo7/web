@@ -13,7 +13,7 @@ export default class Cookies extends Component {
         <h1>Cookie Policy</h1>
           <span>Last Updated At: March 19th, 2018</span>
         <h2>What Are Cookies</h2>
-          <p>As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies. We will also share how you can prevent these cookies from being stored however this may downgrade or &apos;break&apos; certain elements of the sites functionality.</p>
+          <p>As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies. We will also share how you can prevent these cookies from being stored however this may downgrade or &quot;break&quot; certain elements of the sites functionality.</p>
           <p>For more general information on cookies see the  HTTP Cookies article at Mozilla Developer Network</p>
         <h2>How We Use Cookies</h2>
           <p>We use cookies for a variety of reasons detailed below. Unfortunately in most cases there are no industry standard options for disabling cookies without completely disabling the functionality and features they add to this site. It is recommended that you leave on all cookies if you are not sure whether you need them or not in case they are used to provide a service that you use.</p>

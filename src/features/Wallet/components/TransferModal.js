@@ -66,7 +66,7 @@ export default class TransferModal extends Component {
           <Popconfirm key="submit" placement="topRight" title={
             <div>
               Are you sure you want to transfer {formatNumber(transferAmount)} HUNT tokens to your external ETH wallet below?<br/>
-              {(ethAddress || 'ERROR: You did not register your ETH address')}
+              {(ethAddress || 'ERROR: You did not connect your ETH address')}
             </div>
           } onConfirm={() => this.props.handleTransfer(transferAmount)} okText="Yes" cancelText="No">
             <Button type="primary"
@@ -80,14 +80,14 @@ export default class TransferModal extends Component {
         <div className="sans small">Available Balance</div>
         <h1 className="sans pink hunt-balance">{formatNumber(availableBalance)}<span className="hunt-text">HUNT</span></h1>
         <div className="sans small subtitle">
-          Steemhunt is paying the gas price for the Ethereum transactions. To prevent too much cost, we set the transaction limits as follows:
+          Important:
         </div>
         <ul>
-          <li>You can only transfer to your registered external wallet</li>
+          <li>You can only transfer to your connected external wallet</li>
           <li>Maximum withdrawal: {formatNumber(MAX_WITHDRAW, '0,0')} HUNT per 24 hours</li>
 
         </ul>
-        <div className="sans small subtitle">Registered Wallet Address</div>
+        <div className="sans small subtitle">Connected Wallet Address</div>
         <Input placeholder={ethAddress} disabled />
         <div className="sans small subtitle">Amount</div>
         <div className={message ? 'has-error' : ''}>

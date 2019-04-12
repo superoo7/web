@@ -400,7 +400,7 @@ class SignUp extends Component {
               }}
               ghost
             >
-              No, I didn&apos;t save it yet.
+              No, I didn&#39;t save it yet.
             </Button>,
             <Button
               key="submit"

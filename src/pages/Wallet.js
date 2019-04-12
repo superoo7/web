@@ -78,7 +78,7 @@ class Wallet extends Component {
         maskClosable: true,
         content: (
           <div className={"metamask-install-body"}>
-            <p>You need to use Metamask to register your own Ether wallet address.</p>
+            <p>You need to use Metamask to connect your own Ether wallet address.</p>
             <img src={metaMaskImage} alt="Metamask" className="fox" />
           </div>
         ),
@@ -121,25 +121,25 @@ class Wallet extends Component {
     const ethAccounts = await this.web3.eth.getAccounts();
 
     Modal.success({
-      title: "Register External Wallet",
+      title: "Connect External Wallet",
       className: "metamask-install-modal",
       autoFocusButton: null,
       maskClosable: true,
       content: (
         <div className={"metamask-install-body"}>
-          <p>You can register your own Ether wallet address by using MetaMask.</p>
+          <p>You can connect your own Ether wallet address by using MetaMask.</p>
           <img src={metaMaskImage} alt="Metamask" className="fox" />
           <p>Please notice that</p>
           <ul>
             <li>You can only connect one Ether wallet at a time, and you can only transfer HUNT tokens to the wallet you're currently connected to.</li>
-            <li>Exchange’s wallet is not able to be registered (MetaMask is required to register).</li>
+            <li>Exchange&#39;s wallet is not able to be connected (MetaMask is required to connect).</li>
             <li>The HUNT balance from the wallet address above is automatically added to your total HUNT token balance, which will be counted for your user score.</li>
           </ul>
         </div>
       ),
       okText: "Connect to Metamask",
       onOk: async () => {
-        const message = `Register this Ethereum address to your Steemhunt account, ${this.props.me}. (Timestamp: ${new Date().getTime()})`;
+        const message = `Connect this Ethereum address to your Steemhunt account, ${this.props.me}. (Timestamp: ${new Date().getTime()})`;
         const signature = await this.web3.eth.personal.sign(message, ethAccounts[0], null);
         this.props.setEthAddress(ethAccounts[0], message, signature);
       }

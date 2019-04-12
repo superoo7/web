@@ -154,7 +154,7 @@ export default class Home extends Component {
             </h2>
 
             <Link to="/post" className="post-button round-border padded-button pink-filled">
-              LET&apos;S HUNT NOW
+              LET&#39;S HUNT NOW
             </Link>
           </div>
 

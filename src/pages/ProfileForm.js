@@ -153,7 +153,7 @@ class ProfileForm extends Component {
         <div className="heading left-padded">
           <h3>Forbidden</h3>
           <div className="heading-sub">
-            You don&apos;t have permission to edit this profile.
+            You don&#39;t have permission to edit this profile.
           </div>
         </div>
       );

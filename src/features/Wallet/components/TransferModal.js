@@ -42,7 +42,7 @@ export default class TransferModal extends Component {
     } else if (amount < MIN_WITHDRAW) {
       return `You have to transfer at leat ${formatNumber(MIN_WITHDRAW, '0,0.00')} HUNT.`;
     } else if (amount > MAX_WITHDRAW) {
-      return `You cannot transfer more than ${formatNumber(MAX_WITHDRAW, '0,0')} HUNT.`;
+      return `You cannot transfer more than ${formatNumber(MAX_WITHDRAW, '0,0')} HUNT (including the transaction fee).`;
     } else {
       return null;
     }

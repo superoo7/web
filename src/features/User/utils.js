@@ -25,7 +25,7 @@ export function isModerator(username) {
   const moderators = [
     'tabris', 'project7',
     'teamhumble', 'urbangladiator', 'dayleeo', 'fknmayhem', 'jayplayco', 'bitrocker2020', 'joannewong',
-    'geekgirl', 'playitforward', 'monajam', 'pialejoana'
+    'playitforward', 'monajam', 'pialejoana'
   ];
   return moderators.indexOf(username) !== -1;
 }

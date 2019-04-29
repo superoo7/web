@@ -1,4 +1,4 @@
-import { put, call } from 'redux-saga/effects';
+import { put, call, takeLatest } from 'redux-saga/effects';
 import update from 'immutability-helper';
 
 /*--------- CONSTANTS ---------*/
@@ -15,8 +15,8 @@ function getHuntPriceSuccess(price) {
   return { type: GET_HUNT_PRICE_SUCCESS, payload: { price } };
 }
 
-function getHuntPriceFailure() {
-  return { type: GET_HUNT_PRICE_FAILURE };
+function getHuntPriceFailure(msg) {
+  return { type: GET_HUNT_PRICE_FAILURE, payload: msg };
 }
 
 /*--------- REDUCER ---------*/
@@ -26,7 +26,7 @@ export function getHuntPriceReducer(state, action) {
       return update(state, {
         isPriceLoading: { $set: true }
       });
-    case GET_HUNT_PRICE_BEGIN:
+    case GET_HUNT_PRICE_SUCCESS:
       const { price } = action.payload;
 
       return update(state, {
@@ -37,7 +37,7 @@ export function getHuntPriceReducer(state, action) {
       return update(state, {
         isPriceLoading: { $set: false }
       });
-    default: 
+    default:
       return state;
   }
 }
@@ -45,22 +45,17 @@ export function getHuntPriceReducer(state, action) {
 /*--------- SAGAS ---------*/
 function* getHuntPrice() {
   try {
-    const result = yield call(
+    const response = yield call(
       fetch,
       'https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=hunt-token'
-    ).then(d => {
-      if (!d.ok) {
-        throw new Error('CoinGecko server down.');
-      }
-      return d.json();
-    });
-
+    );
+    const result = yield response.json();
     yield put(getHuntPriceSuccess((result['hunt-token'] || {})['usd']));
   } catch (e) {
-    yield put(getHuntPriceFailure());
+    yield put(getHuntPriceFailure(e.message));
   }
 }
 
 export default function* getHuntPriceManager() {
-  yield takeEvery(GET_HUNT_PRICE_BEGIN, getHuntPrice);
+  yield takeLatest(GET_HUNT_PRICE_BEGIN, getHuntPrice);
 }

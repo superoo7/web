@@ -9,13 +9,8 @@ export const initialState = {
   // currentTag: 'steemhunt',
 };
 
-export const reducer = (state = initialState, action) => combine(
-  [ getAppConfigReducer ],
-  state,
-  action,
-);
+export const reducer = (state = initialState, action) =>
+  combine([getAppConfigReducer], state, action);
 
 // All sagas to be loaded
-export default [
-  getAppConfig,
-];
+export default [getAppConfig];
